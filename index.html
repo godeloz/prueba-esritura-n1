@@ -611,9 +611,9 @@ const CONJUNTOS = [
     titulo: 'El llamado de lo salvaje',
     autor: 'Patricio Pron',
     genero: 'Ensayo cultural documentado',
-    uso: 'simulacro',
+    uso: 'practica',
     origenResumenes: 'didactico',
-    nota: 'Conjunto reservado para el simulacro. No aparece en ningún ejercicio de práctica.',
+    nota: 'Es el texto más extenso y exigente del banco. Su bloque de práctica trabaja el aplazamiento de la tesis y la omisión del giro final, que es el fallo más frecuente al resumirlo.',
     fuente: {
       parrafos: FUENTES.salvaje,
       ideaPrincipal: 'Las historias de niños ferales no revelan cómo sería el ser humano en estado natural, como creyeron los ilustrados, sino que muestran que la frontera entre lo humano y lo animal es cultural y porosa; y esa constatación es la que hoy empuja al arte y a la literatura a descentrar la mirada humana frente a la destrucción del mundo físico.',
@@ -672,10 +672,10 @@ const CONJUNTOS = [
   }
 ];
 
-/* Índice de conjuntos ofrecidos en el simulacro. El reservado va primero.
-   El oficial se ofrece como segunda opción, advirtiendo que ya se trabajó en
-   la práctica. Cuando lleguen nuevos textos reservados, se añaden aquí. */
-const CONJUNTOS_SIMULACRO = ['salvaje', 'bunuelo'];
+/* Todos los conjuntos se ofrecen en el simulacro. La app los ordena poniendo
+   delante los que el estudiante no ha trabajado en la práctica, para conservar
+   la posibilidad de enfrentarse a un texto nuevo. */
+const CONJUNTOS_SIMULACRO = ['salvaje', 'stoner', 'insipido', 'bunuelo'];
 
 const ETIQUETA_ORIGEN = {
   oficial: 'Resúmenes reproducidos del documento institucional PLEE 2026.1.',
@@ -1000,24 +1000,24 @@ const PENDIENTES = [
 ];
 
 
-/* ===== data-ej-1.js ===== */
-/* data-ej-1.js — ejercicios de c1 (idea principal), c2 (estructura) y c3 (fidelidad)
-   Motores: mc, cloze, reescritura, clasificar, ordenar, marcar, cotejar.
-   Ningún ejercicio usa el conjunto «salvaje», reservado para el simulacro. */
+/* ===== data-ej-bunuelo.js ===== */
+/* data-ej-bunuelo.js — bloque propio del conjunto «Preeminencia del buñuelo».
+   Dos ejercicios por criterio de contenido (c1 a c4). Todos los fragmentos
+   proceden de este texto y de sus tres resúmenes oficiales. */
 
-const EJERCICIOS_1 = [
-  /* ================= c1 · IDEA PRINCIPAL ================= */
+const EJ_BUNUELO = [
+  /* ---------------- c1 · idea principal ---------------- */
   {
-    id: 'c1e1',
+    id: 'bu-c1-1',
+    conjunto: 'bunuelo',
     criterio: 'c1',
     motor: 'mc',
     titulo: 'Qué idea principal declara cada resumen',
     enunciado: 'Lee la idea principal del texto fuente y decide cuál de las formulaciones de los resúmenes se corresponde con ella.',
     items: [
       {
-        id: 'c1e1i1',
-        conjunto: 'bunuelo',
-        contexto: 'Texto fuente · «Preeminencia del buñuelo», de Luis Miguel Rivas. Idea principal: la unión entre la natilla y el buñuelo no es esencial sino impuesta por la costumbre, y esa jerarquía obliga a revisar las creencias culturales que se aceptan sin someterlas a la razón.',
+        id: 'bu-c1-1-i1',
+        contexto: 'Idea principal del texto fuente: la unión entre la natilla y el buñuelo no es esencial sino impuesta por la costumbre, y esa jerarquía obliga a revisar las creencias culturales que se aceptan sin someterlas a la razón.',
         pregunta: '¿Cuál de estas tres formulaciones, tomadas de los resúmenes, se corresponde con la idea principal del texto fuente?',
         opciones: [
           {
@@ -1043,46 +1043,40 @@ const EJERCICIOS_1 = [
         ]
       },
       {
-        id: 'c1e1i2',
-        conjunto: 'insipido',
-        contexto: 'Texto fuente · «Lo insípido y lo sabroso», de Marcelo Cohen. Idea principal: lo que da sabor a un libro no es el oficio ni la corrección formal, sino la cantidad de deseo, necesidad y éxtasis que se han puesto en escribirlo.',
-        pregunta: 'Tres resúmenes abren de estas tres maneras. ¿Cuál declara la idea principal del texto fuente?',
+        id: 'bu-c1-1-i2',
+        pregunta: 'Un estudiante quiere probar que el Agente 3 capta la idea principal. ¿Qué pareja de referencias se lo permite?',
         opciones: [
           {
-            t: 'Cohen se pregunta qué distingue a un libro con sabor de uno insípido, y responde que no es el oficio ni la corrección formal, sino la cantidad de deseo, de necesidad y de éxtasis depositada en la escritura.',
+            t: 'La afirmación del resumen de que la dupla «no responde a una relación esencial», junto a la frase de Rivas que niega poder hablar de ambos «como si hubieran estado juntos desde el comienzo de los tiempos».',
             ok: true,
-            fb: 'Correcta. Enuncia la pregunta y la respuesta, que es exactamente la forma que tiene la idea principal en un ensayo que avanza por indagación.'
+            fb: 'Correcta. Las dos referencias dicen lo mismo con distintas palabras y ambas apuntan al núcleo de la tesis: la unión no es esencial. Con una oración que enlace las dos, el criterio queda en Excelente.'
           },
           {
-            t: 'Cohen comienza preguntándose por qué algunos libros bien escritos resultan insípidos, y menciona como ejemplos algunos poemarios primerizos y los cuentos de Ring Lardner.',
+            t: 'La mención del resumen a la «tradición antioqueña decembrina» junto a la mención de Rivas a la cultura antioqueña.',
             ok: false,
-            fb: 'Reproduce la pregunta de apertura pero se detiene antes de la respuesta. Enunciar el problema no es enunciar la idea principal: falta lo que el texto afirma sobre ese problema.'
+            fb: 'Las dos referencias coinciden, pero en el alcance geográfico, que es un asunto de fidelidad. Coincidir en dónde ocurre algo no prueba que se comparta la afirmación central.'
           },
           {
-            t: 'Cohen sostiene que la literatura contemporánea ha perdido el sabor porque los escritores se han vuelto demasiado técnicos y correctos.',
+            t: 'La descripción del buñuelo como «autónomo, noble y omnipresente» junto a la escena de los muñecos publicitarios.',
             ok: false,
-            fb: 'Suena a idea principal porque tiene forma de afirmación, pero distorsiona el texto: Cohen no diagnostica una época ni condena a los escritores técnicos. Se pregunta por qué un libro correcto puede resultar soso, que es otra cosa.'
-          },
-          {
-            t: 'Cohen concluye que el hábito de escribir es una excursión improductiva y un trastorno en la mecánica de la división del trabajo.',
-            ok: false,
-            fb: 'Es una frase literal del último tramo, pero funciona como matiz dentro del argumento, no como su afirmación central. Tomar la última frase llamativa por la idea principal es un error muy común.'
+            fb: 'Los dos elementos existen en sus textos, pero la escena es una prueba narrativa y no la formulación de la idea principal. La pareja no muestra correspondencia entre afirmaciones.'
           }
         ]
       }
     ]
   },
   {
-    id: 'c1e2',
+    id: 'bu-c1-2',
+    conjunto: 'bunuelo',
     criterio: 'c1',
     motor: 'clasificar',
     titulo: 'Qué nivel de rúbrica alcanza cada justificación',
-    enunciado: 'Estas cinco justificaciones fueron escritas por estudiantes sobre el conjunto del buñuelo. Clasifica cada una según el nivel que le daría la rúbrica en el criterio de idea principal.',
+    enunciado: 'Estas justificaciones fueron escritas por estudiantes sobre el conjunto del buñuelo. Clasifica cada una según el nivel que le daría la rúbrica en el criterio de idea principal.',
     etiquetas: ['Excelente', 'Básico', 'Insuficiente'],
     ayuda: 'Excelente: identifica la idea principal y justifica con evidencias de las dos fuentes su correspondencia. Básico: la identifica, pero no la justifica. Insuficiente: no la identifica.',
     fragmentos: [
       {
-        id: 'c1e2f1',
+        id: 'bu-c1-2-f1',
         t: 'Elegí el resumen del Agente 3 porque capta bien la idea principal del texto de Rivas. El resumen refleja fielmente lo que el autor quiere decir sobre la natilla y el buñuelo.',
         ok: 'Básico',
         fb: {
@@ -1092,7 +1086,7 @@ const EJERCICIOS_1 = [
         }
       },
       {
-        id: 'c1e2f2',
+        id: 'bu-c1-2-f2',
         t: 'Rivas afirma que «la natilla sólo existe en función del buñuelo», y el Agente 3 lo recoge cuando escribe que la natilla «aparece subordinada, efímera y carente de protagonismo». Las dos formulaciones sostienen la misma jerarquía: no dicen que los dos alimentos sean distintos, dicen que uno depende del otro, que es la afirmación que organiza todo el texto.',
         ok: 'Excelente',
         fb: {
@@ -1102,7 +1096,7 @@ const EJERCICIOS_1 = [
         }
       },
       {
-        id: 'c1e2f3',
+        id: 'bu-c1-2-f3',
         t: 'El resumen del Agente 3 es el mejor porque está muy bien escrito y no tiene errores de ortografía. Además es el más largo de los tres, lo que demuestra que el agente entendió el texto.',
         ok: 'Insuficiente',
         fb: {
@@ -1112,7 +1106,7 @@ const EJERCICIOS_1 = [
         }
       },
       {
-        id: 'c1e2f4',
+        id: 'bu-c1-2-f4',
         t: 'El texto de Rivas trata sobre la natilla y el buñuelo en diciembre. El Agente 3 también habla de la natilla y el buñuelo en la tradición antioqueña decembrina, así que coinciden en el tema.',
         ok: 'Insuficiente',
         fb: {
@@ -1122,7 +1116,7 @@ const EJERCICIOS_1 = [
         }
       },
       {
-        id: 'c1e2f5',
+        id: 'bu-c1-2-f5',
         t: 'El Agente 3 declara que la dupla navideña «no responde a una relación esencial», y eso es exactamente lo que sostiene Rivas cuando dice que no podemos hablar de la natilla y el buñuelo «como si hubieran estado juntos desde el comienzo de los tiempos».',
         ok: 'Excelente',
         fb: {
@@ -1133,57 +1127,19 @@ const EJERCICIOS_1 = [
       }
     ]
   },
-  {
-    id: 'c1e3',
-    criterio: 'c1',
-    motor: 'reescritura',
-    titulo: 'De Básico a Excelente',
-    enunciado: 'Un estudiante escribió esta justificación sobre el conjunto de Cohen. Está en nivel Básico. Elige la reescritura que la lleva a Excelente.',
-    items: [
-      {
-        id: 'c1e3i1',
-        conjunto: 'insipido',
-        fragmento: 'Elegí el resumen del Agente 3 porque identifica correctamente la idea principal del ensayo de Cohen sobre lo que hace que un libro tenga sabor.',
-        diagnostico: 'La idea principal está identificada, pero no hay evidencia textual de ninguna de las dos fuentes ni una oración que muestre en qué se corresponden. Según la rúbrica, eso es exactamente el nivel Básico.',
-        pregunta: '¿Cuál de estas reescrituras alcanza el nivel Excelente?',
-        opciones: [
-          {
-            t: 'Elegí el resumen del Agente 3 porque identifica correctamente la idea principal del ensayo. Cohen se pregunta qué hace que un libro tenga «ángel» y responde que «un libro tendrá tanto más poder cuanta más cantidad de deseo se haya puesto en escribirlo»; el Agente 3 lo recoge al afirmar que lo decisivo no es «el oficio ni la corrección formal, sino la cantidad de deseo, de necesidad y de éxtasis depositada en la escritura». Las dos formulaciones desplazan la explicación del mismo lugar: de la destreza del escritor a la intensidad con que escribe.',
-            ok: true,
-            fb: 'Correcta. Aparecen las tres piezas: la afirmación, una cita del texto fuente y otra del resumen, y una oración final que nombra en qué se corresponden —el desplazamiento de la destreza a la intensidad—. Esa última oración es la que convierte Básico en Excelente.'
-          },
-          {
-            t: 'Elegí el resumen del Agente 3 porque identifica correctamente la idea principal del ensayo. Cohen escribe: «un libro tendrá tanto más poder cuanta más cantidad de deseo se haya puesto en escribirlo». El Agente 3 escribe: «lo decisivo no es el oficio ni la corrección formal, sino la cantidad de deseo, de necesidad y de éxtasis depositada en la escritura».',
-            ok: false,
-            fb: 'Tiene la doble evidencia pero le falta la tercera pieza: nadie dice en qué se corresponden las dos citas. Poner dos citas seguidas obliga al lector a deducir la relación, y la rúbrica pide que el estudiante la justifique. Se queda en Básico reforzado.'
-          },
-          {
-            t: 'Elegí el resumen del Agente 3 porque identifica muy bien la idea principal del ensayo de Cohen, que además está expresada con mucha claridad y elegancia, de un modo que refleja fielmente el pensamiento del autor sobre la literatura y el deseo de escribir.',
-            ok: false,
-            fb: 'Añade adjetivos, no evidencia. «Refleja fielmente» y «muy bien» son valoraciones; la rúbrica pide referencias textuales directas o indirectas de las dos fuentes. Sigue en Básico y además ocupa palabras del límite de 400.'
-          },
-          {
-            t: 'Elegí el resumen del Agente 3 porque identifica correctamente la idea principal. Cohen dedica el ensayo a preguntarse por qué ciertos libros son insípidos, descarta las razones románticas y mágicas, propone el deseo, matiza con la compulsión, gira hacia el éxtasis y cierra con una pregunta retórica.',
-            ok: false,
-            fb: 'La descripción es correcta, pero pertenece al criterio de estructura, no al de idea principal. Además no trae ninguna referencia al resumen elegido, de modo que no hay correspondencia que probar. Es un buen párrafo colocado en el criterio equivocado.'
-          }
-        ]
-      }
-    ]
-  },
 
-  /* ================= c2 · ESTRUCTURA ================= */
+  /* ---------------- c2 · estructura ---------------- */
   {
-    id: 'c2e1',
+    id: 'bu-c2-1',
+    conjunto: 'bunuelo',
     criterio: 'c2',
     motor: 'ordenar',
     titulo: 'Los movimientos del texto fuente',
     enunciado: 'Reconstruye el orden de los cinco movimientos de «Preeminencia del buñuelo». Usa los botones para subir y bajar cada pieza.',
-    conjunto: 'bunuelo',
     ayuda: 'Fíjate en la función de cada movimiento, no en su contenido: qué abre el texto, dónde se formula la tesis, dónde se prueba, dónde gira hacia el relato y cómo cierra.',
     piezas: [
       { t: 'Denuncia inicial: el autor parte de una nota del periódico Universo Centro que cuestiona la inseparabilidad de la natilla y el buñuelo.', fb: 'Es la apertura. Rivas no empieza por su tesis: empieza por un texto ajeno al que se adhiere, y eso le permite presentar su posición como respaldada.' },
-        { t: 'Formulación de la tesis: la natilla y el buñuelo no están en el mismo nivel; uno es autosuficiente y la otra, un complemento.', fb: 'Segundo movimiento. Aquí aparece la afirmación que el resto del texto tendrá que sostener, marcada por el «No señores» que abre el párrafo.' },
+      { t: 'Formulación de la tesis: la natilla y el buñuelo no están en el mismo nivel; uno es autosuficiente y la otra, un complemento.', fb: 'Segundo movimiento. Aquí aparece la afirmación que el resto del texto tendrá que sostener, marcada por el «No señores» que abre el párrafo.' },
       { t: 'Pruebas de la vida cotidiana: la ausencia de natilla en las cafeterías todo el año, el mendigo que pide cualquier cosa menos natilla.', fb: 'Tercer movimiento. Son las evidencias empíricas, deliberadamente triviales: la trivialidad de las pruebas es parte de la ironía del texto.' },
       { t: 'Anécdota alegórica: el accidente de los muñecos publicitarios en la Avenida Oriental y el auxilio del buñuelo a la natilla caída.', fb: 'Cuarto movimiento, y el más extenso. El texto abandona la argumentación y pasa al relato; la anécdota funciona como prueba en forma de alegoría.' },
       { t: 'Moraleja y llamado: la realidad confirma la tesis y el autor convoca a cambiar los valores con un «Buñuelos del mundo: ¡uníos!».', fb: 'El cierre. Recoge la anécdota como confirmación y remata con un apóstrofe que parodia una consigna política célebre.' }
@@ -1191,135 +1147,62 @@ const EJERCICIOS_1 = [
     explicacion: 'El texto se organiza como una argumentación que en su segunda mitad se convierte en relato. Reconocer ese giro es lo que distingue describir la estructura de enumerar contenidos: un resumen que solo diga «habla de la natilla y luego cuenta una anécdota» no ha descrito nada.'
   },
   {
-    id: 'c2e2',
+    id: 'bu-c2-2',
+    conjunto: 'bunuelo',
     criterio: 'c2',
     motor: 'mc',
-    titulo: 'Describir la estructura o reproducir el orden',
-    enunciado: 'Resumir siguiendo el orden del texto no es describir su organización. Distingue una cosa de la otra.',
+    titulo: 'Quién describe la organización y quién no',
+    enunciado: 'Los tres resúmenes oficiales tratan la estructura del texto de maneras muy distintas. Distínguelas.',
     items: [
       {
-        id: 'c2e2i1',
-        conjunto: 'insipido',
-        contexto: 'Los tres resúmenes del ensayo de Cohen se refieren a su organización de estas maneras.',
-        pregunta: '¿Cuál de los tres describe la estructura del texto fuente?',
+        id: 'bu-c2-2-i1',
+        pregunta: '¿Cuál de los tres resúmenes describe cómo está organizado el texto de Rivas?',
         opciones: [
           {
-            t: 'El ensayo se organiza como una indagación que avanza por descarte: abre con una pregunta doble, aparta enseguida las explicaciones románticas y mágicas, ensaya la hipótesis del deseo, la matiza y en el tramo final desplaza la respuesta hacia el éxtasis y el hábito.',
+            t: 'El Agente 3, que escribe: «A partir de una nota en Universo Centro, el autor lanza una crítica a ciertas prácticas culturales acríticamente aceptadas y plantea que esta dupla navideña no responde a una relación esencial».',
             ok: true,
-            fb: 'Correcta. Cada verbo nombra una función —abre, aparta, ensaya, matiza, desplaza— y el conjunto explica el principio que ordena el texto: el avance por descarte. Eso es describir una estructura.'
+            fb: 'Correcta. Nombra el punto de partida —la nota de prensa— y el movimiento que sigue: de la crítica a la formulación de la tesis. Es el único de los tres que reconstruye por dónde empieza el texto.'
           },
           {
-            t: 'Cohen primero se pregunta por qué hay libros insípidos, después menciona el deseo, luego enumera varias necesidades, más adelante habla de Flaubert y al final habla del éxtasis y del hábito.',
+            t: 'El Agente 2, que escribe: «Rivas desarrolla una ingeniosa metáfora sobre identidad cultural a través de una anécdota urbana».',
             ok: false,
-            fb: 'Es reproducción del orden, no descripción de la estructura. «Primero», «después», «luego» y «al final» marcan sucesión; no dicen qué hace el texto en cada tramo ni por qué avanza así. Es el error que este ejercicio quiere hacer visible.'
+            fb: 'Alude a un movimiento del texto, pero no describe su organización: no dice de dónde parte, ni que la anécdota llegue después de una argumentación. Es un cumplimiento parcial que conviene señalar como tal.'
           },
           {
-            t: 'El texto está muy bien estructurado y las ideas se encadenan con claridad de principio a fin, lo que facilita la lectura.',
+            t: 'El Agente 1, que escribe: «El autor utiliza una anécdota humorística para ilustrar su punto».',
             ok: false,
-            fb: 'Es una valoración de la estructura, no una descripción. Dice que hay orden pero no dice cuál. En la rúbrica esto no alcanza a identificar la descripción de la estructura.'
-          },
-          {
-            t: 'El ensayo está dividido en cuatro párrafos de extensión desigual, el último de los cuales es el más largo.',
-            ok: false,
-            fb: 'Describe la disposición tipográfica, no la organización del argumento. Contar párrafos es una observación material; la estructura es lo que cada párrafo hace dentro del texto.'
+            fb: 'Menciona la anécdota como recurso, que pertenece al criterio de estrategias. Sobre la organización del texto no dice nada: es el resumen más ciego a la estructura de los tres.'
           }
         ]
       },
       {
-        id: 'c2e2i2',
-        conjunto: 'stoner',
-        contexto: 'El texto de Juan Forn sobre la novela Stoner arranca contando la trama en presente, como si el lector la estuviera viendo, y solo después pasa al comentario.',
-        pregunta: '¿Cuál de estas frases de resumen identifica esa decisión de composición?',
+        id: 'bu-c2-2-i2',
+        pregunta: 'Quieres probar que el Agente 3 acierta al describir el arranque. ¿Qué evidencia del texto fuente lo demuestra?',
         opciones: [
           {
-            t: 'Forn organiza su texto de una manera particular: primero cuenta la trama en presente como si fuera una película y le pide al lector que mire el campus, y solo después pasa al comentario y explica por qué la novela emociona.',
+            t: 'Que el primer movimiento del texto es la adhesión de Rivas a una nota publicada en Universo Centro, y solo después aparece su propia tesis.',
             ok: true,
-            fb: 'Correcta. Nombra la decisión compositiva —narrar antes de comentar— y la marca del apóstrofe al lector. No se limita a decir qué contiene el texto: dice cómo está construido.'
+            fb: 'Correcta. La evidencia es el orden real de los movimientos: el texto no abre con la tesis sino con un texto ajeno. Eso es exactamente lo que el resumen recoge al decir «a partir de una nota».'
           },
           {
-            t: 'Forn cuenta la historia de un hijo de granjeros que descubre la literatura y se queda en la universidad, y después habla de la historia editorial del libro.',
+            t: 'Que el texto termina con la consigna «Buñuelos del mundo: ¡uníos!».',
             ok: false,
-            fb: 'Resume el contenido en el orden en que aparece. No advierte que la primera parte está narrada en presente ni que esa elección es lo que distingue al texto de una reseña convencional.'
+            fb: 'El cierre es una observación estructural válida, pero no prueba nada sobre el arranque, que es lo que el resumen afirma. La evidencia tiene que apuntar al punto que se está justificando.'
           },
           {
-            t: 'El texto de Forn tiene una estructura clásica de reseña: presentación de la obra, valoración y recomendación final.',
+            t: 'Que Rivas dedica varios párrafos a describir el accidente de los muñecos publicitarios.',
             ok: false,
-            fb: 'Aplica una plantilla genérica que este texto no sigue. Forn no presenta la obra: la narra. Describir la estructura exige leer el texto, no reconocer un molde.'
-          },
-          {
-            t: 'Forn escribe en un tono íntimo y cercano que hace sentir al lector parte de la historia.',
-            ok: false,
-            fb: 'Describe el efecto de lectura, no la organización. El tono es una cuestión de estilo; la estructura es el reparto de funciones a lo largo del texto.'
+            fb: 'Es información sobre la extensión de la anécdota. Sirve para hablar del peso del relato en el texto, no para confirmar de dónde parte el argumento.'
           }
         ]
-      }
-    ]
-  },
-  {
-    id: 'c2e3',
-    criterio: 'c2',
-    motor: 'clasificar',
-    titulo: 'Describir, narrar o callar',
-    enunciado: 'Clasifica cada fragmento de resumen según lo que hace con la estructura del texto fuente.',
-    etiquetas: ['Describe la organización', 'Narra el contenido', 'No menciona la estructura'],
-    ayuda: 'Describe la organización: nombra la función de los movimientos. Narra el contenido: cuenta lo que dice el texto en su orden. No menciona la estructura: ni siquiera alude a cómo está construido.',
-    fragmentos: [
-      {
-        id: 'c2e3f1',
-        t: 'El texto abre in medias res con una escena fechada y aplaza la tesis: solo tras acumular casos refuta la lectura ilustrada, y cierra regresando a la protagonista del comienzo.',
-        ok: 'Describe la organización',
-        fb: {
-          'Describe la organización': 'Correcto. «Abre», «aplaza», «refuta», «cierra regresando» son verbos de función, y además se nombra el principio que ordena el texto: la circularidad y el aplazamiento de la tesis.',
-          'Narra el contenido': 'No narra: no dice qué ocurre en la escena ni cuáles son los casos. Habla de lo que el texto hace, no de lo que cuenta.',
-          'No menciona la estructura': 'La menciona con detalle: apertura, aplazamiento, refutación y cierre circular son cuatro observaciones estructurales.'
-        }
-      },
-      {
-        id: 'c2e3f2',
-        t: 'Rivas cuenta que encontró una nota en un periódico, luego explica que la natilla depende del buñuelo, después narra un accidente en la Avenida Oriental y finalmente pide cambiar los valores.',
-        ok: 'Narra el contenido',
-        fb: {
-          'Describe la organización': 'No llega: los marcadores «luego», «después» y «finalmente» ordenan la exposición, pero no dicen qué función cumple cada tramo. Sin funciones no hay descripción de estructura.',
-          'Narra el contenido': 'Correcto. Es un recuento fiel en el orden del original. Es útil como resumen de contenido, pero no cumple el criterio de análisis de la estructura.',
-          'No menciona la estructura': 'Roza la estructura al respetar el orden, así que no es del todo mudo al respecto; lo que hace es reproducirla en lugar de describirla.'
-        }
-      },
-      {
-        id: 'c2e3f3',
-        t: 'Marcelo Cohen sostiene que la potencia de un libro depende del deseo y de la necesidad con que fue escrito, y que la experiencia del hábito de escribir es la que garantiza el sabor.',
-        ok: 'No menciona la estructura',
-        fb: {
-          'Describe la organización': 'No dice nada sobre cómo está construido el texto: es una formulación de la idea principal, que corresponde a otro criterio.',
-          'Narra el contenido': 'Tampoco narra en orden: condensa la tesis en una sola afirmación, sin recorrer el texto.',
-          'No menciona la estructura': 'Correcto. Es un buen enunciado de la idea principal, pero para el criterio de estructura equivale a un silencio. Un resumen puede ser excelente en un criterio y nulo en otro.'
-        }
-      },
-      {
-        id: 'c2e3f4',
-        t: 'El texto está compuesto por siete párrafos bien enlazados, con una introducción, un desarrollo extenso y una conclusión.',
-        ok: 'No menciona la estructura',
-        fb: {
-          'Describe la organización': 'Parece que la describe, pero «introducción, desarrollo y conclusión» es una plantilla que sirve para cualquier texto. No dice nada de este en particular.',
-          'Narra el contenido': 'No hay contenido narrado: no se menciona ni una idea del texto.',
-          'No menciona la estructura': 'Correcto, y es el caso más engañoso del ejercicio. Contar párrafos y aplicar un molde universal no identifica la organización de este texto. La rúbrica pide describir cómo está organizado, no comprobar que tiene principio y final.'
-        }
-      },
-      {
-        id: 'c2e3f5',
-        t: 'Forn arranca narrando la trama en presente, gira hacia el comentario personal, despliega después la historia editorial del libro y termina revelando que el personaje tiene dos modelos reales.',
-        ok: 'Describe la organización',
-        fb: {
-          'Describe la organización': 'Correcto. «Arranca», «gira», «despliega», «termina revelando» nombran funciones, y el conjunto deja ver que el texto cambia de registro a mitad de camino.',
-          'Narra el contenido': 'Menciona contenidos, pero subordinados a la función que cumplen. La diferencia está en los verbos: «gira» y «despliega» no son marcas de sucesión sino de función.',
-          'No menciona la estructura': 'La menciona en cada una de sus cuatro cláusulas.'
-        }
       }
     ]
   },
 
-  /* ================= c3 · FIDELIDAD ================= */
+  /* ---------------- c3 · fidelidad ---------------- */
   {
-    id: 'c3e1',
+    id: 'bu-c3-1',
+    conjunto: 'bunuelo',
     criterio: 'c3',
     motor: 'cotejar',
     titulo: 'Cotejo fragmento a fragmento',
@@ -1328,21 +1211,19 @@ const EJERCICIOS_1 = [
     ayuda: 'Fiel: dice lo mismo con otras palabras. Distorsiona: cambia el alcance, el tono o la intención. Omite: deja fuera algo sin lo cual el sentido cambia. Añade: afirma algo que el texto no contiene.',
     items: [
       {
-        id: 'c3e1i1',
-        conjunto: 'stoner',
-        fuente: 'Cuando publicó el libro, en 1965, tenía cuarenta y tres años, y no le cambió un milímetro la vida hasta que murió […]. Cada tanto, algún lector ilustre de aquella primera edición convencía a una editorial de que la reimprimiera, y volvía a pasar lo mismo: se vendían unos pocos ejemplares y el libro volvía a perderse en el olvido.',
-        resumen: 'Juan Forn celebra la novela de John Williams, un éxito inmediato desde su publicación en 1965 que consagró a su autor como uno de los grandes narradores norteamericanos del siglo XX.',
-        ok: 'Añade',
+        id: 'bu-c3-1-i1',
+        fuente: 'Creo que la natilla sólo existe en función del buñuelo y prueba de ello es que su preeminencia en la vida cotidiana sólo se circunscribe a un mes en el año […] mientras que la masa redonda y frita sostiene su reinado independientemente de la época.',
+        resumen: 'Sostiene que, a diferencia de la natilla, el buñuelo es autosuficiente y goza de una presencia constante durante todo el año, mientras que la natilla solo aparece en diciembre y siempre bajo la sombra del buñuelo.',
+        ok: 'Fiel',
         fb: {
-          'Fiel': 'Es lo contrario de fiel: el texto dice que el libro se vendía en pocos ejemplares y volvía al olvido, y el resumen lo convierte en un éxito inmediato.',
-          'Distorsiona': 'Va más allá de la distorsión. No exagera ni cambia el matiz de algo que el texto dice: afirma un hecho —el éxito inmediato, la consagración— que el texto niega expresamente.',
-          'Omite': 'No es una omisión: el resumen no deja fuera información, la inventa.',
-          'Añade': 'Correcto. Es una adición, y de las peligrosas: está bien escrita, es plausible para quien no leyó el original y contradice el dato central de todo el párrafo.'
+          'Fiel': 'Correcto. Reformula con otras palabras y conserva las dos mitades de la afirmación: la permanencia del buñuelo y el carácter estacional y subordinado de la natilla. Reformular no es infidelidad; es lo que un resumen debe hacer.',
+          'Distorsiona': 'No hay cambio de alcance ni de intención: «un mes en el año» y «solo aparece en diciembre» dicen lo mismo, y «bajo la sombra» traduce con exactitud la subordinación del original.',
+          'Omite': 'No omite nada relevante: los dos términos de la comparación están presentes.',
+          'Añade': 'No hay ninguna afirmación que el texto no respalde.'
         }
       },
       {
-        id: 'c3e1i2',
-        conjunto: 'bunuelo',
+        id: 'bu-c3-1-i2',
         fuente: 'Asume esa imposición con el estoicismo de un sabio o con la humildad y docilidad de un ciudadano colombiano. En ese sentido el buñuelo nos representa como pueblo.',
         resumen: 'Rivas concluye que es necesario reevaluar los valores culturales, reconociendo la verdadera preeminencia del buñuelo y su representación de la fortaleza y nobleza del pueblo antioqueño.',
         ok: 'Distorsiona',
@@ -1354,139 +1235,41 @@ const EJERCICIOS_1 = [
         }
       },
       {
-        id: 'c3e1i3',
-        conjunto: 'insipido',
-        fuente: 'Digamos a modo de aproximación: un libro tendrá tanto más poder cuanta más cantidad de deseo se haya puesto en escribirlo. Otra afirmación tentadora es que solo la necesidad genera el latido […].',
-        resumen: 'El texto está organizado como un manifiesto en el que Cohen ofrece una receta para escribir bien: hay que poner deseo, escribir por necesidad y, sobre todo, buscar la embriaguez.',
-        ok: 'Distorsiona',
-        fb: {
-          'Fiel': 'Los elementos coinciden —deseo, necesidad, embriaguez— pero la modalidad no. Cohen escribe «digamos a modo de aproximación» y «otra afirmación tentadora»: está ensayando hipótesis, no dando instrucciones.',
-          'Distorsiona': 'Correcto. Es una distorsión de intención: convierte una especulación en prescripción. Vigila siempre los verbos modales; ahí se juega buena parte de la fidelidad.',
-          'Omite': 'No falta información, sobra certeza: el resumen incorpora todos los elementos del fragmento y les añade una firmeza que el original no tiene.',
-          'Añade': 'La palabra «receta» no está en el texto, pero el problema no es que se añada un dato, sino que se cambia el modo en que el texto afirma lo que afirma.'
-        }
-      },
-      {
-        id: 'c3e1i4',
-        conjunto: 'bunuelo',
-        fuente: 'Creo que la natilla sólo existe en función del buñuelo y prueba de ello es que su preeminencia en la vida cotidiana sólo se circunscribe a un mes en el año […] mientras que la masa redonda y frita sostiene su reinado independientemente de la época.',
-        resumen: 'Sostiene que, a diferencia de la natilla, el buñuelo es autosuficiente y goza de una presencia constante durante todo el año, mientras que la natilla solo aparece en diciembre y siempre bajo la sombra del buñuelo.',
-        ok: 'Fiel',
-        fb: {
-          'Fiel': 'Correcto. Reformula con otras palabras y conserva las dos mitades de la afirmación: la permanencia del buñuelo y el carácter estacional y subordinado de la natilla. Reformular no es infidelidad; es lo que un resumen debe hacer.',
-          'Distorsiona': 'No hay cambio de alcance ni de intención: «un mes en el año» y «solo aparece en diciembre» dicen lo mismo, y «bajo la sombra» traduce con exactitud la subordinación del original.',
-          'Omite': 'No omite nada relevante: los dos términos de la comparación están.',
-          'Añade': 'No hay ninguna afirmación que el texto no respalde.'
-        }
-      },
-      {
-        id: 'c3e1i5',
-        conjunto: 'stoner',
-        fuente: 'Williams tomó esa otra mitad de Stoner de un colega suyo de facultad llamado JV Cunningham. […] El hallazgo de Williams fue imaginar un Cunningham que no hubiera escrito esos pequeños poemas; que sólo los tuviera embotellados sin saberlo dentro de sí mismo.',
-        resumen: 'Forn recuerda que la novela cuenta la vida de un profesor universitario y que su autor también fue profesor, lo que explica la verosimilitud del ambiente académico.',
+        id: 'bu-c3-1-i3',
+        fuente: 'Yo también estoy inconforme con esa unión, pero por razones opuestas: no me parece justo que se ponga al buñuelo al mismo nivel de la natilla, que no es más que un adminículo, una rémora.',
+        resumen: 'Rivas critica la percepción común de la inseparabilidad de la natilla y el buñuelo en la cultura antioqueña durante la Navidad, y argumenta que esta creencia es una práctica irracional y arraigada.',
         ok: 'Omite',
         fb: {
-          'Fiel': 'Lo que dice es cierto, pero deja fuera el hallazgo que el texto destaca: que el personaje tiene dos modelos y que el segundo es un poeta a quien Williams imaginó sin sus poemas.',
-          'Distorsiona': 'No hay distorsión: nada de lo afirmado contradice el texto. El problema es lo que falta.',
-          'Omite': 'Correcto. La omisión es de las que cambian el sentido: sin la mitad tomada de Cunningham, el paralelismo entre autor y personaje se reduce a una coincidencia de oficio.',
-          'Añade': 'La explicación sobre la verosimilitud es una inferencia razonable, pero el fallo principal es la omisión del segundo modelo.'
+          'Fiel': 'Lo que dice es cierto, pero se queda a medio camino: recoge la inconformidad y deja fuera la dirección de esa inconformidad, que es lo que hace singular al texto.',
+          'Distorsiona': 'No hay distorsión: nada de lo afirmado contradice el original. El problema es lo que falta.',
+          'Omite': 'Correcto. El original precisa que la inconformidad es «por razones opuestas» a las esperables, y ese matiz es la clave del texto: Rivas no defiende a la natilla, la rebaja. Sin eso, el resumen pierde el giro.',
+          'Añade': 'La expresión «práctica irracional y arraigada» es una interpretación defendible, pero el fallo principal aquí es la omisión del matiz.'
+        }
+      },
+      {
+        id: 'bu-c3-1-i4',
+        fuente: 'La realidad a veces nos envía sus mensajes como metáforas aclaradoras.',
+        resumen: 'Rivas sostiene que la publicidad callejera de la temporada navideña revela las verdaderas jerarquías del mercado antioqueño de alimentos.',
+        ok: 'Añade',
+        fb: {
+          'Fiel': 'No es fiel: el texto no dice nada sobre el mercado de alimentos ni sobre la publicidad como objeto de análisis. La escena de los muñecos es una anécdota, no un estudio.',
+          'Distorsiona': 'Va más allá de la distorsión. No exagera algo que el texto diga: introduce una tesis económica que el original no contiene en ningún punto.',
+          'Omite': 'No es una omisión: el resumen no deja fuera información, la inventa.',
+          'Añade': 'Correcto. Aparece una afirmación sin respaldo en el texto. Es el fallo más peligroso porque suena verosímil para quien no leyó el original.'
         }
       }
     ]
   },
   {
-    id: 'c3e2',
-    criterio: 'c3',
-    motor: 'marcar',
-    modo: 'oracion',
-    titulo: 'Afirmaciones sin respaldo',
-    enunciado: 'Este es el resumen del Agente 3 sobre el texto de Juan Forn. Marca las oraciones que afirman algo que el texto fuente no respalda.',
-    conjunto: 'stoner',
-    ayuda: 'Cuatro de las siete oraciones contienen afirmaciones que el texto contradice o no contiene. Las otras tres son fieles. Marcar una oración fiel resta.',
-    unidades: [
-      { t: 'En «Hablemos de Stoner», Juan Forn celebra la novela de John Williams, un éxito inmediato desde su publicación en 1965 que consagró a su autor como uno de los grandes narradores norteamericanos del siglo XX y le valió el National Book Award.', marcar: true, fb: 'Tres adiciones en una sola oración: el éxito inmediato, la consagración y el premio. Forn dice que se vendían pocos ejemplares y que el National Book Award llegó siete años después, por Augustus, y compartido con John Barth.' },
-      { t: 'El texto se organiza con claridad: abre con la escena del joven granjero que descubre la literatura, avanza hacia la vida universitaria del protagonista y termina con la consagración del autor.', marcar: true, fb: 'La primera mitad es correcta, pero el final no: el texto no termina con una consagración, sino con la reivindicación póstuma y con la observación de que las necrológicas lo despidieron más como educador que como escritor.' },
-      { t: 'Forn emplea la narración en presente para acercar al lector a la historia, recurre al apóstrofe cuando lo invita a mirar el campus y apoya sus afirmaciones en citas de Kierkegaard y de Julian Barnes.', marcar: false, fb: 'Es fiel: las tres estrategias existen y son verificables en el texto, incluido el «Miren ese puñado de edificios neoclásicos» que constituye el apóstrofe.' },
-      { t: 'La escritora Anna Gavalda, que prologó la edición francesa, fue quien impulsó el redescubrimiento europeo de la novela.', marcar: true, fb: 'El texto dice que Gavalda la tradujo a su idioma y remó por ella. Traducir no es prologar: el resumen cambia el dato y con él la magnitud de la intervención.' },
-      { t: 'Forn concluye que Stoner encarna las virtudes que predica: la vieja idea de que la literatura ayuda a entender la vida.', marcar: false, fb: 'Es fiel, y casi literal: el texto dice que la novela «encarna las mismas virtudes que predica: la vieja idea de que la literatura ayuda a entender la vida».' },
-      { t: 'Williams, jubilado de la enseñanza y consagrado por la crítica de su tiempo, murió en 1994.', marcar: true, fb: '«Jubilado de la enseñanza» y la fecha son correctos, pero «consagrado por la crítica de su tiempo» contradice todo el texto: Forn insiste en que su obra pasó desapercibida y que solo hoy sabemos lo que era.' },
-      { t: 'La novela narra la vida de un hijo de granjeros pobres que descubre la literatura en una materia obligatoria y decide dedicarle su vida.', marcar: false, fb: 'Fiel al primer párrafo del texto: la materia obligatoria es Lengua y Literatura y el cambio de plan de estudios ocurre casi sin que el personaje se dé cuenta.' }
-    ],
-    explicacion: 'Las adiciones de este resumen tienen una característica común: todas van en la misma dirección, la de convertir una historia de olvido en una historia de éxito. Cuando las invenciones de un resumen apuntan todas al mismo lado, no son descuidos: es que el resumen leyó el texto que esperaba encontrar.'
-  },
-  {
-    id: 'c3e3',
-    criterio: 'c3',
-    motor: 'mc',
-    titulo: 'Probar la fidelidad o afirmarla',
-    enunciado: 'Afirmar que un resumen es fiel no prueba nada. Distingue la justificación que lo demuestra de la que solo lo declara.',
-    items: [
-      {
-        id: 'c3e3i1',
-        conjunto: 'bunuelo',
-        pregunta: '¿Cuál de estas dos justificaciones prueba la fidelidad del resumen elegido?',
-        opciones: [
-          {
-            t: 'El Agente 3 dice que el buñuelo aparece «autónomo, noble y omnipresente». Los tres adjetivos tienen respaldo puntual en el texto: la autonomía en «el buñuelo es autosuficiente, autónomo», la nobleza en «el buñuelo además de autosuficiente es noble» y la omnipresencia en la afirmación de que «sostiene su reinado independientemente de la época».',
-            ok: true,
-            fb: 'Correcta. Descompone la afirmación del resumen en tres piezas y localiza cada una en el texto fuente. Así se prueba la fidelidad: no con una declaración, sino con una comprobación que el lector puede repetir.'
-          },
-          {
-            t: 'El resumen del Agente 3 es completamente fiel al texto de Rivas y no contiene ninguna información falsa ni ninguna interpretación forzada del original.',
-            ok: false,
-            fb: 'Es la formulación canónica del nivel Básico: identifica la fidelidad y no la justifica. Cuanto más rotunda es la declaración, más se nota que falta la evidencia.'
-          },
-          {
-            t: 'El Agente 3 es fiel porque respeta el orden del texto de Rivas y no cambia el sentido de ninguna de sus partes, tal como debe hacer un buen resumen.',
-            ok: false,
-            fb: 'Añade un argumento —el respeto del orden— pero sigue sin traer una sola palabra de ninguno de los dos textos. Además el orden no es la fidelidad: un resumen puede alterar el orden y ser fiel.'
-          },
-          {
-            t: 'El Agente 3 describe al buñuelo como autónomo, noble y omnipresente, y esa descripción coincide con la que hace Rivas a lo largo de todo su texto.',
-            ok: false,
-            fb: 'Cita el resumen, que es la mitad del trabajo, pero del texto fuente solo dice «a lo largo de todo su texto», que no es una referencia localizable. Sin la segunda evidencia no hay correspondencia probada.'
-          }
-        ]
-      },
-      {
-        id: 'c3e3i2',
-        conjunto: 'insipido',
-        pregunta: 'Un estudiante quiere probar que el Agente 1 es fiel al ensayo de Cohen. ¿Cuál de estos movimientos lo consigue?',
-        opciones: [
-          {
-            t: 'Comprobar una a una las afirmaciones del resumen contra el texto: la pregunta inicial, los ejemplos de Ring Lardner y El péndulo de Foucault, la hipótesis del deseo y la enumeración de necesidades aparecen todas en el original, y ninguna cambia de alcance.',
-            ok: true,
-            fb: 'Correcta. La fidelidad se prueba por verificación, afirmación por afirmación. Y es honesto: el Agente 1 falla en otros criterios, pero en este es impecable, y decirlo demuestra que el estudiante evalúa por criterios y no en bloque.'
-          },
-          {
-            t: 'Señalar que el Agente 1 es el resumen más largo de los tres y que por eso recoge más información del original.',
-            ok: false,
-            fb: 'La extensión no es un indicio de fidelidad. Un resumen largo puede acumular adiciones, y uno breve puede ser exacto. La rúbrica no menciona la longitud en ninguno de sus seis criterios.'
-          },
-          {
-            t: 'Explicar que el Agente 1 usa las mismas palabras que Cohen, lo que garantiza que no ha alterado el significado.',
-            ok: false,
-            fb: 'Confunde fidelidad con literalidad. Copiar palabras no garantiza fidelidad —se puede citar fuera de contexto— y reformular no la rompe. Un resumen que solo repite el original tampoco es un buen resumen.'
-          },
-          {
-            t: 'Argumentar que, al no haber en el resumen ninguna opinión del agente, la fidelidad está asegurada.',
-            ok: false,
-            fb: 'La ausencia de opinión no prueba nada sobre la exactitud. Un resumen puede ser perfectamente neutro y aun así atribuir al texto una afirmación que no contiene.'
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'c3e4',
+    id: 'bu-c3-2',
+    conjunto: 'bunuelo',
     criterio: 'c3',
     motor: 'reescritura',
     titulo: 'De la declaración a la comprobación',
     enunciado: 'Convierte una declaración de fidelidad en una justificación con doble evidencia.',
     items: [
       {
-        id: 'c3e4i1',
-        conjunto: 'bunuelo',
+        id: 'bu-c3-2-i1',
         fragmento: 'El resumen del Agente 3 es fiel al texto de Rivas porque presenta la información tal como aparece en el original.',
         diagnostico: 'Identifica la fidelidad, no la justifica. «Tal como aparece en el original» tiene forma de evidencia pero no señala ningún lugar concreto de ninguno de los dos textos.',
         pregunta: '¿Cuál reescritura alcanza Excelente en el criterio de fidelidad?',
@@ -1514,137 +1297,458 @@ const EJERCICIOS_1 = [
         ]
       }
     ]
-  }
-];
+  },
 
-
-/* ===== data-ej-2.js ===== */
-/* data-ej-2.js — ejercicios de c4 (estrategias discursivas), c5 (cohesión) y c6 (gramática) */
-
-const EJERCICIOS_2 = [
-  /* ================= c4 · ESTRATEGIAS DISCURSIVAS ================= */
+  /* ---------------- c4 · estrategias discursivas ---------------- */
   {
-    id: 'c4e1',
+    id: 'bu-c4-1',
+    conjunto: 'bunuelo',
     criterio: 'c4',
     motor: 'clasificar',
     titulo: 'Qué recurso opera en cada fragmento',
-    enunciado: 'Cada fragmento procede de uno de los textos fuente. Identifica el recurso que opera en él.',
-    etiquetas: ['Ironía', 'Hipérbole', 'Enumeración', 'Apóstrofe al lector'],
-    ayuda: 'Ironía: se dice una cosa dando a entender otra, o se trata un asunto menor con un registro que no le corresponde. Hipérbole: exageración deliberada. Enumeración: serie acumulada de elementos. Apóstrofe: el autor se dirige directamente al lector.',
+    enunciado: 'Todos estos fragmentos son de «Preeminencia del buñuelo». Identifica el recurso que opera en cada uno.',
+    etiquetas: ['Ironía', 'Hipérbole', 'Apóstrofe al lector', 'Anécdota alegórica'],
+    ayuda: 'Ironía: se dice una cosa dando a entender otra. Hipérbole: exageración deliberada. Apóstrofe: el autor se dirige directamente al lector. Anécdota alegórica: un episodio que funciona como prueba de la tesis.',
     fragmentos: [
       {
-        id: 'c4e1f1',
-        t: '«Miren ese puñado de edificios neoclásicos rodeados de prolijo verde, miren a ese hijo de granjeros pobres transplantado a aquella ciudadela.» (Forn)',
-        ok: 'Apóstrofe al lector',
-        fb: {
-          'Ironía': 'No hay doble sentido: Forn dice literalmente lo que dice. Lo llamativo es a quién se lo dice.',
-          'Hipérbole': 'No hay exageración: la descripción del campus es sobria. El recurso está en el imperativo.',
-          'Enumeración': 'Hay dos elementos en paralelo, pero el rasgo dominante es que el autor interpela a alguien.',
-          'Apóstrofe al lector': 'Correcto. El imperativo «miren», repetido, saca al lector de su posición pasiva y lo obliga a ver la escena. Es la marca del apóstrofe.'
-        }
-      },
-      {
-        id: 'c4e1f2',
-        t: '«Hace dos años me desplazaba por el lugar donde calcina el sol más asesino del mundo, a la hora más cancerígena: Avenida Oriental, 12 del día.» (Rivas)',
+        id: 'bu-c4-1-f1',
+        t: '«Hace dos años me desplazaba por el lugar donde calcina el sol más asesino del mundo, a la hora más cancerígena: Avenida Oriental, 12 del día.»',
         ok: 'Hipérbole',
         fb: {
-          'Ironía': 'Hay un aire irónico en el conjunto del texto, pero el recurso concreto de esta frase es la desmesura del adjetivo.',
+          'Ironía': 'Hay un aire irónico en el conjunto del texto, pero el recurso concreto de esta frase es la desmesura del adjetivo, no el doble sentido.',
           'Hipérbole': 'Correcto. «El sol más asesino del mundo» y «la hora más cancerígena» son exageraciones deliberadas: nadie las toma al pie de la letra, y esa desmesura es lo que produce el efecto cómico.',
-          'Enumeración': 'La coordinación de dos superlativos no es una enumeración: no hay serie acumulada de elementos distintos.',
-          'Apóstrofe al lector': 'El autor no se dirige a nadie: narra en primera persona un desplazamiento.'
+          'Apóstrofe al lector': 'El autor no se dirige a nadie: narra en primera persona un desplazamiento propio.',
+          'Anécdota alegórica': 'Es el arranque de una anécdota, pero la frase en sí no cuenta ningún episodio todavía: solo sitúa la escena con adjetivos desmedidos.'
         }
       },
       {
-        id: 'c4e1f3',
-        t: '«Esta necesidad puede ser necesidad de contar, cantar, bramar, construir, entretenerse, jadear, comunicarse.» (Cohen)',
-        ok: 'Enumeración',
-        fb: {
-          'Ironía': 'No hay distancia entre lo dicho y lo que se quiere decir: Cohen está desplegando literalmente el abanico de la palabra «necesidad».',
-          'Hipérbole': 'No exagera ninguna magnitud; acumula posibilidades, que es otra operación.',
-          'Enumeración': 'Correcto. La serie acumula verbos cada vez más físicos —de «contar» a «bramar» y «jadear»— para mostrar que la necesidad de escribir no es una sola cosa. La acumulación es el argumento.',
-          'Apóstrofe al lector': 'No hay interpelación: la frase es una definición desplegada.'
-        }
-      },
-      {
-        id: 'c4e1f4',
-        t: '«No hubo un solo buen samaritano en este pueblo tan supuestamente adorador de la natilla.» (Rivas)',
+        id: 'bu-c4-1-f2',
+        t: '«No hubo un solo buen samaritano en este pueblo tan supuestamente adorador de la natilla.»',
         ok: 'Ironía',
         fb: {
           'Ironía': 'Correcto. «Tan supuestamente adorador» dice lo contrario de lo que afirma: la escena demuestra que nadie socorre a la natilla, y con eso el texto prueba su tesis burlándose de la creencia que combate.',
-          'Hipérbole': '«Ni un solo» tiene aire de exageración, pero es literal en la escena: efectivamente nadie se detiene.',
-          'Enumeración': 'No hay serie acumulada: la frase tiene un solo núcleo, la ausencia de samaritanos, y no despliega elementos sucesivos.',
-          'Apóstrofe al lector': 'No se dirige a nadie: el narrador comenta lo que ocurre en la escena sin salir de ella para interpelar al lector.'
+          'Hipérbole': '«Ni un solo» tiene aire de exageración, pero es literal en la escena: efectivamente nadie se detiene a ayudar.',
+          'Apóstrofe al lector': 'No se dirige a nadie: comenta lo que ocurre ante sus ojos.',
+          'Anécdota alegórica': 'La frase pertenece a la anécdota, pero por sí sola es el comentario del narrador sobre ella, y su rasgo dominante es el doble sentido.'
         }
       },
       {
-        id: 'c4e1f5',
-        t: '«Basta que cualquiera de ustedes en cualquier momento […] recorra cafeterías del Valle de Aburrá o de cualquier parte del país. Juro que encontrará buñuelos.» (Rivas)',
+        id: 'bu-c4-1-f3',
+        t: '«Basta que cualquiera de ustedes en cualquier momento […] recorra cafeterías del Valle de Aburrá o de cualquier parte del país. Juro que encontrará buñuelos.»',
         ok: 'Apóstrofe al lector',
         fb: {
           'Ironía': 'El tono es jocoso, pero el recurso identificable es la interpelación directa: el autor convierte al lector en verificador de su tesis.',
           'Hipérbole': '«Juro» intensifica, pero la afirmación —que hay buñuelos todo el año— es literal y comprobable.',
-          'Enumeración': 'Menciona dos lugares posibles, pero no es una serie acumulada: son alternativas de un mismo encargo, no elementos que se sumen.',
-          'Apóstrofe al lector': 'Correcto. «Cualquiera de ustedes» y el imperativo implícito convierten la prueba en un encargo para el lector. Es la misma operación que el «miren» de Forn.'
+          'Apóstrofe al lector': 'Correcto. «Cualquiera de ustedes» y el imperativo implícito convierten la prueba en un encargo para el lector: si quiere comprobarlo, que salga a mirar.',
+          'Anécdota alegórica': 'No hay episodio narrado: hay una invitación a comprobar algo en el mundo real.'
+        }
+      },
+      {
+        id: 'bu-c4-1-f4',
+        t: 'El muñeco de natilla se desploma por el calor en plena Avenida Oriental y el muñeco de buñuelo, en lugar de seguir su camino, se detiene a auxiliarlo mientras nadie más se acerca.',
+        ok: 'Anécdota alegórica',
+        fb: {
+          'Ironía': 'La escena produce ironía por lo que revela, pero el recurso es el episodio mismo: un relato que sustituye al argumento.',
+          'Hipérbole': 'No hay exageración: lo narrado es un hecho verosímil, y precisamente por eso funciona como prueba.',
+          'Apóstrofe al lector': 'No hay interpelación: el narrador cuenta lo que vio sin dirigirse a nadie.',
+          'Anécdota alegórica': 'Correcto. El episodio reproduce en pequeño la tesis del texto: el buñuelo es autosuficiente y noble, la natilla depende de él. El propio Rivas lo anuncia al hablar de «metáforas aclaradoras».'
         }
       }
     ]
   },
   {
-    id: 'c4e2',
+    id: 'bu-c4-2',
+    conjunto: 'bunuelo',
     criterio: 'c4',
-    motor: 'marcar',
-    modo: 'oracion',
-    titulo: 'Dónde el autor se mete en el texto',
-    enunciado: 'En este pasaje de Juan Forn, marca las oraciones en las que el autor interpela al lector o interviene en primera persona para involucrarlo.',
-    conjunto: 'stoner',
-    ayuda: 'Tres de las seis oraciones contienen esa estrategia. Las otras tres son exposición o comentario impersonal.',
-    unidades: [
-      { t: 'Miren ese puñado de edificios neoclásicos rodeados de prolijo verde, miren a ese hijo de granjeros pobres transplantado a aquella ciudadela.', marcar: true, fb: 'Apóstrofe puro: el imperativo repetido convierte al lector en espectador de la escena. Es la primera vez que el texto sale de la narración para dirigirse a alguien.' },
-      { t: 'La universidad está en Missouri, pero eso no importa.', marcar: false, fb: 'Es un comentario del narrador, pero no interpela al lector ni se pone en escena a sí mismo: informa y relativiza el dato.' },
-      { t: 'Imaginen el arco de esa trayectoria discreta, anónima, a los ojos de los alumnos que lo ven pasar.', marcar: true, fb: 'Segundo apóstrofe. «Imaginen» pide al lector un trabajo mental concreto: reconstruir por su cuenta lo que el texto no va a contar.' },
-      { t: 'Detrás de ese rumor que acompaña los pasos del profesor por el campus y por su época, Stoner cuenta la historia de la vida interior de su protagonista, y eso es lo que hace mágica esta novela.', marcar: false, fb: 'Es la formulación de la tesis del texto. Hay valoración, pero no hay interpelación ni primera persona.' },
-      { t: 'Para decirlo más francamente: hacía tiempo que un libro no me dejaba tantas veces sin aire, galvanizado de golpe por la emoción, mientras leía.', marcar: true, fb: 'Confesión en primera persona. Forn abandona el papel de comentarista y ofrece su propia lectura como prueba: es la estrategia con la que pide confianza al lector.' },
-      { t: 'Kierkegaard decía que el problema de la vida es que se vive para adelante pero sólo se la entiende para atrás.', marcar: false, fb: 'Es una cita de autoridad, que también es una estrategia discursiva, pero no la que pide este ejercicio: aquí no hay interpelación ni presencia del autor.' }
-    ],
-    explicacion: 'Forn alterna tres registros: narra, comenta y se dirige al lector. Un resumen que solo diga «el autor usa un tono cercano» describe el efecto de esas alternancias, pero no identifica el recurso. Nombrar el apóstrofe y la confesión en primera persona, y señalar dónde ocurren, es lo que la rúbrica llama identificar una estrategia discursiva.'
-  },
-  {
-    id: 'c4e3',
-    criterio: 'c4',
-    motor: 'mc',
-    titulo: 'Nombrar una estrategia o decir «usa humor»',
-    enunciado: 'Decir que un texto es ameno no identifica ninguna estrategia. Distingue una cosa de la otra.',
+    motor: 'cloze',
+    titulo: 'La frase que enlaza la estrategia con el texto',
+    enunciado: 'Completa la justificación con la formulación que conecta la estrategia del texto fuente con lo que el resumen dice de ella.',
     items: [
       {
-        id: 'c4e3i1',
-        conjunto: 'bunuelo',
-        pregunta: '¿Cuál de estas frases de los resúmenes del buñuelo identifica una estrategia discursiva?',
+        id: 'bu-c4-2-i1',
+        frase: 'El Agente 3 nombra la anécdota de los muñecos como «alegoría de su tesis». Rivas la introduce diciendo que «la realidad a veces nos envía sus mensajes como metáforas aclaradoras». ___',
         opciones: [
           {
-            t: 'Rivas refuerza su tesis con una anécdota humorística cuya caída y auxilio se convierten en alegoría de su tesis: el buñuelo es fuerte y solidario, la natilla débil y dependiente.',
+            t: 'La correspondencia es exacta: lo que el resumen llama alegoría es lo que el propio texto anuncia como metáfora aclaradora, de modo que el agente no interpreta el recurso, lo reconoce donde el autor lo señala.',
             ok: true,
-            fb: 'Correcta. Nombra el recurso —la anécdota que funciona como alegoría—, dice dónde está y explica qué hace allí: convertir un accidente callejero en prueba de una tesis.'
+            fb: 'Correcta. Enlaza las dos evidencias diciendo en qué consiste la coincidencia, y añade algo que el lector no podía deducir solo: que el texto declara su propio procedimiento.'
           },
           {
-            t: 'A través del humor y la ironía, el autor invita a reconsiderar tradiciones arraigadas.',
+            t: 'Por eso el resumen del Agente 3 es el mejor de los tres y el que debe elegirse.',
             ok: false,
-            fb: 'Nombra dos etiquetas sin localizarlas. «Humor» no es una estrategia sino un efecto, y de la ironía no se dice dónde opera. Es el nivel de análisis que este ejercicio quiere que reconozcas como insuficiente.'
+            fb: 'Salta de la evidencia a la conclusión general sin explicar la correspondencia. La rúbrica pide justificar la relación entre las dos fuentes, no proclamar un ganador.'
           },
           {
-            t: 'El autor utiliza una anécdota humorística para ilustrar su punto: un incidente en el que una persona disfrazada de natilla colapsa bajo el calor.',
+            t: 'Además, el texto de Rivas contiene otras estrategias como la hipérbole y el apóstrofe, que el resumen no menciona.',
             ok: false,
-            fb: 'Nombra la anécdota, que es un acierto parcial, pero se queda en contar lo que pasa en ella. No dice que funcione como alegoría ni qué consigue con eso, así que describe contenido más que recurso.'
+            fb: 'Es una observación válida, pero abre un asunto nuevo en lugar de cerrar el que estaba abierto. Las dos citas quedan sin enlazar, que era justo lo que había que hacer.'
           },
           {
-            t: 'El texto trasciende lo gastronómico para convertirse en una crítica a construcciones culturales aceptadas sin cuestionamiento.',
+            t: 'Ambas frases demuestran la gran calidad literaria del texto de Rivas y la sensibilidad del agente que lo resumió.',
             ok: false,
-            fb: 'Es una observación sobre el alcance del texto, no sobre sus recursos. Pertenece al criterio de idea principal, no al de estrategias discursivas.'
+            fb: 'Elogia en lugar de analizar. «Calidad literaria» y «sensibilidad» no dicen en qué se corresponden la alegoría del resumen y la metáfora del texto.'
           }
         ]
       },
       {
-        id: 'c4e3i2',
-        conjunto: 'insipido',
+        id: 'bu-c4-2-i2',
+        frase: 'El Agente 2 dice que Rivas cuestiona la tradición «humorísticamente» y que emplea «el humor y la ironía». Del texto puede citarse el «pueblo tan supuestamente adorador de la natilla». ___',
+        opciones: [
+          {
+            t: 'El resumen acierta al nombrar la ironía, pero se queda en la etiqueta: es el análisis del estudiante el que debe localizarla, y el adverbio «supuestamente» es exactamente el lugar donde opera.',
+            ok: true,
+            fb: 'Correcta. Reconoce el acierto parcial del resumen y completa lo que le falta: la localización. Señalar un cumplimiento incompleto y precisarlo es análisis de nivel alto.'
+          },
+          {
+            t: 'Como se ve, el Agente 2 identifica perfectamente todas las estrategias del texto de Rivas.',
+            ok: false,
+            fb: 'Exagera lo que el resumen hace. Nombrar «humor e ironía» sin localizarlos no es identificar perfectamente nada, y afirmarlo debilita la credibilidad del resto de tu análisis.'
+          },
+          {
+            t: 'El humor es la estrategia más importante del texto y por eso el Agente 2 hace bien en mencionarlo primero.',
+            ok: false,
+            fb: 'El humor es un efecto, no una estrategia. Además el orden en que un resumen menciona las cosas no es un criterio de la rúbrica.'
+          },
+          {
+            t: 'Por lo tanto el Agente 2 debería haber sido el resumen elegido en lugar del Agente 3.',
+            ok: false,
+            fb: 'Cambia de conclusión a mitad de párrafo y no enlaza las dos evidencias. Un análisis puede reconocer aciertos en un resumen no elegido sin cambiar la elección.'
+          }
+        ]
+      }
+    ]
+  }
+];
+
+
+/* ===== data-ej-insipido.js ===== */
+/* data-ej-insipido.js — bloque propio del conjunto «Lo insípido y lo sabroso».
+   Dos ejercicios por criterio de contenido (c1 a c4). */
+
+const EJ_INSIPIDO = [
+  /* ---------------- c1 · idea principal ---------------- */
+  {
+    id: 'in-c1-1',
+    conjunto: 'insipido',
+    criterio: 'c1',
+    motor: 'mc',
+    titulo: 'La pregunta y la respuesta',
+    enunciado: 'En un ensayo que avanza por indagación, la idea principal reúne la pregunta de apertura y la respuesta que el texto le da.',
+    items: [
+      {
+        id: 'in-c1-1-i1',
+        contexto: 'Idea principal del texto fuente: lo que da sabor a un libro no es el oficio ni la corrección formal, sino la cantidad de deseo, necesidad y éxtasis que se han puesto en escribirlo.',
+        pregunta: 'Tres resúmenes abren de estas tres maneras. ¿Cuál declara la idea principal del texto fuente?',
+        opciones: [
+          {
+            t: 'Cohen se pregunta qué distingue a un libro con sabor de uno insípido, y responde que no es el oficio ni la corrección formal, sino la cantidad de deseo, de necesidad y de éxtasis depositada en la escritura.',
+            ok: true,
+            fb: 'Correcta. Enuncia la pregunta y la respuesta, que es exactamente la forma que tiene la idea principal en un ensayo que avanza por indagación.'
+          },
+          {
+            t: 'Cohen comienza preguntándose por qué algunos libros bien escritos resultan insípidos, y menciona como ejemplos algunos poemarios primerizos y los cuentos de Ring Lardner.',
+            ok: false,
+            fb: 'Reproduce la pregunta de apertura pero se detiene antes de la respuesta. Enunciar el problema no es enunciar la idea principal: falta lo que el texto afirma sobre ese problema.'
+          },
+          {
+            t: 'Cohen sostiene que la literatura contemporánea ha perdido el sabor porque los escritores se han vuelto demasiado técnicos y correctos.',
+            ok: false,
+            fb: 'Suena a idea principal porque tiene forma de afirmación, pero distorsiona el texto: Cohen no diagnostica una época ni condena a los escritores técnicos. Se pregunta por qué un libro correcto puede resultar soso, que es otra cosa.'
+          },
+          {
+            t: 'Cohen concluye que el hábito de escribir es una excursión improductiva y un trastorno en la mecánica de la división del trabajo.',
+            ok: false,
+            fb: 'Es una frase literal del último tramo, pero funciona como matiz dentro del argumento, no como su afirmación central. Tomar la última frase llamativa por la idea principal es un error muy común.'
+          }
+        ]
+      },
+      {
+        id: 'in-c1-1-i2',
+        pregunta: 'El ensayo cierra preguntando: «¿Y qué sino la experiencia garantiza el sabor?». ¿Qué papel cumple esa frase respecto de la idea principal?',
+        opciones: [
+          {
+            t: 'Es la formulación final de la idea principal: una pregunta retórica que contiene su propia respuesta y cierra el recorrido abierto al comienzo.',
+            ok: true,
+            fb: 'Correcta. En este ensayo la afirmación central no se enuncia de forma directa sino como pregunta que ya no admite otra respuesta. Reconocerlo demuestra que se leyó la arquitectura del texto y no solo sus frases.'
+          },
+          {
+            t: 'Es una duda que el autor deja abierta, porque el ensayo no llega a ninguna conclusión.',
+            ok: false,
+            fb: 'La forma es interrogativa, pero la función no es dubitativa: el texto ha ido descartando explicaciones hasta dejar solo una. Confundir forma con función es el error más habitual ante una pregunta retórica.'
+          },
+          {
+            t: 'Es un recurso de estilo sin relación con el contenido, puesto ahí para cerrar con elegancia.',
+            ok: false,
+            fb: 'Es un recurso, sí, pero con función argumentativa: condensa la tesis. Tratarlo como adorno hace perder la idea principal del texto.'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'in-c1-2',
+    conjunto: 'insipido',
+    criterio: 'c1',
+    motor: 'reescritura',
+    titulo: 'De Básico a Excelente',
+    enunciado: 'Un estudiante escribió esta justificación sobre el conjunto de Cohen. Está en nivel Básico. Elige la reescritura que la lleva a Excelente.',
+    items: [
+      {
+        id: 'in-c1-2-i1',
+        fragmento: 'Elegí el resumen del Agente 3 porque identifica correctamente la idea principal del ensayo de Cohen sobre lo que hace que un libro tenga sabor.',
+        diagnostico: 'La idea principal está identificada, pero no hay evidencia textual de ninguna de las dos fuentes ni una oración que muestre en qué se corresponden. Según la rúbrica, eso es exactamente el nivel Básico.',
+        pregunta: '¿Cuál de estas reescrituras alcanza el nivel Excelente?',
+        opciones: [
+          {
+            t: 'Elegí el resumen del Agente 3 porque identifica correctamente la idea principal del ensayo. Cohen sostiene que «un libro tendrá tanto más poder cuanta más cantidad de deseo se haya puesto en escribirlo»; el Agente 3 lo recoge al afirmar que lo decisivo no es «el oficio ni la corrección formal, sino la cantidad de deseo, de necesidad y de éxtasis depositada en la escritura». Las dos formulaciones desplazan la explicación del mismo lugar: de la destreza del escritor a la intensidad con que escribe.',
+            ok: true,
+            fb: 'Correcta. Aparecen las tres piezas: la afirmación, una cita del texto fuente y otra del resumen, y una oración final que nombra en qué se corresponden —el desplazamiento de la destreza a la intensidad—. Esa última oración es la que convierte Básico en Excelente.'
+          },
+          {
+            t: 'Elegí el resumen del Agente 3 porque identifica correctamente la idea principal del ensayo. Cohen escribe: «un libro tendrá tanto más poder cuanta más cantidad de deseo se haya puesto en escribirlo». El Agente 3 escribe: «lo decisivo no es el oficio ni la corrección formal, sino la cantidad de deseo, de necesidad y de éxtasis depositada en la escritura».',
+            ok: false,
+            fb: 'Tiene la doble evidencia pero le falta la tercera pieza: nadie dice en qué se corresponden las dos citas. Poner dos citas seguidas obliga al lector a deducir la relación, y la rúbrica pide que el estudiante la justifique.'
+          },
+          {
+            t: 'Elegí el resumen del Agente 3 porque identifica muy bien la idea principal del ensayo de Cohen, que además está expresada con mucha claridad y elegancia, de un modo que refleja fielmente el pensamiento del autor sobre la literatura y el deseo de escribir.',
+            ok: false,
+            fb: 'Añade adjetivos, no evidencia. «Refleja fielmente» y «muy bien» son valoraciones; la rúbrica pide referencias textuales directas o indirectas de las dos fuentes. Sigue en Básico y además ocupa palabras del límite de 400.'
+          },
+          {
+            t: 'Elegí el resumen del Agente 3 porque identifica correctamente la idea principal. Cohen dedica el ensayo a preguntarse por qué ciertos libros son insípidos, descarta las razones románticas y mágicas, propone el deseo, matiza con la compulsión, gira hacia el éxtasis y cierra con una pregunta retórica.',
+            ok: false,
+            fb: 'La descripción es correcta, pero pertenece al criterio de estructura, no al de idea principal. Además no trae ninguna referencia al resumen elegido, de modo que no hay correspondencia que probar.'
+          }
+        ]
+      }
+    ]
+  },
+
+  /* ---------------- c2 · estructura ---------------- */
+  {
+    id: 'in-c2-1',
+    conjunto: 'insipido',
+    criterio: 'c2',
+    motor: 'ordenar',
+    titulo: 'Los cuatro movimientos del ensayo',
+    enunciado: 'Reconstruye el orden de los movimientos de «Lo insípido y lo sabroso».',
+    ayuda: 'No busques el orden de los temas, busca la función de cada tramo: dónde se plantea el problema, dónde se descartan explicaciones, dónde se ensaya la respuesta y dónde se cierra.',
+    piezas: [
+      { t: 'Pregunta de apertura: por qué hay libros que cumplen con las exigencias de su género, están bien escritos y sin embargo resultan insípidos.', fb: 'La apertura. El ensayo no empieza afirmando: empieza con un problema, y esa decisión determina que la idea principal solo aparezca al final.' },
+      { t: 'Descarte: «Evitemos cuidadosamente las razones románticas», junto con las explicaciones mágicas del talento y la inspiración.', fb: 'Segundo movimiento. Antes de proponer, el ensayo despeja el terreno. El avance por descarte es el principio que ordena todo el texto.' },
+      { t: 'Primera hipótesis: el poder de un libro depende de la cantidad de deseo puesta en escribirlo, y solo la necesidad genera el latido que lo completa.', fb: 'Tercer movimiento. Aquí aparece la respuesta tentativa, marcada por fórmulas prudentes como «digamos a modo de aproximación».' },
+      { t: 'Matiz y objeción: la predestinación es el peor enemigo de un libro, y la compulsión de escribir excluye las recompensas.', fb: 'Cuarto movimiento. El ensayo se objeta a sí mismo antes de continuar: sin este matiz, la hipótesis del deseo sería una receta, y Cohen no da recetas.' },
+      { t: 'Giro final y cierre: la respuesta se desplaza hacia el éxtasis y el hábito, y el texto remata con una pregunta retórica sobre la experiencia.', fb: 'El cierre. La respuesta definitiva llega en forma de pregunta, de modo que el lector la completa por su cuenta.' }
+    ],
+    explicacion: 'Este ensayo no se organiza por temas sino por operaciones: preguntar, descartar, proponer, matizar y cerrar. Un resumen que diga «primero habla del deseo y después del éxtasis» reproduce el orden pero no describe la estructura.'
+  },
+  {
+    id: 'in-c2-2',
+    conjunto: 'insipido',
+    criterio: 'c2',
+    motor: 'mc',
+    titulo: 'Describir la estructura o reproducir el orden',
+    enunciado: 'Resumir siguiendo el orden del texto no es describir su organización. Distingue una cosa de la otra.',
+    items: [
+      {
+        id: 'in-c2-2-i1',
+        contexto: 'Los tres resúmenes del ensayo de Cohen se refieren a su organización de estas maneras.',
+        pregunta: '¿Cuál de los tres describe la estructura del texto fuente?',
+        opciones: [
+          {
+            t: 'El ensayo se organiza como una indagación que avanza por descarte: abre con una pregunta doble, aparta enseguida las explicaciones románticas y mágicas, ensaya la hipótesis del deseo, la matiza y en el tramo final desplaza la respuesta hacia el éxtasis y el hábito.',
+            ok: true,
+            fb: 'Correcta. Cada verbo nombra una función —abre, aparta, ensaya, matiza, desplaza— y el conjunto explica el principio que ordena el texto: el avance por descarte. Eso es describir una estructura.'
+          },
+          {
+            t: 'Cohen primero se pregunta por qué hay libros insípidos, después menciona el deseo, luego enumera varias necesidades, más adelante habla de Flaubert y al final habla del éxtasis y del hábito.',
+            ok: false,
+            fb: 'Es reproducción del orden, no descripción de la estructura. «Primero», «después», «luego» y «al final» marcan sucesión; no dicen qué hace el texto en cada tramo ni por qué avanza así.'
+          },
+          {
+            t: 'El texto está muy bien estructurado y las ideas se encadenan con claridad de principio a fin, lo que facilita la lectura.',
+            ok: false,
+            fb: 'Es una valoración de la estructura, no una descripción. Dice que hay orden pero no dice cuál. En la rúbrica esto no alcanza a identificar la descripción de la estructura.'
+          },
+          {
+            t: 'El ensayo está dividido en cuatro párrafos de extensión desigual, el último de los cuales es el más largo.',
+            ok: false,
+            fb: 'Describe la disposición tipográfica, no la organización del argumento. Contar párrafos es una observación material; la estructura es lo que cada párrafo hace dentro del texto.'
+          }
+        ]
+      },
+      {
+        id: 'in-c2-2-i2',
+        pregunta: '¿Qué evidencia del texto fuente prueba mejor que el ensayo avanza por descarte?',
+        opciones: [
+          {
+            t: 'La frase «Evitemos cuidadosamente las razones románticas», que aparta una explicación antes de proponer ninguna.',
+            ok: true,
+            fb: 'Correcta. Es el lugar exacto donde el texto ejecuta la operación que se le atribuye. Una evidencia estructural convincente es la frase donde ocurre el movimiento, no un resumen de lo que dice el tramo.'
+          },
+          {
+            t: 'La enumeración «contar, cantar, bramar, construir, entretenerse, jadear, comunicarse».',
+            ok: false,
+            fb: 'Es una acumulación excelente para hablar de estrategias discursivas, pero no muestra ningún descarte: despliega posibilidades en lugar de eliminarlas.'
+          },
+          {
+            t: 'La mención de Baudelaire y de Nietzsche a propósito de la embriaguez.',
+            ok: false,
+            fb: 'Son citas de autoridad que apuntalan un tramo del razonamiento. Prueban que el texto se apoya en otros, no que avance descartando.'
+          }
+        ]
+      }
+    ]
+  },
+
+  /* ---------------- c3 · fidelidad ---------------- */
+  {
+    id: 'in-c3-1',
+    conjunto: 'insipido',
+    criterio: 'c3',
+    motor: 'cotejar',
+    titulo: 'Cotejo fragmento a fragmento',
+    enunciado: 'Compara cada fragmento del ensayo de Cohen con lo que el resumen dice de él.',
+    etiquetas: ['Fiel', 'Distorsiona', 'Omite', 'Añade'],
+    ayuda: 'Vigila sobre todo la modalidad de los verbos: en un ensayo especulativo, convertir una hipótesis en afirmación ya es un fallo de fidelidad.',
+    items: [
+      {
+        id: 'in-c3-1-i1',
+        fuente: 'Digamos a modo de aproximación: un libro tendrá tanto más poder cuanta más cantidad de deseo se haya puesto en escribirlo. Otra afirmación tentadora es que solo la necesidad genera el latido […].',
+        resumen: 'El texto está organizado como un manifiesto en el que Cohen ofrece una receta para escribir bien: hay que poner deseo, escribir por necesidad y, sobre todo, buscar la embriaguez.',
+        ok: 'Distorsiona',
+        fb: {
+          'Fiel': 'Los elementos coinciden —deseo, necesidad, embriaguez— pero la modalidad no. Cohen escribe «digamos a modo de aproximación» y «otra afirmación tentadora»: está ensayando hipótesis, no dando instrucciones.',
+          'Distorsiona': 'Correcto. Es una distorsión de intención: convierte una especulación en prescripción. Vigila siempre los verbos modales; ahí se juega buena parte de la fidelidad.',
+          'Omite': 'No falta información, sobra certeza: el resumen incorpora todos los elementos del fragmento y les añade una firmeza que el original no tiene.',
+          'Añade': 'La palabra «receta» no está en el texto, pero el problema no es que se añada un dato, sino que se cambia el modo en que el texto afirma lo que afirma.'
+        }
+      },
+      {
+        id: 'in-c3-1-i2',
+        fuente: 'Esta necesidad puede ser necesidad de contar, cantar, bramar, construir, entretenerse, jadear, comunicarse.',
+        resumen: 'Luego enumera varias necesidades posibles: contar, cantar, bramar, construir, entretenerse, jadear, comunicarse.',
+        ok: 'Fiel',
+        fb: {
+          'Fiel': 'Correcto. Reproduce la serie completa sin alterar ni el orden ni el alcance. Que un resumen conserve una enumeración entera no es lo habitual, y merece señalarse como acierto.',
+          'Distorsiona': 'No hay cambio: la palabra «posibles» traduce con exactitud el «puede ser» del original.',
+          'Omite': 'No falta ninguno de los siete elementos de la serie.',
+          'Añade': 'No hay ninguna necesidad en la lista del resumen que no esté en la del texto.'
+        }
+      },
+      {
+        id: 'in-c3-1-i3',
+        fuente: 'La predestinación es el peor enemigo de un libro. Algo que siempre le da potencia es la urgencia […]. Sin embargo, no es cierto que san Antonio venza las tentaciones.',
+        resumen: 'A continuación señala que la predestinación es el peor enemigo de un libro y que la urgencia de escribir le da potencia.',
+        ok: 'Omite',
+        fb: {
+          'Fiel': 'Las dos afirmaciones que recoge son exactas, pero deja fuera la tercera, que es la que impide leer las anteriores como una regla.',
+          'Distorsiona': 'No hay distorsión: ni el alcance ni la intención de lo recogido han cambiado. El problema está en lo que no llega a decirse.',
+          'Omite': 'Correcto. Suprime la objeción final —«no es cierto que san Antonio venza las tentaciones»—, con la que Cohen matiza lo que acaba de afirmar. Sin ese freno, el fragmento se convierte en un consejo, que es justo lo que el ensayo evita.',
+          'Añade': 'No hay ninguna afirmación nueva: todo lo que aparece está en el original.'
+        }
+      },
+      {
+        id: 'in-c3-1-i4',
+        fuente: 'Porque hay algo que decisivamente da relieve a los buenos libros, y es […] la experiencia. ¿Y qué sino la experiencia garantiza el sabor?',
+        resumen: 'Cohen concluye que solo los escritores mayores de cuarenta años pueden escribir libros con sabor, porque únicamente ellos han acumulado experiencia suficiente.',
+        ok: 'Añade',
+        fb: {
+          'Fiel': 'No es fiel: el texto no menciona ninguna edad ni establece ninguna condición biográfica para escribir bien.',
+          'Distorsiona': 'Va más allá de la distorsión. La palabra «experiencia» existe en el original, pero el resumen construye sobre ella una tesis sobre la edad que el texto no contiene en ningún punto.',
+          'Omite': 'No es una omisión: el resumen no calla información, la sustituye por una afirmación inventada.',
+          'Añade': 'Correcto. Toma un término real del texto —la experiencia— y le atribuye un significado que el ensayo nunca le da. Es la adición más difícil de detectar, porque se apoya en una palabra que sí está.'
+        }
+      }
+    ]
+  },
+  {
+    id: 'in-c3-2',
+    conjunto: 'insipido',
+    criterio: 'c3',
+    motor: 'marcar',
+    modo: 'oracion',
+    titulo: 'Afirmaciones sin respaldo',
+    enunciado: 'Este es el resumen del Agente 2 sobre el ensayo de Cohen. Marca las oraciones que afirman algo que el texto fuente no respalda.',
+    ayuda: 'Tres de las seis oraciones contienen afirmaciones que el texto contradice o no contiene. Marcar una oración fiel resta.',
+    unidades: [
+      { t: 'En «Lo insípido y lo sabroso», Marcelo Cohen sostiene que la literatura contemporánea ha perdido el sabor porque los escritores se han vuelto demasiado técnicos y correctos.', marcar: true, fb: 'El texto no diagnostica ninguna época ni habla de «la literatura contemporánea» como conjunto. Se pregunta por qué un libro correcto puede resultar insípido, que es una pregunta general y no un diagnóstico histórico.' },
+      { t: 'El autor condena los libros bien escritos y elegantes, a los que considera insípidos, y defiende en cambio la escritura descuidada y espontánea.', marcar: true, fb: 'Inventa una oposición que el ensayo nunca plantea. Cohen no condena la buena escritura ni defiende el descuido: se pregunta qué le falta a un libro correcto para tener sabor.' },
+      { t: 'Siguiendo a Baudelaire y a Nietzsche, Cohen recomienda al escritor embriagarse antes de sentarse a escribir.', marcar: true, fb: 'La embriaguez aparece en el texto como una forma del éxtasis, no como un consejo práctico. Convertir una referencia culta en una recomendación es una adición con apariencia de paráfrasis.' },
+      { t: 'El texto retiene algunas piezas verdaderas del ensayo: el deseo, la necesidad y el hábito de escribir como excursión improductiva.', marcar: false, fb: 'Es fiel: los tres elementos aparecen efectivamente en el ensayo y con ese mismo sentido.' },
+      { t: 'Cohen se pregunta qué hace que ciertos libros tengan «ángel» y otros no lo tengan.', marcar: false, fb: 'Fiel a la apertura del ensayo, donde la palabra «ángel» aparece entrecomillada y la pregunta se formula en esos términos.' },
+      { t: 'El ensayo menciona El péndulo de Foucault y los cuentos de Ring Lardner como ejemplos contrapuestos.', marcar: false, fb: 'Fiel: los dos títulos aparecen en el texto y funcionan en efecto como ejemplo y contraejemplo.' }
+    ],
+    explicacion: 'Las tres adiciones de este resumen van en la misma dirección: convierten una indagación en un manifiesto con enemigos y consignas. Cuando las invenciones de un resumen son coherentes entre sí, no son descuidos: el resumen leyó el texto que esperaba encontrar.'
+  },
+
+  /* ---------------- c4 · estrategias discursivas ---------------- */
+  {
+    id: 'in-c4-1',
+    conjunto: 'insipido',
+    criterio: 'c4',
+    motor: 'clasificar',
+    titulo: 'Qué recurso opera en cada fragmento',
+    enunciado: 'Todos estos fragmentos son de «Lo insípido y lo sabroso». Identifica el recurso que opera en cada uno.',
+    etiquetas: ['Interrogación retórica', 'Enumeración', 'Cita de autoridad', 'Ejemplo y contraejemplo'],
+    ayuda: 'Los cuatro recursos son los que sostienen un ensayo especulativo. Fíjate en la operación, no en el contenido.',
+    fragmentos: [
+      {
+        id: 'in-c4-1-f1',
+        t: '«¿Y qué sino la experiencia garantiza el sabor?»',
+        ok: 'Interrogación retórica',
+        fb: {
+          'Interrogación retórica': 'Correcto. La pregunta no admite otra respuesta que la que el ensayo ya ha construido, de modo que afirma en forma de pregunta y deja que el lector complete la tesis.',
+          'Enumeración': 'No hay serie acumulada: es una sola pregunta con un solo término en juego.',
+          'Cita de autoridad': 'No se invoca a nadie: la voz es la del propio ensayista.',
+          'Ejemplo y contraejemplo': 'No se enfrentan dos casos: se plantea una única alternativa que ya viene resuelta.'
+        }
+      },
+      {
+        id: 'in-c4-1-f2',
+        t: '«Esta necesidad puede ser necesidad de contar, cantar, bramar, construir, entretenerse, jadear, comunicarse.»',
+        ok: 'Enumeración',
+        fb: {
+          'Interrogación retórica': 'La frase es afirmativa: despliega una definición en lugar de preguntar.',
+          'Enumeración': 'Correcto. La serie acumula verbos cada vez más físicos —de «contar» a «bramar» y «jadear»— para mostrar que la necesidad de escribir no es una sola cosa. La acumulación es el argumento.',
+          'Cita de autoridad': 'No hay ninguna voz ajena convocada: la enumeración es del propio ensayista y no se apoya en nadie.',
+          'Ejemplo y contraejemplo': 'Los elementos no se oponen entre sí: se suman como variantes de lo mismo.'
+        }
+      },
+      {
+        id: 'in-c4-1-f3',
+        t: 'La invocación de Flaubert a propósito de que la compulsión de escribir excluye las recompensas, y de Baudelaire y Nietzsche a propósito de la embriaguez.',
+        ok: 'Cita de autoridad',
+        fb: {
+          'Interrogación retórica': 'No hay pregunta en ninguno de los tres casos.',
+          'Enumeración': 'Aparecen tres nombres seguidos, pero no forman una serie acumulativa: cada uno apuntala un tramo distinto del razonamiento.',
+          'Cita de autoridad': 'Correcto. Cohen apoya cada giro de su argumento en una voz reconocida. Nombrarlos sin decir qué hacen ahí sería inventariar; decir que apuntalan el razonamiento es identificar el recurso.',
+          'Ejemplo y contraejemplo': 'Los tres autores van en la misma dirección: ninguno funciona como contraste del otro.'
+        }
+      },
+      {
+        id: 'in-c4-1-f4',
+        t: 'La contraposición entre los cuentos de Ring Lardner, que tendrían «ángel», y El péndulo de Foucault, que no lo tendría.',
+        ok: 'Ejemplo y contraejemplo',
+        fb: {
+          'Interrogación retórica': 'La contraposición aparece dentro de una pregunta, pero el recurso que hay que nombrar es el par de casos enfrentados.',
+          'Enumeración': 'Dos casos opuestos no son una enumeración: no se acumulan, se contrastan.',
+          'Cita de autoridad': 'Los títulos no se invocan como autoridades que respalden una tesis, sino como casos que la ilustran por contraste.',
+          'Ejemplo y contraejemplo': 'Correcto. Un caso con sabor frente a otro sin él fija la distinción que el ensayo quiere explicar. Es el recurso más económico para definir algo difícil de definir.'
+        }
+      }
+    ]
+  },
+  {
+    id: 'in-c4-2',
+    conjunto: 'insipido',
+    criterio: 'c4',
+    motor: 'mc',
+    titulo: 'Nombrar una estrategia o describir el estilo',
+    enunciado: 'Elogiar la prosa de un autor no identifica ninguna técnica. Distingue una cosa de la otra.',
+    items: [
+      {
+        id: 'in-c4-2-i1',
         pregunta: 'Un resumen del ensayo de Cohen quiere dar cuenta de sus estrategias. ¿Cuál formulación cumple el criterio?',
         opciones: [
           {
@@ -1665,49 +1769,354 @@ const EJERCICIOS_2 = [
           {
             t: 'El ensayo se organiza como una indagación que avanza por descarte y cierra con una pregunta retórica.',
             ok: false,
-            fb: 'Es una buena descripción, pero de la estructura, que es el criterio 2. La pregunta retórica final asoma como recurso, aunque aquí funciona como marca de cierre y no se analiza como estrategia.'
+            fb: 'Es una buena descripción, pero de la estructura, que es el criterio 2. La pregunta retórica asoma como recurso, aunque aquí funciona como marca de cierre y no se analiza como estrategia.'
+          }
+        ]
+      },
+      {
+        id: 'in-c4-2-i2',
+        pregunta: 'La metáfora gastronómica del título recorre todo el ensayo. ¿Qué justificación identifica bien ese recurso?',
+        opciones: [
+          {
+            t: 'El par «insípido» y «sabroso» no aparece solo en el título: gobierna el vocabulario del texto entero, de modo que un asunto abstracto —qué hace valiosa a una obra— se discute con palabras del gusto y del apetito.',
+            ok: true,
+            fb: 'Correcta. Nombra el recurso, muestra su alcance —el texto entero— y explica qué consigue: hacer discutible con palabras corrientes algo que no se deja definir. Eso es identificar una metáfora sostenida.'
+          },
+          {
+            t: 'El título del ensayo es muy sugerente y despierta de inmediato la curiosidad del lector.',
+            ok: false,
+            fb: 'Describe el efecto que produce, no la técnica que lo produce. Además se refiere solo al título, cuando lo relevante es que la imagen se extiende por todo el texto.'
+          },
+          {
+            t: 'Cohen compara los libros con la comida porque los dos se consumen y se disfrutan.',
+            ok: false,
+            fb: 'Explica el contenido de la comparación, no su función en el texto. Una metáfora sostenida se identifica mostrando que organiza el vocabulario, no parafraseando qué compara con qué.'
+          }
+        ]
+      }
+    ]
+  }
+];
+
+
+/* ===== data-ej-stoner.js ===== */
+/* data-ej-stoner.js — bloque propio del conjunto «Hablemos de Stoner».
+   Dos ejercicios por criterio de contenido (c1 a c4).
+   Es el conjunto de dilema: ninguno de los tres resúmenes cumple las cinco
+   características, y los ejercicios están construidos para hacerlo visible. */
+
+const EJ_STONER = [
+  /* ---------------- c1 · idea principal ---------------- */
+  {
+    id: 'st-c1-1',
+    conjunto: 'stoner',
+    criterio: 'c1',
+    motor: 'mc',
+    titulo: 'Una tesis que tiene dos mitades',
+    enunciado: 'La idea principal de este texto no es solo un juicio sobre la novela: incluye una observación sobre su destino editorial.',
+    items: [
+      {
+        id: 'st-c1-1-i1',
+        contexto: 'Idea principal del texto fuente: Stoner es una gran novela sobre la vida interior de un hombre común cuya grandeza es invisible, y el destino editorial del libro —el olvido reiterado y el rescate tardío desde Europa— repite la misma historia que la novela cuenta.',
+        pregunta: '¿Cuál de estas formulaciones recoge las dos mitades de la idea principal?',
+        opciones: [
+          {
+            t: 'Esta es una gran novela sobre una vida común, y su historia editorial se parece a la del personaje, porque ambos fueron olvidados y luego rescatados.',
+            ok: true,
+            fb: 'Correcta. Recoge el juicio sobre la novela y el paralelismo con su destino editorial, que es el hallazgo del texto. Sin la segunda mitad, la idea principal queda incompleta.'
+          },
+          {
+            t: 'Stoner narra la vida de un hijo de granjeros pobres que descubre la literatura por azar y decide dedicarle su vida.',
+            ok: false,
+            fb: 'Es la sinopsis de la trama, que ocupa el primer párrafo del texto. Contar de qué trata la novela no es enunciar lo que Forn afirma sobre ella.'
+          },
+          {
+            t: 'La novela pasó inadvertida durante décadas hasta que Anna Gavalda la tradujo al francés y Europa la descubrió.',
+            ok: false,
+            fb: 'Es la mitad editorial sin la mitad literaria. Un resumen que solo diga esto convierte un texto sobre una novela en una noticia sobre el mercado del libro.'
+          },
+          {
+            t: 'Forn sostiene que la literatura norteamericana no sabe apreciar a los personajes estoicos que no se apoyan en el alcohol ni en Dios.',
+            ok: false,
+            fb: 'Es la lectura de Julian Barnes, citada en el texto como explicación posible del desdén norteamericano. Es una idea del texto, pero secundaria y ajena: no es la afirmación de Forn.'
+          }
+        ]
+      },
+      {
+        id: 'st-c1-1-i2',
+        pregunta: 'Quieres probar con una cita del texto fuente que la novela trata de una grandeza invisible. ¿Cuál sirve mejor?',
+        opciones: [
+          {
+            t: 'La frase que el tutor le dice al joven Stoner: «Hay derrotas y victorias de la raza humana que no son militares y que no quedan registradas en los anales de la historia».',
+            ok: true,
+            fb: 'Correcta. Es el lugar donde el texto formula la idea con más nitidez, y además Forn añade justo después que «de eso precisamente trata la novela». La cita viene señalada por el propio autor.'
+          },
+          {
+            t: 'La afirmación de que la universidad está en Missouri, «pero eso no importa».',
+            ok: false,
+            fb: 'Sirve para mostrar que el texto declara la historia como universal, lo cual es útil, pero no dice nada sobre la invisibilidad de la grandeza del personaje.'
+          },
+          {
+            t: 'La confesión de Forn de que hacía tiempo que un libro no lo dejaba «sin aire».',
+            ok: false,
+            fb: 'Es una estrategia de implicación personal, valiosa para el criterio 4. Prueba el entusiasmo del crítico, no la tesis sobre el personaje.'
           }
         ]
       }
     ]
   },
   {
-    id: 'c4e4',
+    id: 'st-c1-2',
+    conjunto: 'stoner',
+    criterio: 'c1',
+    motor: 'clasificar',
+    titulo: 'Tema, idea principal o dato suelto',
+    enunciado: 'Clasifica cada formulación según lo que es respecto del texto de Forn.',
+    etiquetas: ['Idea principal', 'Tema', 'Dato secundario'],
+    ayuda: 'Idea principal: la afirmación que sostiene todo el texto. Tema: aquello de lo que habla, sin afirmar nada. Dato secundario: información verdadera que apoya, pero no sostiene.',
+    fragmentos: [
+      {
+        id: 'st-c1-2-f1',
+        t: 'La novela Stoner, de John Williams, y su recepción a lo largo del tiempo.',
+        ok: 'Tema',
+        fb: {
+          'Idea principal': 'No afirma nada: no puede ser verdadera ni falsa. Es un sintagma nominal, y una idea principal necesita verbo.',
+          'Tema': 'Correcto. Responde a «¿de qué habla el texto?» y no a «¿qué sostiene?». Es el error más frecuente en este criterio y conviene reconocerlo de inmediato.',
+          'Dato secundario': 'No es un dato: no aporta ninguna información concreta, solo delimita el asunto.'
+        }
+      },
+      {
+        id: 'st-c1-2-f2',
+        t: 'Stoner es una gran novela sobre una vida invisible, y el olvido y rescate del libro repiten el destino de su protagonista.',
+        ok: 'Idea principal',
+        fb: {
+          'Idea principal': 'Correcto. Es una afirmación con verbo, discutible, y reúne las dos mitades del texto: el juicio literario y el paralelismo editorial.',
+          'Tema': 'Va más allá del tema: no dice de qué habla el texto, dice qué sostiene sobre ello.',
+          'Dato secundario': 'No es un dato verificable de detalle, sino la tesis que ordena todo el recorrido.'
+        }
+      },
+      {
+        id: 'st-c1-2-f3',
+        t: 'John Williams ganó el National Book Award siete años después, por Augustus, y compartido con John Barth.',
+        ok: 'Dato secundario',
+        fb: {
+          'Idea principal': 'Es un dato exacto, pero ningún texto se organiza alrededor de él. Sirve de apoyo a la tesis del olvido, no la sustituye.',
+          'Tema': 'No delimita el asunto del texto: es una información puntual dentro de él.',
+          'Dato secundario': 'Correcto. Es verdadero y está en el texto, pero funciona como prueba del reconocimiento tardío y equivocado. Confundir un dato llamativo con la tesis es un riesgo constante en textos con muchas fechas.'
+        }
+      },
+      {
+        id: 'st-c1-2-f4',
+        t: 'Forn cuenta la historia editorial de una novela norteamericana publicada en 1965.',
+        ok: 'Tema',
+        fb: {
+          'Idea principal': 'Tiene verbo, pero no afirma nada sobre la novela: dice qué hace el texto, no qué sostiene. Nadie discutiría esta frase.',
+          'Tema': 'Correcto. Es una delimitación del asunto disfrazada de afirmación. La prueba: si nadie puede estar en desacuerdo, no es una idea principal.',
+          'Dato secundario': 'No es un dato de detalle: es una descripción general del contenido.'
+        }
+      },
+      {
+        id: 'st-c1-2-f5',
+        t: 'Williams construyó a su personaje con dos mitades: una autobiográfica y otra tomada del poeta JV Cunningham.',
+        ok: 'Dato secundario',
+        fb: {
+          'Idea principal': 'Es el hallazgo más interesante del último tramo, pero llega después de que la tesis esté formulada y sirve para reforzarla.',
+          'Tema': 'No delimita el asunto: aporta una información concreta y verificable.',
+          'Dato secundario': 'Correcto. Es un dato que apoya la tesis de la grandeza invisible —un poeta imaginado sin sus poemas—, pero el texto no se sostiene sobre él.'
+        }
+      }
+    ]
+  },
+
+  /* ---------------- c2 · estructura ---------------- */
+  {
+    id: 'st-c2-1',
+    conjunto: 'stoner',
+    criterio: 'c2',
+    motor: 'ordenar',
+    titulo: 'Los movimientos del texto fuente',
+    enunciado: 'Reconstruye el orden de los cinco movimientos de «Hablemos de Stoner».',
+    ayuda: 'El texto cambia de registro a mitad de camino. Localiza dónde deja de narrar y empieza a comentar.',
+    piezas: [
+      { t: 'Relato en presente de la trama: el granjero pobre que manda a su hijo a Agronomía, la materia obligatoria de Lengua y Literatura, la pregunta del tutor.', fb: 'La apertura, y la decisión compositiva más llamativa: Forn no presenta la novela, la narra en presente, como si el lector la estuviera viendo.' },
+      { t: 'Apóstrofe al lector y formulación de la tesis: «Miren ese puñado de edificios neoclásicos», y la novela como historia de una vida interior.', fb: 'Segundo movimiento. Aquí el texto sale de la narración, interpela al lector y enuncia por qué la novela conmueve.' },
+      { t: 'Historia editorial del libro: la publicación de 1965, los rescates fallidos de Irving Howe, CP Snow, Dan Wakefield y John McGahern.', fb: 'Tercer movimiento. El texto abandona la novela y pasa a su destino, que resultará ser un espejo del destino del personaje.' },
+      { t: 'La llegada del reconocimiento desde Francia y el desconcierto norteamericano leído por Julian Barnes y Lorrie Moore.', fb: 'Cuarto movimiento. Explica por qué el rescate vino de fuera, apoyándose en el testimonio de otros escritores.' },
+      { t: 'Biografía del autor y revelación de la doble fuente del personaje, con el cierre en la figura de JV Cunningham.', fb: 'El cierre. La revelación del segundo modelo confirma la tesis: la grandeza que nadie ve puede estar embotellada dentro de alguien.' }
+    ],
+    explicacion: 'La arquitectura de este texto es un espejo: empieza contando la vida de un hombre olvidado y termina contando el olvido de un libro. Un resumen que solo enumere contenidos —la trama, el autor, la traducción— no ha visto que las dos historias son la misma.'
+  },
+  {
+    id: 'st-c2-2',
+    conjunto: 'stoner',
+    criterio: 'c2',
+    motor: 'mc',
+    titulo: 'La decisión de composición que define el texto',
+    enunciado: 'Forn arranca contando la trama en presente, como si el lector la estuviera viendo, y solo después pasa al comentario.',
+    items: [
+      {
+        id: 'st-c2-2-i1',
+        pregunta: '¿Cuál de estas frases de resumen identifica esa decisión de composición?',
+        opciones: [
+          {
+            t: 'Forn organiza su texto de una manera particular: primero cuenta la trama en presente como si fuera una película y le pide al lector que mire el campus, y solo después pasa al comentario y explica por qué la novela emociona.',
+            ok: true,
+            fb: 'Correcta. Nombra la decisión compositiva —narrar antes de comentar— y la marca del apóstrofe al lector. No se limita a decir qué contiene el texto: dice cómo está construido.'
+          },
+          {
+            t: 'Forn cuenta la historia de un hijo de granjeros que descubre la literatura y se queda en la universidad, y después habla de la historia editorial del libro.',
+            ok: false,
+            fb: 'Resume el contenido en el orden en que aparece. No advierte que la primera parte está narrada en presente ni que esa elección es lo que distingue al texto de una reseña convencional.'
+          },
+          {
+            t: 'El texto de Forn tiene una estructura clásica de reseña: presentación de la obra, valoración y recomendación final.',
+            ok: false,
+            fb: 'Aplica una plantilla genérica que este texto no sigue. Forn no presenta la obra: la narra. Describir la estructura exige leer el texto, no reconocer un molde.'
+          },
+          {
+            t: 'Forn escribe en un tono íntimo y cercano que hace sentir al lector parte de la historia.',
+            ok: false,
+            fb: 'Describe el efecto de lectura, no la organización. El tono es una cuestión de estilo; la estructura es el reparto de funciones a lo largo del texto.'
+          }
+        ]
+      },
+      {
+        id: 'st-c2-2-i2',
+        contexto: 'El Agente 2 describe la estructura con precisión, pero su texto tiene errores de acentuación, comas mal puestas y referencias ambiguas.',
+        pregunta: '¿Qué conviene hacer con ese resumen al analizarlo?',
+        opciones: [
+          {
+            t: 'Reconocer que es el único que describe la organización del texto y señalar por separado que falla en corrección textual: son dos criterios distintos y un resumen puede cumplir uno y fallar el otro.',
+            ok: true,
+            fb: 'Correcta. Evaluar por criterios y no en bloque es exactamente lo que la rúbrica pide. Este conjunto está construido para que esa distinción se vuelva necesaria.'
+          },
+          {
+            t: 'Descartarlo por completo, porque un resumen mal escrito no puede ser un buen resumen.',
+            ok: false,
+            fb: 'Convierte un fallo en un criterio en un veredicto global. La corrección textual es una de las cinco características, no un requisito previo para las otras cuatro.'
+          },
+          {
+            t: 'Pasar por alto los errores de escritura, porque lo importante es el contenido.',
+            ok: false,
+            fb: 'El error inverso. La corrección textual es una característica del género y en la rúbrica del estudiante pesa la mitad de la nota. Ignorarla no es generosidad, es una lectura incompleta.'
+          }
+        ]
+      }
+    ]
+  },
+
+  /* ---------------- c3 · fidelidad ---------------- */
+  {
+    id: 'st-c3-1',
+    conjunto: 'stoner',
+    criterio: 'c3',
+    motor: 'marcar',
+    modo: 'oracion',
+    titulo: 'Afirmaciones sin respaldo',
+    enunciado: 'Este es el resumen del Agente 3 sobre el texto de Juan Forn. Marca las oraciones que afirman algo que el texto fuente no respalda.',
+    ayuda: 'Cuatro de las siete oraciones contienen afirmaciones que el texto contradice o no contiene. Las otras tres son fieles. Marcar una oración fiel resta.',
+    unidades: [
+      { t: 'En «Hablemos de Stoner», Juan Forn celebra la novela de John Williams, un éxito inmediato desde su publicación en 1965 que consagró a su autor como uno de los grandes narradores norteamericanos del siglo XX y le valió el National Book Award.', marcar: true, fb: 'Tres adiciones en una sola oración: el éxito inmediato, la consagración y el premio. Forn dice que se vendían pocos ejemplares y que el National Book Award llegó siete años después, por Augustus, y compartido con John Barth.' },
+      { t: 'El texto se organiza con claridad: abre con la escena del joven granjero que descubre la literatura, avanza hacia la vida universitaria del protagonista y termina con la consagración del autor.', marcar: true, fb: 'La primera mitad es correcta, pero el final no: el texto no termina con una consagración, sino con la observación de que las necrológicas lo despidieron más como educador que como escritor.' },
+      { t: 'Forn emplea la narración en presente para acercar al lector a la historia, recurre al apóstrofe cuando lo invita a mirar el campus y apoya sus afirmaciones en citas de Kierkegaard y de Julian Barnes.', marcar: false, fb: 'Es fiel: las tres estrategias existen y son verificables en el texto, incluido el «Miren ese puñado de edificios neoclásicos» que constituye el apóstrofe.' },
+      { t: 'La escritora Anna Gavalda, que prologó la edición francesa, fue quien impulsó el redescubrimiento europeo de la novela.', marcar: true, fb: 'El texto dice que Gavalda la tradujo a su idioma y remó por ella. Traducir no es prologar: el resumen cambia el dato y con él la magnitud de la intervención.' },
+      { t: 'Forn concluye que Stoner encarna las virtudes que predica: la vieja idea de que la literatura ayuda a entender la vida.', marcar: false, fb: 'Es fiel, y casi literal: el texto dice que la novela «encarna las mismas virtudes que predica: la vieja idea de que la literatura ayuda a entender la vida».' },
+      { t: 'Williams, jubilado de la enseñanza y consagrado por la crítica de su tiempo, murió en 1994.', marcar: true, fb: '«Jubilado de la enseñanza» y la fecha son correctos, pero «consagrado por la crítica de su tiempo» contradice todo el texto: Forn insiste en que su obra pasó desapercibida y que solo hoy sabemos lo que era.' },
+      { t: 'La novela narra la vida de un hijo de granjeros pobres que descubre la literatura en una materia obligatoria y decide dedicarle su vida.', marcar: false, fb: 'Fiel al primer párrafo del texto: la materia obligatoria es Lengua y Literatura y el cambio de plan de estudios ocurre casi sin que el personaje se dé cuenta.' }
+    ],
+    explicacion: 'Las adiciones de este resumen tienen una característica común: todas van en la misma dirección, la de convertir una historia de olvido en una historia de éxito. Cuando las invenciones de un resumen apuntan todas al mismo lado, no son descuidos: es que el resumen leyó el texto que esperaba encontrar.'
+  },
+  {
+    id: 'st-c3-2',
+    conjunto: 'stoner',
+    criterio: 'c3',
+    motor: 'cotejar',
+    titulo: 'Cotejo fragmento a fragmento',
+    enunciado: 'Compara cada fragmento del texto de Forn con lo que el resumen dice de él.',
+    etiquetas: ['Fiel', 'Distorsiona', 'Omite', 'Añade'],
+    ayuda: 'En un texto lleno de fechas, premios y nombres propios, los fallos de fidelidad se concentran en los datos precisos. Verifícalos uno a uno.',
+    items: [
+      {
+        id: 'st-c3-2-i1',
+        fuente: 'Cuando publicó el libro, en 1965, tenía cuarenta y tres años, y no le cambió un milímetro la vida hasta que murió […]. Se vendían unos pocos ejemplares y el libro volvía a perderse en el olvido.',
+        resumen: 'Juan Forn celebra la novela de John Williams, un éxito inmediato desde su publicación en 1965 que consagró a su autor como uno de los grandes narradores norteamericanos del siglo XX.',
+        ok: 'Añade',
+        fb: {
+          'Fiel': 'Es lo contrario de fiel: el texto dice que el libro se vendía en pocos ejemplares y volvía al olvido, y el resumen lo convierte en un éxito inmediato.',
+          'Distorsiona': 'Va más allá de la distorsión. No exagera ni cambia el matiz de algo que el texto diga: afirma un hecho —el éxito inmediato, la consagración— que el texto niega expresamente.',
+          'Omite': 'No es una omisión: el resumen no deja fuera información, la inventa.',
+          'Añade': 'Correcto. Es una adición, y de las peligrosas: está bien escrita, es plausible para quien no leyó el original y contradice el dato central de todo el párrafo.'
+        }
+      },
+      {
+        id: 'st-c3-2-i2',
+        fuente: 'Williams tomó esa otra mitad de Stoner de un colega suyo de facultad llamado JV Cunningham. […] El hallazgo de Williams fue imaginar un Cunningham que no hubiera escrito esos pequeños poemas; que sólo los tuviera embotellados sin saberlo dentro de sí mismo.',
+        resumen: 'Forn recuerda que la novela cuenta la vida de un profesor universitario y que su autor también fue profesor, lo que explica la verosimilitud del ambiente académico.',
+        ok: 'Omite',
+        fb: {
+          'Fiel': 'Lo que dice es cierto, pero deja fuera el hallazgo que el texto destaca: que el personaje tiene dos modelos y que el segundo es un poeta a quien Williams imaginó sin sus poemas.',
+          'Distorsiona': 'No hay distorsión: nada de lo afirmado contradice el texto. El problema es lo que falta.',
+          'Omite': 'Correcto. La omisión es de las que cambian el sentido: sin la mitad tomada de Cunningham, el paralelismo entre autor y personaje se reduce a una coincidencia de oficio.',
+          'Añade': 'La explicación sobre la verosimilitud es una inferencia razonable, pero el fallo principal es la omisión del segundo modelo.'
+        }
+      },
+      {
+        id: 'st-c3-2-i3',
+        fuente: 'Entonces la escritora francesa Anna Gavalda la tradujo a su idioma y remó por ella hasta llamar la atención de crítica y lectores de su país.',
+        resumen: 'Solo la traducción de Anna Gavalda al francés consiguió que Europa descubriera la novela y que el fenómeno llegara a América Latina.',
+        ok: 'Fiel',
+        fb: {
+          'Fiel': 'Correcto. Conserva el dato —la traducción al francés— y la consecuencia —la difusión europea y su llegada a nuestras costas—, que el texto describe en los párrafos siguientes.',
+          'Distorsiona': 'No hay cambio de alcance: el original dice en efecto que el fenómeno cundió por Europa y llegó a nuestras costas.',
+          'Omite': 'Deja fuera la expresión «remó por ella», que es expresiva, pero su sentido queda recogido en el «consiguió».',
+          'Añade': 'No hay ninguna afirmación que el texto no respalde en ese tramo.'
+        }
+      },
+      {
+        id: 'st-c3-2-i4',
+        fuente: 'Moore le contestó: «A nosotros nos parece un librito adorable pero menor, muy bien escrito pero parecido a muchos otros, casi único en su tristeza pero en última instancia fallido».',
+        resumen: 'La escritora Lorrie Moore defendió la novela frente a las dudas de Julian Barnes y la consideró una de las grandes obras de su generación.',
+        ok: 'Distorsiona',
+        fb: {
+          'Fiel': 'Los nombres son correctos, pero las posiciones están cambiadas: en el texto es Barnes quien se sorprende del desdén y Moore quien expresa ese desdén.',
+          'Distorsiona': 'Correcto. Invierte los papeles de las dos voces citadas. Cuando un resumen atribuye a alguien lo contrario de lo que dijo, el error es grave aunque los datos existan.',
+          'Omite': 'No es una omisión: la información está, pero atribuida al revés.',
+          'Añade': 'La expresión «grandes obras de su generación» no está en el texto, pero el fallo principal es la inversión de las posiciones.'
+        }
+      }
+    ]
+  },
+
+  /* ---------------- c4 · estrategias discursivas ---------------- */
+  {
+    id: 'st-c4-1',
+    conjunto: 'stoner',
+    criterio: 'c4',
+    motor: 'marcar',
+    modo: 'oracion',
+    titulo: 'Dónde el autor se mete en el texto',
+    enunciado: 'En este pasaje de Juan Forn, marca las oraciones en las que el autor interpela al lector o interviene en primera persona para involucrarlo.',
+    ayuda: 'Tres de las seis oraciones contienen esa estrategia. Las otras tres son exposición o comentario impersonal.',
+    unidades: [
+      { t: 'Miren ese puñado de edificios neoclásicos rodeados de prolijo verde, miren a ese hijo de granjeros pobres transplantado a aquella ciudadela.', marcar: true, fb: 'Apóstrofe puro: el imperativo repetido convierte al lector en espectador de la escena. Es la primera vez que el texto sale de la narración para dirigirse a alguien.' },
+      { t: 'La universidad está en Missouri, pero eso no importa.', marcar: false, fb: 'Es un comentario del narrador, pero no interpela al lector ni se pone en escena a sí mismo: informa y relativiza el dato.' },
+      { t: 'Imaginen el arco de esa trayectoria discreta, anónima, a los ojos de los alumnos que lo ven pasar.', marcar: true, fb: 'Segundo apóstrofe. «Imaginen» pide al lector un trabajo mental concreto: reconstruir por su cuenta lo que el texto no va a contar.' },
+      { t: 'Detrás de ese rumor que acompaña los pasos del profesor por el campus y por su época, Stoner cuenta la historia de la vida interior de su protagonista, y eso es lo que hace mágica esta novela.', marcar: false, fb: 'Es la formulación de la tesis del texto. Hay valoración, pero no hay interpelación ni primera persona.' },
+      { t: 'Para decirlo más francamente: hacía tiempo que un libro no me dejaba tantas veces sin aire, galvanizado de golpe por la emoción, mientras leía.', marcar: true, fb: 'Confesión en primera persona. Forn abandona el papel de comentarista y ofrece su propia lectura como prueba: es la estrategia con la que pide confianza al lector.' },
+      { t: 'Kierkegaard decía que el problema de la vida es que se vive para adelante pero sólo se la entiende para atrás.', marcar: false, fb: 'Es una cita de autoridad, que también es una estrategia discursiva, pero no la que pide este ejercicio: aquí no hay interpelación ni presencia del autor.' }
+    ],
+    explicacion: 'Forn alterna tres registros: narra, comenta y se dirige al lector. Un resumen que solo diga «el autor usa un tono cercano» describe el efecto de esas alternancias, pero no identifica el recurso. Nombrar el apóstrofe y la confesión en primera persona, y señalar dónde ocurren, es lo que la rúbrica llama identificar una estrategia discursiva.'
+  },
+  {
+    id: 'st-c4-2',
+    conjunto: 'stoner',
     criterio: 'c4',
     motor: 'cloze',
     titulo: 'La frase que enlaza la estrategia con el texto',
     enunciado: 'Completa la justificación con la formulación que conecta la estrategia del texto fuente con lo que el resumen dice de ella.',
     items: [
       {
-        id: 'c4e4i1',
-        conjunto: 'bunuelo',
-        frase: 'El Agente 3 nombra la anécdota de los muñecos como «alegoría de su tesis». Rivas la introduce diciendo que «la realidad a veces nos envía sus mensajes como metáforas aclaradoras». ___',
-        opciones: [
-          {
-            t: 'La correspondencia es exacta: lo que el resumen llama alegoría es lo que el propio texto anuncia como metáfora aclaradora, de modo que el agente no interpreta el recurso, lo reconoce donde el autor lo señala.',
-            ok: true,
-            fb: 'Correcta. Enlaza las dos evidencias diciendo en qué consiste la coincidencia, y añade algo que el lector no podía deducir solo: que el texto declara su propio procedimiento.'
-          },
-          {
-            t: 'Por eso el resumen del Agente 3 es el mejor de los tres y el que debe elegirse.',
-            ok: false,
-            fb: 'Salta de la evidencia a la conclusión general sin explicar la correspondencia. La rúbrica pide justificar la relación entre las dos fuentes, no proclamar un ganador.'
-          },
-          {
-            t: 'Además, el texto de Rivas contiene otras estrategias como la hipérbole y la enumeración, que el resumen no menciona.',
-            ok: false,
-            fb: 'Es una observación válida, pero abre un asunto nuevo en lugar de cerrar el que estaba abierto. Las dos citas quedan sin enlazar, que era justo lo que había que hacer.'
-          },
-          {
-            t: 'Ambas frases demuestran la gran calidad literaria del texto de Rivas y la sensibilidad del agente que lo resumió.',
-            ok: false,
-            fb: 'Elogia en lugar de analizar. «Calidad literaria» y «sensibilidad» no dicen en qué se corresponden la alegoría del resumen y la metáfora del texto.'
-          }
-        ]
-      },
-      {
-        id: 'c4e4i2',
-        conjunto: 'stoner',
+        id: 'st-c4-2-i1',
         frase: 'El resumen señala que Forn «le pide al lector que mire el campus». En el texto, esa petición aparece literalmente: «Miren ese puñado de edificios neoclásicos rodeados de prolijo verde». ___',
         opciones: [
           {
@@ -1731,21 +2140,446 @@ const EJERCICIOS_2 = [
             fb: 'Es una valoración estética. La rúbrica no evalúa el gusto del estudiante sino su capacidad de mostrar que el resumen da cuenta de las estrategias del texto fuente.'
           }
         ]
+      },
+      {
+        id: 'st-c4-2-i2',
+        frase: 'El resumen afirma que el paralelismo entre autor y personaje es «la estrategia más importante del texto». Forn lo construye señalando que Williams «también era hijo de granjeros pobres» y «también padeció una acusación de un colega». ___',
+        opciones: [
+          {
+            t: 'La correspondencia es verificable: los dos «también» del texto son la marca del paralelismo, y el resumen no se limita a mencionarlo, lo identifica como el procedimiento que sostiene la tesis del olvido compartido.',
+            ok: true,
+            fb: 'Correcta. Localiza el recurso en una marca concreta —la repetición del adverbio— y explica qué sostiene. Encontrar la huella lingüística de una estrategia es la forma más sólida de probarla.'
+          },
+          {
+            t: 'Es evidente que el autor y el personaje se parecen mucho, como suele ocurrir en las novelas.',
+            ok: false,
+            fb: 'Generaliza en lugar de justificar, y además introduce una afirmación sobre las novelas en general que el texto no hace. No hay enlace entre las dos evidencias.'
+          },
+          {
+            t: 'El resumen debería haber mencionado también la cita de Kierkegaard, que es otra estrategia del texto.',
+            ok: false,
+            fb: 'Señalar una omisión es legítimo, pero aquí deja sin cerrar la correspondencia que estaba en marcha. Primero se completa el enlace, y solo después se abre un asunto nuevo.'
+          },
+          {
+            t: 'Por eso el paralelismo es la estrategia más importante y el resumen hace bien en decirlo.',
+            ok: false,
+            fb: 'Repite la afirmación del resumen sin aportar nada: no explica en qué consiste la correspondencia entre lo que el resumen dice y lo que el texto hace.'
+          }
+        ]
+      }
+    ]
+  }
+];
+
+
+/* ===== data-ej-salvaje.js ===== */
+/* data-ej-salvaje.js — bloque propio del conjunto «El llamado de lo salvaje».
+   Dos ejercicios por criterio de contenido (c1 a c4).
+   Es el texto más extenso y exigente del banco: 1.685 palabras, con un giro
+   central que casi todos los resúmenes se dejan fuera. */
+
+const EJ_SALVAJE = [
+  /* ---------------- c1 · idea principal ---------------- */
+  {
+    id: 'sa-c1-1',
+    conjunto: 'salvaje',
+    criterio: 'c1',
+    motor: 'mc',
+    titulo: 'La idea principal está en el giro, no en la anécdota',
+    enunciado: 'Este ensayo abre con una historia del siglo XVIII y aplaza su tesis durante varios párrafos. Localiza la afirmación que sostiene el conjunto.',
+    items: [
+      {
+        id: 'sa-c1-1-i1',
+        contexto: 'Idea principal del texto fuente: las historias de niños ferales no revelan cómo sería el ser humano en estado natural, como creyeron los ilustrados, sino que muestran que la frontera entre lo humano y lo animal es cultural y porosa; y esa constatación es la que hoy empuja al arte y a la literatura a descentrar la mirada humana frente a la destrucción del mundo físico.',
+        pregunta: '¿Cuál de estas formulaciones se corresponde con la idea principal del texto fuente?',
+        opciones: [
+          {
+            t: 'Las historias de niños ferales no nos dicen cómo sería el ser humano en su estado natural, como creyeron los ilustrados del siglo XVIII, sino que revelan que los límites entre las personas y los animales son porosos y culturales, y por lo tanto pueden cambiar.',
+            ok: true,
+            fb: 'Correcta. Recoge la refutación de la lectura ilustrada y la afirmación positiva que la sustituye. Además usa la formulación del propio texto: «los límites entre personas y animales son porosos».'
+          },
+          {
+            t: 'Patricio Pron recupera la historia de Marie-Angélique Memmie Le Blanc, la niña salvaje que apareció en Songy en 1731 y fue durante años una pequeña celebridad.',
+            ok: false,
+            fb: 'Es la anécdota de apertura, que el texto usa como puerta de entrada. Tomar la escena inicial por la idea principal es el riesgo específico de los ensayos que arrancan in medias res.'
+          },
+          {
+            t: 'El texto trata sobre los niños criados por animales a lo largo de la historia y sobre los casos documentados en distintos países.',
+            ok: false,
+            fb: 'Es el tema, enunciado con un sintagma nominal. Responde a «¿de qué habla?» y no a «¿qué afirma?»: no hay ninguna tesis que se pueda discutir.'
+          },
+          {
+            t: 'Pron sostiene que el arte contemporáneo debería dejar de representar a los seres humanos y ocuparse solo de los animales y las plantas.',
+            ok: false,
+            fb: 'Convierte una descripción en una prescripción. El texto observa que muchos creadores intentan descentrar la mirada humana; no recomienda a nadie que abandone nada.'
+          }
+        ]
+      },
+      {
+        id: 'sa-c1-1-i2',
+        pregunta: 'El ensayo cierra llamando «instante luminoso» a una cacería, «durante el supuesto Siglo de las Luces». ¿Qué relación tiene ese remate con la idea principal?',
+        opciones: [
+          {
+            t: 'La condensa con ironía: el único momento de libertad de Marie-Angélique fue aquel en que se entregó «a su verdadera naturaleza», justo lo que el siglo de la Razón pretendía haber corregido en ella.',
+            ok: true,
+            fb: 'Correcta. El adjetivo «supuesto» y el juego con «luminoso» concentran la tesis en una sola frase: la frontera que la Ilustración creía natural era una imposición cultural.'
+          },
+          {
+            t: 'Es un cierre emotivo, sin relación con el argumento, que busca conmover al lector con el destino de la protagonista.',
+            ok: false,
+            fb: 'La emoción está, pero no es lo único: la palabra «supuesto» convierte la escena en un juicio sobre la Ilustración. Leerlo como puro adorno hace perder la tesis del texto.'
+          },
+          {
+            t: 'Indica que la protagonista logró finalmente integrarse en la sociedad de acogida.',
+            ok: false,
+            fb: 'Es lo contrario de lo que el párrafo dice: enferma, internada en hospitales y conventos, viviendo de la caridad. El texto usa comillas para poner en duda esa «integración».'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'sa-c1-2',
+    conjunto: 'salvaje',
+    criterio: 'c1',
+    motor: 'reescritura',
+    titulo: 'De Básico a Excelente',
+    enunciado: 'Un estudiante escribió esta justificación sobre el conjunto de Pron. Está en nivel Básico. Elige la reescritura que la lleva a Excelente.',
+    items: [
+      {
+        id: 'sa-c1-2-i1',
+        fragmento: 'Elegí el resumen del Agente 3 porque identifica bien la idea principal del ensayo de Pron sobre los niños salvajes y los límites entre lo humano y lo animal.',
+        diagnostico: 'La idea principal está identificada, pero no hay evidencia textual de ninguna de las dos fuentes ni una oración que muestre en qué se corresponden.',
+        pregunta: '¿Cuál de estas reescrituras alcanza el nivel Excelente?',
+        opciones: [
+          {
+            t: 'Elegí el resumen del Agente 3 porque identifica bien la idea principal. Pron afirma que estas historias no hablan «de cómo sería el ser humano en su estado salvaje y natural –como creyeron los Ilustrados del siglo XVIII– sino de que los límites entre personas y animales son porosos»; el Agente 3 lo recoge al escribir que el texto muestra «la porosidad cultural de la frontera entre lo humano y lo animal». Las dos formulaciones desplazan la explicación del mismo sitio: de la naturaleza a la cultura.',
+            ok: true,
+            fb: 'Correcta. Están las tres piezas, y la última oración nombra el desplazamiento que las une —de la naturaleza a la cultura— en lugar de limitarse a decir que coinciden.'
+          },
+          {
+            t: 'Elegí el resumen del Agente 3 porque identifica bien la idea principal. Pron escribe que «los límites entre personas y animales son porosos». El Agente 3 escribe que el ensayo muestra «la porosidad cultural de la frontera entre lo humano y lo animal».',
+            ok: false,
+            fb: 'Tiene la doble evidencia pero le falta la tercera pieza: nadie dice en qué se corresponden. Poner dos citas casi idénticas una tras otra parece suficiente y no lo es.'
+          },
+          {
+            t: 'Elegí el resumen del Agente 3 porque identifica muy bien la idea principal del ensayo de Pron, un texto profundo y muy bien documentado que invita a reflexionar sobre nuestra relación con los animales.',
+            ok: false,
+            fb: 'Sustituye la evidencia por elogios. «Profundo», «bien documentado» e «invita a reflexionar» son valoraciones, y ninguna señala un lugar de ninguno de los dos textos.'
+          },
+          {
+            t: 'Elegí el resumen del Agente 3 porque identifica bien la idea principal. El ensayo abre en Songy en 1731, acumula casos ferales, matiza lo que no puede saberse, invierte el recorrido con Wells y desemboca en el arte contemporáneo.',
+            ok: false,
+            fb: 'La descripción es exacta, pero pertenece al criterio de estructura. Además no cita el resumen elegido, de modo que no hay correspondencia que probar.'
+          }
+        ]
       }
     ]
   },
 
-  /* ================= c5 · COHESIÓN Y COHERENCIA ================= */
+  /* ---------------- c2 · estructura ---------------- */
   {
-    id: 'c5e1',
+    id: 'sa-c2-1',
+    conjunto: 'salvaje',
+    criterio: 'c2',
+    motor: 'ordenar',
+    titulo: 'Los movimientos del ensayo',
+    enunciado: 'Reconstruye el orden de los cinco movimientos de «El llamado de lo salvaje».',
+    ayuda: 'El ensayo es circular: empieza y termina con la misma protagonista. Entre medias, aplaza la tesis todo lo que puede.',
+    piezas: [
+      { t: 'Apertura in medias res: una escena fechada en Songy, en 1731, con una niña cubierta de pieles que mata a un perro y se duerme en un árbol.', fb: 'La apertura. El ensayo empieza por una escena y no por una idea: el lector queda dentro del episodio antes de saber de qué va el texto.' },
+      { t: 'Identificación de la protagonista y de su fortuna cultural: Marie-Angélique, el relato de Hecquet de 1755, la biografía reciente y la novela gráfica.', fb: 'Segundo movimiento. El texto sale del episodio y lo convierte en caso: le pone nombre, fecha y bibliografía.' },
+      { t: 'Catálogo de casos ferales y giro interpretativo: de Víctor de Aveyron a Marcos Rodríguez Pantoja, para refutar la lectura de los ilustrados.', fb: 'Tercer movimiento, y el más importante. La acumulación de casos no es erudición: es lo que permite negar que estos niños muestren al ser humano «natural».' },
+      { t: 'Inversión ficcional y matiz: lo que no puede saberse de los niños ferales, y La isla del doctor Moreau como recorrido inverso, de lo animal a lo humano.', fb: 'Cuarto movimiento. El ensayo se objeta a sí mismo y luego amplía el problema con la ficción, preparando el salto al presente.' },
+      { t: 'Despliegue contemporáneo y cierre circular: la destrucción del mundo físico, el segundo giro copernicano en el arte y la vuelta a Marie-Angélique.', fb: 'El cierre. El texto salta trescientos años y regresa a la protagonista del comienzo, de modo que la tesis queda enmarcada por la misma historia.' }
+    ],
+    explicacion: 'La decisión compositiva de este ensayo es el aplazamiento: la tesis no aparece hasta que se han acumulado los casos. Un resumen que ordene los contenidos por tema y no por función no puede dar cuenta de eso, porque lo que importa aquí es cuándo se dice cada cosa.'
+  },
+  {
+    id: 'sa-c2-2',
+    conjunto: 'salvaje',
+    criterio: 'c2',
+    motor: 'clasificar',
+    titulo: 'Describir, narrar o callar',
+    enunciado: 'Clasifica cada fragmento de resumen según lo que hace con la estructura del ensayo de Pron.',
+    etiquetas: ['Describe la organización', 'Narra el contenido', 'No menciona la estructura'],
+    ayuda: 'Describe la organización: nombra la función de los movimientos. Narra el contenido: cuenta lo que dice el texto en su orden. No menciona la estructura: ni siquiera alude a cómo está construido.',
+    fragmentos: [
+      {
+        id: 'sa-c2-2-f1',
+        t: 'El texto abre in medias res con una escena fechada y aplaza la tesis: solo tras acumular casos ferales refuta la lectura ilustrada, y cierra regresando a la protagonista del comienzo.',
+        ok: 'Describe la organización',
+        fb: {
+          'Describe la organización': 'Correcto. «Abre», «aplaza», «refuta», «cierra regresando» son verbos de función, y además se nombra el principio que ordena el texto: la circularidad y el aplazamiento de la tesis.',
+          'Narra el contenido': 'No narra: no dice qué ocurre en la escena ni cuáles son los casos. Habla de lo que el texto hace, no de lo que cuenta.',
+          'No menciona la estructura': 'La menciona con detalle: apertura, aplazamiento, refutación y cierre circular son cuatro observaciones estructurales.'
+        }
+      },
+      {
+        id: 'sa-c2-2-f2',
+        t: 'Pron cuenta primero la historia de la niña de Songy, después menciona a Víctor de Aveyron y a Tarzancito, luego habla de Blumenthal y al final vuelve a la niña.',
+        ok: 'Narra el contenido',
+        fb: {
+          'Describe la organización': 'No llega: «primero», «después», «luego» y «al final» ordenan la exposición pero no dicen qué función cumple cada tramo. Sin funciones no hay descripción de estructura.',
+          'Narra el contenido': 'Correcto. Es un recuento fiel en el orden del original. Sirve como resumen de contenido, pero no cumple el criterio de análisis de la estructura.',
+          'No menciona la estructura': 'Roza la estructura al respetar el orden y al notar que el texto vuelve al principio; lo que hace es reproducirla en lugar de describirla.'
+        }
+      },
+      {
+        id: 'sa-c2-2-f3',
+        t: 'Patricio Pron sostiene que los límites entre las personas y los animales son culturales y porosos, y que por eso pueden cambiar.',
+        ok: 'No menciona la estructura',
+        fb: {
+          'Describe la organización': 'No dice nada sobre cómo está construido el texto: es una formulación de la idea principal, que corresponde a otro criterio.',
+          'Narra el contenido': 'Tampoco narra en orden: condensa la tesis en una sola afirmación, sin recorrer el texto.',
+          'No menciona la estructura': 'Correcto. Es un buen enunciado de la idea principal, pero para el criterio de estructura equivale a un silencio. Un resumen puede ser excelente en un criterio y nulo en otro.'
+        }
+      },
+      {
+        id: 'sa-c2-2-f4',
+        t: 'El ensayo está muy bien organizado: tiene una introducción atractiva, un desarrollo documentado y una conclusión que cierra con broche de oro.',
+        ok: 'No menciona la estructura',
+        fb: {
+          'Describe la organización': 'Parece que la describe, pero «introducción, desarrollo y conclusión» es una plantilla que sirve para cualquier texto. No dice nada de este en particular.',
+          'Narra el contenido': 'No hay contenido narrado: no se menciona ni una idea del ensayo.',
+          'No menciona la estructura': 'Correcto, y es el caso más engañoso del ejercicio. Aplicar un molde universal y valorarlo no identifica la organización de este texto. La rúbrica pide describir cómo está organizado, no comprobar que tiene principio y final.'
+        }
+      },
+      {
+        id: 'sa-c2-2-f5',
+        t: 'El ensayo avanza en tres tiempos: arranca con el caso de Songy, se abre hacia un catálogo de casos que sirve para desmontar la lectura ilustrada, y desemboca en el presente, donde la idea se vuelve urgente ante la destrucción del mundo físico.',
+        ok: 'Describe la organización',
+        fb: {
+          'Describe la organización': 'Correcto. «Arranca», «se abre hacia», «desemboca» nombran funciones, y la expresión «sirve para» explica para qué está cada tramo, que es exactamente lo que pide el criterio.',
+          'Narra el contenido': 'Menciona contenidos, pero subordinados a su función. La diferencia está en los verbos: «desemboca» no es una marca de sucesión sino de función.',
+          'No menciona la estructura': 'La menciona en las tres cláusulas y además nombra el principio que la ordena.'
+        }
+      }
+    ]
+  },
+
+  /* ---------------- c3 · fidelidad ---------------- */
+  {
+    id: 'sa-c3-1',
+    conjunto: 'salvaje',
+    criterio: 'c3',
+    motor: 'cotejar',
+    titulo: 'Cotejo fragmento a fragmento',
+    enunciado: 'Compara cada fragmento del ensayo de Pron con lo que el resumen dice de él.',
+    etiquetas: ['Fiel', 'Distorsiona', 'Omite', 'Añade'],
+    ayuda: 'Este texto está lleno de nombres, fechas y títulos. Verifica los datos uno a uno y vigila además el alcance de las afirmaciones generales.',
+    items: [
+      {
+        id: 'sa-c3-1-i1',
+        fuente: 'Sus historias no nos hablan de cómo sería el ser humano «en su estado salvaje y natural» –como creyeron los Ilustrados del siglo XVIII– sino de que los límites entre personas y animales son porosos.',
+        resumen: 'Pron sostiene que estas historias no revelan al ser humano en estado natural, como quiso el Siglo de las Luces, sino la porosidad cultural de la frontera entre lo humano y lo animal.',
+        ok: 'Fiel',
+        fb: {
+          'Fiel': 'Correcto. Reformula con otras palabras y conserva las dos mitades de la afirmación: la negación de la lectura ilustrada y la tesis de la porosidad. Reformular es lo que un resumen debe hacer.',
+          'Distorsiona': 'No hay cambio de alcance ni de intención: «Siglo de las Luces» y «Ilustrados del siglo XVIII» designan lo mismo dentro de este texto.',
+          'Omite': 'No omite nada relevante: los dos términos de la oposición están presentes.',
+          'Añade': 'El adjetivo «cultural» no está en esta frase, pero sí en el texto, que en otro párrafo afirma que «los límites entre nosotros y los animales son culturales».'
+        }
+      },
+      {
+        id: 'sa-c3-1-i2',
+        fuente: 'Blumenthal sostiene que es posible que la mayor parte de los niños ferales fuesen autistas, esquizofrénicos o víctimas de malos tratos […]; sobre esto, sin embargo, solo es posible hacer conjeturas.',
+        resumen: 'El periodista alemán P. J. Blumenthal demostró que casi todos los niños ferales eran en realidad autistas o víctimas de malos tratos.',
+        ok: 'Distorsiona',
+        fb: {
+          'Fiel': 'Los elementos coinciden, pero la modalidad no. El texto dice «es posible que» y añade que «solo es posible hacer conjeturas»; el resumen escribe «demostró».',
+          'Distorsiona': 'Correcto. Convierte una conjetura declarada en una demostración. Cuando un resumen sube el grado de certeza de una afirmación, el error es de fidelidad aunque el contenido coincida.',
+          'Omite': 'Omite la salvedad sobre las conjeturas, pero el fallo principal es haberla sustituido por una certeza.',
+          'Añade': 'No introduce datos nuevos: cambia el estatuto de los que ya había.'
+        }
+      },
+      {
+        id: 'sa-c3-1-i3',
+        fuente: 'La destrucción del mundo físico […] se ha convertido en uno de los asuntos más recurrentes de la práctica artística y la literatura contemporáneas que proponen una revisión de los límites porosos entre los seres humanos y las demás especies.',
+        resumen: 'El texto está organizado como un recorrido histórico: parte de la escena de Songy, identifica a la protagonista y a continuación despliega un catálogo de casos semejantes hasta llegar a Marcos Rodríguez Pantoja.',
+        ok: 'Omite',
+        fb: {
+          'Fiel': 'Todo lo que el resumen afirma es cierto, pero deja fuera el movimiento central del ensayo: el salto al presente y a la crisis del mundo físico.',
+          'Distorsiona': 'No hay distorsión: lo que dice no contradice al original. El problema es lo que no llega a decir.',
+          'Omite': 'Correcto. Sin el giro hacia la destrucción del mundo físico, el ensayo queda reducido a una colección de curiosidades históricas, que es justo lo que no es.',
+          'Añade': 'No hay ninguna afirmación nueva: el fallo es por defecto.'
+        }
+      },
+      {
+        id: 'sa-c3-1-i4',
+        fuente: 'Marie-Angélique se vio obligada a vivir de la caridad de los demás, lejos de los bosques que había convertido en su hogar, transformada en un fenómeno de feria que subsistía de la venta del libro que narra su historia.',
+        resumen: 'Marie-Angélique terminó sus días en París como institutriz de familias nobles, gracias a la protección de la princesa polaca que la había visitado.',
+        ok: 'Añade',
+        fb: {
+          'Fiel': 'No: el texto describe hospitales, conventos, caridad y un fenómeno de feria. Nada de lo que el resumen afirma aparece en el original.',
+          'Distorsiona': 'Va más allá de la distorsión: no exagera un dato existente, inventa un desenlace completo que el texto contradice.',
+          'Omite': 'No es una omisión: el resumen no calla información, la sustituye por otra inventada.',
+          'Añade': 'Correcto. La princesa polaca existe en el texto, pero solo como visitante de un episodio de caza. Construir sobre un dato real una historia que el texto no cuenta es la forma más difícil de detectar de una adición.'
+        }
+      }
+    ]
+  },
+  {
+    id: 'sa-c3-2',
+    conjunto: 'salvaje',
+    criterio: 'c3',
+    motor: 'marcar',
+    modo: 'oracion',
+    titulo: 'Lo que este resumen deja fuera',
+    enunciado: 'Este es el resumen del Agente 1 sobre el ensayo de Pron. Marca las oraciones que revelan la omisión del movimiento central del texto.',
+    ayuda: 'Dos de las seis oraciones muestran que el resumen trata el ensayo como si fuera una colección de casos históricos. Las otras cuatro son fieles y no deben marcarse.',
+    unidades: [
+      { t: 'En «El llamado de lo salvaje», Patricio Pron recupera la historia de Marie-Angélique Memmie Le Blanc, la niña salvaje que apareció en Songy en 1731.', marcar: false, fb: 'Fiel: la fecha, el lugar y el nombre son exactos, y el texto empieza en efecto por esa escena.' },
+      { t: 'El texto está organizado como un recorrido histórico que parte de la escena de Songy y despliega un catálogo de casos semejantes.', marcar: true, fb: 'Aquí aparece la omisión. Llamar «recorrido histórico» al ensayo lo cierra en el pasado y deja fuera todo el tramo contemporáneo: la crisis del mundo físico y el segundo giro copernicano.' },
+      { t: 'Pron recuerda que el periodista alemán P. J. Blumenthal reunió cerca de cien historias de niños criados por animales.', marcar: false, fb: 'Fiel: el texto habla de «unas cien historias» reunidas en el ensayo de Blumenthal.' },
+      { t: 'Para terminar, Pron vuelve sobre Marie-Angélique y muestra que su integración fue mucho menos feliz de lo que se supone.', marcar: false, fb: 'Fiel, y además advierte la circularidad del ensayo: el texto en efecto regresa a la protagonista del comienzo.' },
+      { t: 'El ensayo interesa sobre todo como recopilación de casos curiosos de la historia europea y americana.', marcar: true, fb: 'Segunda marca de la misma omisión. Reducir el ensayo a una recopilación de curiosidades es la consecuencia directa de haber dejado fuera el giro ecológico, y arrastra también la idea principal.' },
+      { t: 'Menciona a Víctor de Aveyron, estudiado por el médico Jean Itard, y a Marcos Rodríguez Pantoja, en Sierra Morena.', marcar: false, fb: 'Fiel: los dos casos y el nombre del médico aparecen en el texto con esos mismos datos.' }
+    ],
+    explicacion: 'Este resumen no inventa nada: todos sus datos son exactos. Falla por lo que calla, y esa omisión es de las que cambian el sentido del texto entero. Cuando evalúes fidelidad, comprueba no solo si lo dicho es cierto, sino si lo omitido era necesario.'
+  },
+
+  /* ---------------- c4 · estrategias discursivas ---------------- */
+  {
+    id: 'sa-c4-1',
+    conjunto: 'salvaje',
+    criterio: 'c4',
+    motor: 'clasificar',
+    titulo: 'Qué recurso opera en cada fragmento',
+    enunciado: 'Todos estos fragmentos son de «El llamado de lo salvaje». Identifica el recurso que opera en cada uno.',
+    etiquetas: ['Apertura in medias res', 'Comillas de distancia', 'Acumulación de ejemplos', 'Ironía final'],
+    ayuda: 'Son los cuatro recursos que sostienen este ensayo. Fíjate en la operación que realiza cada fragmento, no en lo que cuenta.',
+    fragmentos: [
+      {
+        id: 'sa-c4-1-f1',
+        t: '«Un anochecer de septiembre de 1731 la voz empezó a correr entre los habitantes de Songy […]: una niña de nueve o diez años de edad, descalza, cubierta de harapos y de pieles de animales […] había entrado en el pueblo en busca de agua.»',
+        ok: 'Apertura in medias res',
+        fb: {
+          'Apertura in medias res': 'Correcto. El ensayo empieza dentro de la escena, con fecha y lugar, antes de decir de qué va a tratar. Con eso aplaza la tesis y compromete al lector con una historia.',
+          'Comillas de distancia': 'No hay ninguna palabra entrecomillada en el fragmento.',
+          'Acumulación de ejemplos': 'Hay acumulación de detalles dentro de una sola escena, pero no una serie de casos distintos.',
+          'Ironía final': 'No hay doble sentido ni juicio implícito: la escena se cuenta sin comentario.'
+        }
+      },
+      {
+        id: 'sa-c4-1-f2',
+        t: 'El entrecomillado sistemático de «niña salvaje», «tratamiento», «sentido moral natural» e «integración» a lo largo del ensayo.',
+        ok: 'Comillas de distancia',
+        fb: {
+          'Apertura in medias res': 'Las comillas aparecen a lo largo de todo el texto, no en su arranque.',
+          'Comillas de distancia': 'Correcto. Pron no discute esas categorías: las marca. Las comillas hacen el trabajo de un argumento entero, porque ponen en duda las palabras con que su época describió estos casos.',
+          'Acumulación de ejemplos': 'Se acumulan comillas, no ejemplos: cada una señala una categoría sospechosa, no un caso nuevo.',
+          'Ironía final': 'Hay distancia irónica, en efecto, pero no está en el final del texto sino repartida por todo él.'
+        }
+      },
+      {
+        id: 'sa-c4-1-f3',
+        t: '«Niños como Rubén Marroquín alias Tarzancito, capturado en las proximidades de Sonsonate en El Salvador en 1933; Alex, quien en 2001 escapó de un asilo en Talcahuano, Chile […]; o Marcos Rodríguez Pantoja, a quien su padre vendió en 1953 a unos pastores de Sierra Morena.»',
+        ok: 'Acumulación de ejemplos',
+        fb: {
+          'Apertura in medias res': 'La serie llega en el tercer párrafo, cuando el caso inicial ya está establecido.',
+          'Comillas de distancia': 'No hay entrecomillado en el fragmento: los nombres se dan sin reservas.',
+          'Acumulación de ejemplos': 'Correcto. Tres casos de tres continentes y tres épocas. La acumulación es el argumento: al mostrar que el fenómeno es constante, permite negar que revele una naturaleza humana original.',
+          'Ironía final': 'Los casos se enuncian sin juicio: el juicio llega después, en la frase que los interpreta.'
+        }
+      },
+      {
+        id: 'sa-c4-1-f4',
+        t: '«El instante luminoso de otra vida de mujer en penumbras durante el supuesto Siglo de las Luces.»',
+        ok: 'Ironía final',
+        fb: {
+          'Apertura in medias res': 'Es la última frase del ensayo, no la primera.',
+          'Comillas de distancia': 'No hay comillas: la distancia se consigue con el adjetivo «supuesto».',
+          'Acumulación de ejemplos': 'No hay serie: es una sola frase que condensa el texto entero.',
+          'Ironía final': 'Correcto. «Luminoso», «penumbras» y «supuesto Siglo de las Luces» juegan con la misma metáfora para invertirla: la luz del episodio es la de la caza, no la de la Razón.'
+        }
+      }
+    ]
+  },
+  {
+    id: 'sa-c4-2',
+    conjunto: 'salvaje',
+    criterio: 'c4',
+    motor: 'cloze',
+    titulo: 'La frase que enlaza la estrategia con el texto',
+    enunciado: 'Completa la justificación con la formulación que conecta la estrategia del texto fuente con lo que el resumen dice de ella.',
+    items: [
+      {
+        id: 'sa-c4-2-i1',
+        frase: 'El Agente 3 señala que Pron marca «con comillas de distancia» las palabras «niña salvaje», «tratamiento» e «integración». En el texto esas tres palabras aparecen, en efecto, siempre entrecomilladas. ___',
+        opciones: [
+          {
+            t: 'La correspondencia no es solo léxica: el resumen identifica para qué sirven esas comillas, y eso es lo que la rúbrica llama dar cuenta de una estrategia, frente a limitarse a señalar que existen.',
+            ok: true,
+            fb: 'Correcta. Distingue entre localizar un recurso y explicar su función, que es exactamente la diferencia entre un resumen que enumera y otro que analiza.'
+          },
+          {
+            t: 'Por eso el Agente 3 es el resumen más completo y el que conviene elegir.',
+            ok: false,
+            fb: 'Salta a la conclusión sin explicar la correspondencia. La rúbrica pide justificar la relación entre las dos fuentes, no proclamar un ganador.'
+          },
+          {
+            t: 'El Agente 2, en cambio, solo dice que el estilo es «literario y ameno», lo cual no identifica nada.',
+            ok: false,
+            fb: 'La observación es acertada, pero abre la comparación con otro resumen y deja sin cerrar el enlace que estaba en marcha. Primero se completa la correspondencia.'
+          },
+          {
+            t: 'Es evidente que las comillas son un recurso muy habitual en el ensayo contemporáneo.',
+            ok: false,
+            fb: 'Generaliza sobre un género en lugar de justificar este caso. La afirmación además no es verificable en el texto fuente, que es la única evidencia que cuenta.'
+          }
+        ]
+      },
+      {
+        id: 'sa-c4-2-i2',
+        frase: 'El Agente 2 dice que Pron «escribe con un estilo literario y ameno, muy cuidado, que hace agradable la lectura». En el texto pueden localizarse la apertura in medias res, las comillas irónicas y el remate sobre el «supuesto Siglo de las Luces». ___',
+        opciones: [
+          {
+            t: 'El contraste muestra el límite de ese resumen: describe el efecto que la prosa produce en el lector, pero no nombra ninguna de las técnicas que lo producen, de modo que no llega a identificar estrategia alguna.',
+            ok: true,
+            fb: 'Correcta. Nombra el problema con precisión —efecto frente a técnica— y lo prueba enfrentando lo que el resumen dice con lo que el texto contiene. Señalar un fallo también exige doble evidencia.'
+          },
+          {
+            t: 'El Agente 2 tiene razón: el estilo de Pron es efectivamente muy literario y agradable de leer.',
+            ok: false,
+            fb: 'Repite la valoración del resumen en lugar de analizarla. Estar de acuerdo con un juicio de gusto no es dar cuenta de las estrategias del texto.'
+          },
+          {
+            t: 'Como los tres resúmenes mencionan el estilo, ninguno cumple bien este criterio.',
+            ok: false,
+            fb: 'Generaliza sin comprobar: el Agente 3 sí nombra recursos concretos. Además la afirmación no enlaza las dos evidencias que se acababan de presentar.'
+          },
+          {
+            t: 'Sería mejor que el Agente 2 hubiera citado directamente algún fragmento del ensayo.',
+            ok: false,
+            fb: 'Es una recomendación al agente, no un análisis. La rúbrica pide justificar qué hace y qué no hace el resumen, no sugerirle mejoras.'
+          }
+        ]
+      }
+    ]
+  }
+];
+
+
+/* ===== data-ej-transversal.js ===== */
+/* data-ej-transversal.js — bloque transversal: c5 (cohesión y coherencia) y
+   c6 (gramática). Estos dos criterios evalúan la prosa del estudiante, no el
+   texto fuente, de modo que los ejercicios no dependen del conjunto elegido y
+   aparecen en los cuatro flujos de práctica. Sus respuestas se conservan al
+   cambiar de texto. */
+
+const EJ_TRANSVERSAL = [
+  /* ---------------- c5 · cohesión y coherencia ---------------- */
+  {
+    id: 'tr-c5-1',
     criterio: 'c5',
     motor: 'cloze',
     titulo: 'El conector que corresponde a la relación real',
     enunciado: 'Elige el conector que expresa la relación que efectivamente hay entre las dos ideas.',
     items: [
       {
-        id: 'c5e1i1',
-        frase: 'El resumen del Agente 1 es fiel en todos sus datos; ___ , no dice una palabra sobre cómo está organizado el texto.',
+        id: 'tr-c5-1-i1',
+        frase: 'El resumen elegido es fiel en todos sus datos; ___ , no dice una palabra sobre cómo está organizado el texto fuente.',
         opciones: [
           { t: 'sin embargo', ok: true, fb: 'Correcta. Hay una oposición real: el resumen acierta en un criterio y falla en otro. «Sin embargo» es exactamente el conector contraargumentativo que esa relación pide.' },
           { t: 'por lo tanto', ok: false, fb: 'Afirma una consecuencia que no existe: la fidelidad no produce la ceguera estructural. Un conector mal elegido no solo estorba, sostiene una relación lógica falsa.' },
@@ -1754,8 +2588,8 @@ const EJERCICIOS_2 = [
         ]
       },
       {
-        id: 'c5e1i2',
-        frase: 'El Agente 3 inventa cuatro datos que el texto contradice; ___ , su elección no es defendible por más bien escrito que esté.',
+        id: 'tr-c5-1-i2',
+        frase: 'El resumen inventa cuatro datos que el texto contradice; ___ , su elección no es defendible por más bien escrito que esté.',
         opciones: [
           { t: 'por eso', ok: true, fb: 'Correcta. La relación es de consecuencia: las adiciones son la causa de que la elección no se sostenga. «Por eso» encadena el argumento con el juicio.' },
           { t: 'aunque', ok: false, fb: 'Introduce una concesión, y aquí no se concede nada: la segunda oración es la conclusión de la primera, no una objeción a ella.' },
@@ -1764,8 +2598,8 @@ const EJERCICIOS_2 = [
         ]
       },
       {
-        id: 'c5e1i3',
-        frase: 'Rivas trata un asunto gastronómico con vocabulario de tratado moral —«adminículo», «rémora», «estoicismo»—; ___ , de ese desajuste entre asunto y registro nace la ironía del texto.',
+        id: 'tr-c5-1-i3',
+        frase: 'El autor trata un asunto menor con vocabulario de tratado moral; ___ , de ese desajuste entre asunto y registro nace la ironía del texto.',
         opciones: [
           { t: 'en otras palabras', ok: true, fb: 'Correcta. La segunda oración no añade información nueva: reformula la primera para nombrar el mecanismo. Es un conector de explicación, que es la relación real.' },
           { t: 'a pesar de ello', ok: false, fb: 'Anuncia una oposición inexistente: la segunda oración no contradice a la primera, la interpreta.' },
@@ -1776,22 +2610,22 @@ const EJERCICIOS_2 = [
     ]
   },
   {
-    id: 'c5e2',
+    id: 'tr-c5-2',
     criterio: 'c5',
     motor: 'ordenar',
     titulo: 'La progresión de un párrafo de justificación',
     enunciado: 'Ordena las cuatro piezas de este párrafo para que la justificación avance como debe.',
     ayuda: 'La secuencia que funciona en todos los criterios de contenido es siempre la misma: qué afirmo, qué dice el texto fuente, qué dice el resumen, en qué se corresponden.',
     piezas: [
-      { t: 'El resumen del Agente 3 no solo enumera recursos: los localiza en el texto.', fb: 'La afirmación. Abre el párrafo diciendo qué se va a sostener, para que el lector sepa qué está leyendo cuando lleguen las citas.' },
-      { t: 'Pron marca con comillas las palabras «niña salvaje», «tratamiento» e «integración», y con ellas pone en duda las categorías de su época.', fb: 'La evidencia del texto fuente. Va antes que la del resumen porque es el objeto: primero se establece qué hay en el texto, después se comprueba si el resumen lo recogió.' },
-      { t: 'El Agente 3 recoge exactamente esas tres comillas y las llama «comillas de distancia».', fb: 'La evidencia del resumen. Es la segunda mitad de la doble cita, y sin ella no hay nada que comparar.' },
+      { t: 'El resumen elegido no solo enumera recursos: los localiza en el texto.', fb: 'La afirmación. Abre el párrafo diciendo qué se va a sostener, para que el lector sepa qué está leyendo cuando lleguen las citas.' },
+      { t: 'El autor marca con comillas ciertas palabras clave y con ellas pone en duda las categorías de su época.', fb: 'La evidencia del texto fuente. Va antes que la del resumen porque es el objeto: primero se establece qué hay en el texto, después se comprueba si el resumen lo recogió.' },
+      { t: 'El resumen recoge exactamente esas comillas y las llama «comillas de distancia».', fb: 'La evidencia del resumen. Es la segunda mitad de la doble cita, y sin ella no hay nada que comparar.' },
       { t: 'La correspondencia es literal y también funcional: el resumen no solo repite las palabras entrecomilladas, identifica para qué sirven, que es lo que la rúbrica llama dar cuenta de una estrategia.', fb: 'La correspondencia explícita. Es la pieza que separa Excelente de Básico y la que casi nadie escribe: dice en qué consiste la coincidencia y por qué importa.' }
     ],
     explicacion: 'Este orden no es una preferencia estilística. Cualquier otro obliga al lector a retroceder: si la correspondencia va antes que las citas, se afirma lo que aún no se ha probado; si la afirmación va al final, el lector lee dos citas sin saber para qué.'
   },
   {
-    id: 'c5e3',
+    id: 'tr-c5-3',
     criterio: 'c5',
     motor: 'marcar',
     modo: 'oracion',
@@ -1800,29 +2634,29 @@ const EJERCICIOS_2 = [
     ayuda: 'Tres de las seis oraciones contienen una referencia que puede señalar al texto fuente o al resumen. Marcar una oración clara resta.',
     unidades: [
       { t: 'El resumen recoge la tesis del texto fuente y este la desarrolla mediante una anécdota alegórica.', marcar: true, fb: '«Este» puede señalar al resumen o al texto fuente, y la frase cambia de sentido según a cuál apunte. Se arregla repitiendo el sustantivo: «y el texto fuente la desarrolla».' },
-      { t: 'El Agente 3 describe la estructura del ensayo con precisión: nombra la apertura, el aplazamiento de la tesis y el cierre circular.', marcar: false, fb: 'No hay ambigüedad: el sujeto está nombrado y los tres elementos de la enumeración dependen sin duda del verbo «nombra».' },
-      { t: 'Forn cita a Julian Barnes y a Lorrie Moore, y el resumen lo menciona como prueba de que su lectura no es solitaria.', marcar: true, fb: 'Dos referencias sueltas en una sola oración: «lo» puede remitir a la cita, a Barnes o a Moore, y «su» puede ser de Forn, del resumen o de Moore.' },
-      { t: 'Aunque el Agente 2 comete errores de acentuación, es el único que describe la organización del texto fuente.', marcar: false, fb: 'El sujeto elidido de «es» solo puede ser el Agente 2, que es el único sujeto disponible. La concesiva está bien construida.' },
+      { t: 'El resumen elegido describe la estructura del texto con precisión: nombra la apertura, el aplazamiento de la tesis y el cierre.', marcar: false, fb: 'No hay ambigüedad: el sujeto está nombrado y los tres elementos de la enumeración dependen sin duda del verbo «nombra».' },
+      { t: 'El autor cita a dos escritores conocidos, y el resumen lo menciona como prueba de que su lectura no es solitaria.', marcar: true, fb: 'Dos referencias sueltas en una sola oración: «lo» puede remitir a la cita o a cualquiera de los dos escritores, y «su» puede ser del autor, del resumen o de los citados.' },
+      { t: 'Aunque el resumen comete errores de acentuación, es el único que describe la organización del texto fuente.', marcar: false, fb: 'El sujeto elidido de «es» solo puede ser el resumen, que es el único sujeto disponible. La concesiva está bien construida.' },
       { t: 'El texto fuente y el resumen coinciden en la idea principal, lo cual demuestra que la entendió bien.', marcar: true, fb: '«La entendió» tiene dos sujetos posibles —el agente o el autor— y «lo cual» remite a la coincidencia entera de forma vaga. Convendría escribir: «lo cual demuestra que el agente entendió la idea principal».' },
-      { t: 'La anécdota de los muñecos ocupa cinco párrafos del texto fuente; el resumen la despacha en una sola oración.', marcar: false, fb: 'Los dos «la» remiten sin duda a la anécdota, que es el único femenino singular disponible. El punto y coma separa bien las dos observaciones.' }
+      { t: 'La anécdota central ocupa cinco párrafos del texto fuente; el resumen la despacha en una sola oración.', marcar: false, fb: 'Los dos «la» remiten sin duda a la anécdota, que es el único femenino singular disponible. El punto y coma separa bien las dos observaciones.' }
     ],
     explicacion: 'En esta prueba, un pronombre ambiguo no es un descuido menor: destruye justo lo que se está intentando probar. Si el lector no sabe si «este» es el texto o el resumen, la correspondencia deja de leerse y el criterio de contenido cae a Básico aunque las dos citas estén.'
   },
   {
-    id: 'c5e4',
+    id: 'tr-c5-4',
     criterio: 'c5',
     motor: 'mc',
     titulo: 'Cómo repartir 375 palabras en párrafos',
     enunciado: 'La distribución en párrafos es parte del criterio de cohesión, y en un texto de 350 a 400 palabras se decide en pocos movimientos.',
     items: [
       {
-        id: 'c5e4i1',
+        id: 'tr-c5-4-i1',
         pregunta: '¿Cuál de estas distribuciones responde mejor a lo que pide la consigna?',
         opciones: [
           {
-            t: 'Un párrafo de apertura que declara la elección y la idea principal; dos o tres párrafos de desarrollo, uno por característica analizada, cada uno con su doble evidencia; y un cierre breve que sostiene la elección.',
+            t: 'Un párrafo de apertura que declara la elección y la idea principal; tres párrafos de desarrollo, uno por característica analizada, cada uno con su doble evidencia; y un cierre breve que sostiene la elección.',
             ok: true,
-            fb: 'Correcta. Cada párrafo tiene una función identificable y la extensión alcanza: unas 90 palabras por párrafo de desarrollo dan espacio para afirmación, dos citas y correspondencia.'
+            fb: 'Correcta. Cada párrafo tiene una función identificable y la extensión alcanza: unas 80 palabras por párrafo de desarrollo dan espacio para afirmación, dos citas y correspondencia.'
           },
           {
             t: 'Un solo párrafo continuo de 375 palabras, para que el texto se lea como un razonamiento sin interrupciones.',
@@ -1842,7 +2676,7 @@ const EJERCICIOS_2 = [
         ]
       },
       {
-        id: 'c5e4i2',
+        id: 'tr-c5-4-i2',
         pregunta: 'Un estudiante escribió un párrafo de 140 palabras que cubre idea principal y fidelidad. ¿Qué conviene hacer?',
         opciones: [
           {
@@ -1870,9 +2704,9 @@ const EJERCICIOS_2 = [
     ]
   },
 
-  /* ================= c6 · GRAMÁTICA ================= */
+  /* ---------------- c6 · gramática ---------------- */
   {
-    id: 'c6e1',
+    id: 'tr-c6-1',
     criterio: 'c6',
     motor: 'marcar',
     modo: 'palabra',
@@ -1880,22 +2714,22 @@ const EJERCICIOS_2 = [
     enunciado: 'Marca las cinco palabras mal acentuadas. Hay cinco, ni una más.',
     ayuda: 'Algunas palabras que parecen mal escritas están bien: la norma actual no acentúa «solo» ni los demostrativos. Marcar una palabra correcta resta.',
     unidades: [
-      'El', 'Agente', '2', 'explica',
-      { t: 'porque', fb: 'Aquí introduce una interrogativa indirecta —explica por qué razón emociona— y debe escribirse separado y con tilde: «por qué». Escrito junto, afirma una causa que la frase no está dando.' },
-      'la', 'novela', 'emociona,', 'aunque', 'no',
-      { t: 'sabia', fb: 'Del verbo saber, es esdrújula por hiato y lleva tilde: «sabía». Sin tilde es un adjetivo que significa prudente, y la frase cambia de sentido por completo.' },
-      'que', 'Williams', 'había', 'ganado', 'el', 'premio.', 'A', 'mí', 'me', 'convenció',
+      'El', 'resumen', 'explica',
+      { t: 'porque', fb: 'Aquí introduce una interrogativa indirecta —explica por qué razón el texto emociona— y debe escribirse separado y con tilde: «por qué». Escrito junto, afirma una causa que la frase no está dando.' },
+      'el', 'texto', 'emociona,', 'aunque', 'no',
+      { t: 'sabia', fb: 'Del verbo saber, lleva tilde por hiato: «sabía». Sin tilde es un adjetivo que significa prudente, y la frase cambia de sentido por completo.' },
+      'que', 'el', 'autor', 'lo', 'había', 'anunciado.', 'A', 'mí', 'me', 'convenció',
       { t: 'mas', fb: 'En comparación es adverbio de cantidad y lleva tilde diacrítica: «más». Sin tilde es la conjunción adversativa equivalente a «pero».' },
       'que', 'los', 'otros', 'dos,', 'y', 'eso', 'que',
       { t: 'aun', fb: 'Equivale a «todavía», así que lleva tilde: «aún». Sin tilde significa «incluso», que aquí no tiene sentido.' },
       'no', 'había', 'leído', 'el', 'texto', 'fuente', 'completo.', 'El', 'resumen',
       { t: 'tambien', fb: 'Es aguda terminada en «n», de modo que se acentúa: «también». Es uno de los errores de tilde más frecuentes en textos universitarios.' },
-      'señala', 'que', 'solo', 'la', 'traducción', 'francesa', 'rescató', 'el', 'libro;', 'este', 'dato', 'es', 'exacto.'
+      'describe', 'la', 'estructura;', 'solo', 'ese', 'dato', 'es', 'discutible.'
     ],
-    explicacion: 'Tres de los cinco errores son diacríticos —«por qué», «más», «aún»—: no son faltas de ortografía sino cambios de significado. Por eso pesan tanto. En cambio «solo» y «este» ya no se acentúan según la norma vigente, y marcarlos habría sido un falso positivo.'
+    explicacion: 'Tres de los cinco errores son diacríticos —«por qué», «más», «aún»—: no son faltas de ortografía sino cambios de significado. Por eso pesan tanto. En cambio «solo» y «ese» ya no se acentúan según la norma vigente, y marcarlos habría sido un falso positivo.'
   },
   {
-    id: 'c6e2',
+    id: 'tr-c6-2',
     criterio: 'c6',
     motor: 'marcar',
     modo: 'palabra',
@@ -1915,75 +2749,74 @@ const EJERCICIOS_2 = [
     explicacion: 'Los cuatro errores tienen la misma raíz: el verbo concuerda con el sustantivo que tiene al lado en vez de con su sujeto real. «La mayoría de los errores se debe» es correcto por la misma razón por la que «ninguno de los resúmenes cumple» lo es, aunque las dos frases suenen extrañas al oído.'
   },
   {
-    id: 'c6e3',
+    id: 'tr-c6-3',
     criterio: 'c6',
     motor: 'mc',
     titulo: 'Cómo se puntúa una cita',
     enunciado: 'En esta prueba vas a citar todo el tiempo. Estas son las decisiones de puntuación que aparecerán en tu texto.',
     items: [
       {
-        id: 'c6e3i1',
+        id: 'tr-c6-3-i1',
         pregunta: '¿Cuál de estas citas está correctamente puntuada?',
         opciones: [
-          { t: 'Rivas afirma que «el buñuelo es autosuficiente, autónomo».', ok: true, fb: 'Correcta. La cita se integra en la sintaxis de la frase, así que no lleva dos puntos ni mayúscula inicial, y el punto final va fuera de las comillas, como corresponde en español.' },
-          { t: 'Rivas afirma que: «El buñuelo es autosuficiente, autónomo.»', ok: false, fb: 'Tres problemas: los dos puntos no van tras «que», la mayúscula sobra en una cita integrada y el punto debe quedar fuera de las comillas.' },
-          { t: 'Rivas afirma que "el buñuelo es autosuficiente, autónomo."', ok: false, fb: 'El punto está dentro de las comillas, que es la convención inglesa, no la española. Además conviene reservar las comillas inglesas para citas dentro de otra cita.' },
-          { t: 'Rivas afirma que «el buñuelo es autosuficiente, autónomo»', ok: false, fb: 'Falta el punto final de la oración. Cerrar comillas no cierra la frase: el enunciado sigue necesitando su punto, fuera de ellas.' }
+          { t: 'El autor afirma que «los límites entre ambos son porosos».', ok: true, fb: 'Correcta. La cita se integra en la sintaxis de la frase, así que no lleva dos puntos ni mayúscula inicial, y el punto final va fuera de las comillas, como corresponde en español.' },
+          { t: 'El autor afirma que: «Los límites entre ambos son porosos.»', ok: false, fb: 'Tres problemas: los dos puntos no van tras «que», la mayúscula sobra en una cita integrada y el punto debe quedar fuera de las comillas.' },
+          { t: 'El autor afirma que "los límites entre ambos son porosos."', ok: false, fb: 'El punto está dentro de las comillas, que es la convención inglesa, no la española. Además conviene reservar las comillas inglesas para citas dentro de otra cita.' },
+          { t: 'El autor afirma que «los límites entre ambos son porosos»', ok: false, fb: 'Falta el punto final de la oración. Cerrar comillas no cierra la frase: el enunciado sigue necesitando su punto, fuera de ellas.' }
         ]
       },
       {
-        id: 'c6e3i2',
+        id: 'tr-c6-3-i2',
         pregunta: 'Quieres citar el texto suprimiendo una parte. ¿Cuál es la forma correcta?',
         opciones: [
-          { t: 'Forn escribe: «Stoner cuenta la historia de la vida interior de su protagonista, y eso es lo que hace mágica esta novela».', ok: false, fb: 'La cita es correcta pero no suprime nada, que era lo que se preguntaba. Sirve para ver otra cosa: cuando la cita va introducida por un verbo de habla y dos puntos, empieza con mayúscula.' },
-          { t: 'Forn escribe que la novela cuenta «la historia de la vida interior de su protagonista […] y eso es lo que hace mágica esta novela».', ok: true, fb: 'Correcta. Lo suprimido se marca con puntos suspensivos entre corchetes, que es la convención académica y deja constancia de que la cita no es continua.' },
-          { t: 'Forn escribe que la novela cuenta «la historia de la vida interior de su protagonista... y eso es lo que hace mágica esta novela».', ok: false, fb: 'Los puntos suspensivos sin corchetes son ambiguos: el lector no puede saber si son del original o del citador. Los corchetes son precisamente la marca de la intervención ajena.' },
-          { t: 'Forn escribe que la novela cuenta «la historia de la vida interior de su protagonista (…) y eso es lo que hace mágica esta novela».', ok: false, fb: 'Los paréntesis se usan a veces, pero la convención recomendada en español académico son los corchetes, porque los paréntesis pueden pertenecer al texto citado.' }
+          { t: 'El autor escribe que el ensayo cuenta «la historia de una vida interior […] y eso es lo que lo hace singular».', ok: true, fb: 'Correcta. Lo suprimido se marca con puntos suspensivos entre corchetes, que es la convención académica y deja constancia de que la cita no es continua.' },
+          { t: 'El autor escribe que el ensayo cuenta «la historia de una vida interior... y eso es lo que lo hace singular».', ok: false, fb: 'Los puntos suspensivos sin corchetes son ambiguos: el lector no puede saber si son del original o del citador. Los corchetes son precisamente la marca de la intervención ajena.' },
+          { t: 'El autor escribe que el ensayo cuenta «la historia de una vida interior (…) y eso es lo que lo hace singular».', ok: false, fb: 'Los paréntesis se usan a veces, pero la convención recomendada en español académico son los corchetes, porque los paréntesis pueden pertenecer al texto citado.' },
+          { t: 'El autor escribe que el ensayo cuenta «la historia de una vida interior y eso es lo que lo hace singular».', ok: false, fb: 'No marca la supresión de ninguna manera, de modo que presenta como continuo un fragmento que no lo es. Es un problema de honestidad en la cita, no solo de puntuación.' }
         ]
       },
       {
-        id: 'c6e3i3',
+        id: 'tr-c6-3-i3',
         pregunta: '¿Cuál de estas frases puntúa correctamente una cita introducida por dos puntos?',
         opciones: [
-          { t: 'El Agente 2 lo dice sin rodeos: «Forn organiza su texto de una manera particular».', ok: true, fb: 'Correcta. Verbo de habla, dos puntos, comillas, mayúscula inicial porque la cita es una oración completa e independiente, y punto final fuera de las comillas.' },
-          { t: 'El Agente 2 lo dice sin rodeos, «Forn organiza su texto de una manera particular».', ok: false, fb: 'La coma no basta para introducir una cita que es una oración completa: hacen falta dos puntos. La coma deja la frase encadenada sin marca de que empieza una voz ajena.' },
-          { t: 'El Agente 2 lo dice sin rodeos: Forn organiza su texto de una manera particular.', ok: false, fb: 'Faltan las comillas, y sin ellas no hay cita: el lector no puede distinguir las palabras del agente de las del estudiante. En esta prueba eso arruina además la evidencia textual.' },
-          { t: 'El Agente 2 lo dice sin rodeos: «forn organiza su texto de una manera particular».', ok: false, fb: 'La cita es una oración completa introducida por dos puntos, así que debe empezar por mayúscula; y un nombre propio la lleva en cualquier posición.' }
+          { t: 'El resumen lo dice sin rodeos: «El texto se organiza de una manera particular».', ok: true, fb: 'Correcta. Verbo de habla, dos puntos, comillas, mayúscula inicial porque la cita es una oración completa e independiente, y punto final fuera de las comillas.' },
+          { t: 'El resumen lo dice sin rodeos, «El texto se organiza de una manera particular».', ok: false, fb: 'La coma no basta para introducir una cita que es una oración completa: hacen falta dos puntos. La coma deja la frase encadenada sin marca de que empieza una voz ajena.' },
+          { t: 'El resumen lo dice sin rodeos: El texto se organiza de una manera particular.', ok: false, fb: 'Faltan las comillas, y sin ellas no hay cita: el lector no puede distinguir las palabras del agente de las del estudiante. En esta prueba eso arruina además la evidencia textual.' },
+          { t: 'El resumen lo dice sin rodeos: «el texto se organiza de una manera particular».', ok: false, fb: 'La cita es una oración completa introducida por dos puntos, así que debe empezar por mayúscula.' }
         ]
       }
     ]
   },
   {
-    id: 'c6e4',
+    id: 'tr-c6-4',
     criterio: 'c6',
     motor: 'reescritura',
     titulo: 'Corregir sin cambiar el contenido',
     enunciado: 'Este párrafo dice lo que debe decir, pero está mal escrito. Elige la corrección que arregla los errores sin alterar el contenido.',
     items: [
       {
-        id: 'c6e4i1',
-        conjunto: 'stoner',
-        fragmento: 'El Agente 2 es el unico que describe la organización del texto, aunque tiene errores, el explica porque la novela emociona y ademas señala que el destino del libro se parece al del personaje, esto refuerza la tesis de Forn.',
-        diagnostico: 'Hay cuatro tildes ausentes —«único», «él», «además»— y una interrogativa indirecta escrita como causal; además, tres oraciones quedan enlazadas solo con comas.',
+        id: 'tr-c6-4-i1',
+        fragmento: 'El resumen elegido es el unico que describe la organización del texto, aunque tiene errores, el explica porque el texto emociona y ademas señala cuál es su idea principal, esto refuerza mi elección.',
+        diagnostico: 'Hay tres tildes ausentes —«único», «él», «además»— y una interrogativa indirecta escrita como causal; además, tres oraciones quedan enlazadas solo con comas.',
         pregunta: '¿Cuál corrección resuelve los problemas sin cambiar lo que el párrafo dice?',
         opciones: [
           {
-            t: 'El Agente 2 es el único que describe la organización del texto. Aunque tiene errores, él explica por qué la novela emociona y además señala que el destino del libro se parece al del personaje. Esto refuerza la tesis de Forn.',
+            t: 'El resumen elegido es el único que describe la organización del texto. Aunque tiene errores, él explica por qué el texto emociona y además señala cuál es su idea principal. Esto refuerza mi elección.',
             ok: true,
-            fb: 'Correcta. Restituye las cuatro tildes, separa «por qué» como corresponde a la interrogativa indirecta y sustituye las comas encadenadas por puntos, sin añadir ni quitar una sola idea.'
+            fb: 'Correcta. Restituye las tres tildes, separa «por qué» como corresponde a la interrogativa indirecta y sustituye las comas encadenadas por puntos, sin añadir ni quitar una sola idea.'
           },
           {
-            t: 'El Agente 2 es el único que describe la organización del texto, aunque tiene errores, él explica por qué la novela emociona y además señala que el destino del libro se parece al del personaje, esto refuerza la tesis de Forn.',
+            t: 'El resumen elegido es el único que describe la organización del texto, aunque tiene errores, él explica por qué el texto emociona y además señala cuál es su idea principal, esto refuerza mi elección.',
             ok: false,
             fb: 'Arregla las tildes pero deja intacto el encadenamiento por comas, que es un problema de puntuación y de cohesión a la vez. «Esto refuerza» sigue unido a la oración anterior por una coma que no puede soportarlo.'
           },
           {
-            t: 'Aunque el Agente 2 comete errores de acentuación y de puntuación que dificultan la lectura, es el único de los tres resúmenes que describe la organización del texto de Forn, y por eso resulta una elección defendible pese a su corrección textual deficiente.',
+            t: 'Aunque el resumen elegido comete errores de acentuación y de puntuación que dificultan la lectura, es el único de los tres que describe la organización del texto fuente, y por eso resulta una elección defendible pese a su corrección textual deficiente.',
             ok: false,
             fb: 'Está bien escrito, pero reescribe el contenido: añade un juicio sobre la elección que el párrafo original no hacía y suprime dos observaciones. La consigna era corregir, no reformular.'
           },
           {
-            t: 'El Agente 2 es el único que describe la organización del texto. Tiene errores. Él explica porque la novela emociona. Además señala que el destino del libro se parece al del personaje. Esto refuerza la tesis de Forn.',
+            t: 'El resumen elegido es el único que describe la organización del texto. Tiene errores. Él explica porque el texto emociona. Además señala cuál es su idea principal. Esto refuerza mi elección.',
             ok: false,
             fb: 'Resuelve el encadenamiento partiendo en oraciones muy breves, pero pierde la concesión —«aunque tiene errores»— y deja sin corregir «porque», que en una interrogativa indirecta va separado y con tilde.'
           }
@@ -1993,8 +2826,22 @@ const EJERCICIOS_2 = [
   }
 ];
 
-/* Se ensamblan en el orden de la rúbrica. */
-const EJERCICIOS = EJERCICIOS_1.concat(EJERCICIOS_2);
+/* Índice de flujos: cada texto propone su bloque propio más el transversal. */
+const BLOQUES_POR_TEXTO = {
+  bunuelo: EJ_BUNUELO,
+  insipido: EJ_INSIPIDO,
+  stoner: EJ_STONER,
+  salvaje: EJ_SALVAJE
+};
+
+function ejerciciosDe(conjuntoId) {
+  return (BLOQUES_POR_TEXTO[conjuntoId] || []).concat(EJ_TRANSVERSAL);
+}
+
+/* Banco completo, para los arneses de validación. */
+const EJERCICIOS = Object.keys(BLOQUES_POR_TEXTO)
+  .reduce((a, k) => a.concat(BLOQUES_POR_TEXTO[k]), [])
+  .concat(EJ_TRANSVERSAL);
 
 
 /* ===== app.js ===== */
@@ -2038,6 +2885,7 @@ function fmtTiempo(ms) {
 /* ================= estado ================= */
 const S = {
   pantalla: 'inicio',
+  textoActivo: null,   // null hasta que el estudiante elige un texto
   criterio: 'c1',
   ej: {},
   visor: { abierto: false, conjunto: 'bunuelo', pestana: 'fuente', desdeSim: false },
@@ -2054,6 +2902,21 @@ const S = {
     entregado: false
   }
 };
+
+/* Ejercicios del flujo activo: bloque propio del texto elegido + transversal.
+   Sin texto elegido devuelve solo el transversal, que no depende de ninguno. */
+function EJ() {
+  return S.textoActivo ? ejerciciosDe(S.textoActivo) : EJ_TRANSVERSAL;
+}
+function esDeTexto(e) { return !!e.conjunto; }
+function bloqueDe(id) { return BLOQUES_POR_TEXTO[id] || []; }
+function respondidosEn(id) {
+  return bloqueDe(id).filter((e) => tieneRespuestas(e)).length;
+}
+function limpiarBloque(id) {
+  bloqueDe(id).forEach((e) => { delete S.ej[e.id]; });
+}
+function palabrasFuente(c) { return c.fuente.parrafos.join(' ').split(/\s+/).length; }
 
 /* --------- estado de un ejercicio --------- */
 function nuevoEstado(e) {
@@ -2126,7 +2989,7 @@ function puntuar(e) {
   return null;
 }
 function puntuarCriterio(cid) {
-  const propios = EJERCICIOS.filter((e) => e.criterio === cid);
+  const propios = EJ().filter((e) => e.criterio === cid);
   const con = propios.map((e) => puntuar(e)).filter(Boolean);
   if (!con.length) return null;
   return { frac: con.reduce((a, p) => a + p.frac, 0) / con.length, ejercicios: con.length, total: propios.length };
@@ -2197,7 +3060,7 @@ function pantallaInicio() {
   <p>Elegir el mejor de tres resúmenes hechos por inteligencia artificial y escribir entre 350 y 400 palabras que justifiquen la elección. Esta app entrena los seis criterios con que se evalúa ese texto y termina en un simulacro completo.</p>
   ${barraGrande()}
   <div class="acciones">
-    <button class="b p" data-a="ir" data-p="criterio" data-c="c1">Empezar por la idea principal</button>
+    <button class="b p" data-a="ir" data-p="practica">Empezar la práctica</button>
     <button class="b" data-a="ir" data-p="simulacro">Ir al simulacro</button>
   </div>
 </div>
@@ -2232,38 +3095,83 @@ function pantallaInicio() {
   <h2>Los seis criterios</h2>
   <table><thead><tr><th>Criterio</th><th style="width:70px">Peso</th><th style="width:90px">Ejercicios</th></tr></thead><tbody>
   ${RUBRICA.map((c) => {
-    const n = EJERCICIOS.filter((e) => e.criterio === c.id).length;
+    const n = EJ().filter((e) => e.criterio === c.id).length;
     const p = puntuarCriterio(c.id);
-    return `<tr><td><button class="b peq" data-a="ir" data-p="criterio" data-c="${c.id}">${esc(c.nombre)}</button></td>
+    return `<tr><td>${esc(c.nombre)}</td>
       <td><span class="peso">${c.peso} %</span></td>
-      <td>${p ? pct(p.frac) + ' % · ' + p.ejercicios + '/' + n : n + ' sin hacer'}</td></tr>`;
+      <td>${p ? pct(p.frac) + ' % · ' + p.ejercicios + '/' + n : n + ' en cada flujo'}</td></tr>`;
   }).join('')}
   </tbody></table>
-  <p style="font-size:.85rem;color:var(--ink-2);margin:0">${nEj} ejercicios en total, con ${new Set(EJERCICIOS.map((e) => e.motor)).size} dinámicas distintas.</p>
+  <p style="font-size:.85rem;color:var(--ink-2);margin:0">Cada texto propone su propio recorrido de ${bloqueDe('bunuelo').length + EJ_TRANSVERSAL.length} ejercicios. En total hay ${nEj} en el banco, con ${new Set(EJERCICIOS.map((e) => e.motor)).size} dinámicas distintas.</p>
 </div>
 
 <div class="card">
   <p class="eyebrow">Antes de empezar</p>
   <div class="nota aviso">${esc(SIMULACRO.sinPersistencia)}</div>
-  <h4>Textos disponibles</h4>
-  <table><tbody>
-  ${CONJUNTOS.map((c) => `<tr><td><button class="b peq" data-a="visor" data-k="${c.id}">${esc(c.titulo)}</button></td>
-    <td style="font-size:.82rem;color:var(--ink-2)">${esc(c.autor)} · ${esc(c.genero)}</td>
-    <td style="font-size:.78rem;color:var(--ink-3)">${c.uso === 'simulacro' ? 'reservado' : c.uso === 'demo' ? 'oficial' : 'práctica'}</td></tr>`).join('')}
-  </tbody></table>
-  <details><summary style="cursor:pointer;font-size:.85rem;color:var(--ink-2)">Pendientes institucionales</summary>
+  <p style="font-size:.9rem;color:var(--ink-2)">La práctica empieza eligiendo uno de los cuatro textos. Cada uno tiene sus propios ejercicios y su propio diagnóstico.</p>
+  <div class="acciones"><button class="b p" data-a="ir" data-p="practica">Ver los cuatro textos</button></div>
+  <details style="margin-top:12px"><summary style="cursor:pointer;font-size:.85rem;color:var(--ink-2)">Pendientes institucionales</summary>
   <ol style="font-size:.83rem;color:var(--ink-2);margin-top:8px">${PENDIENTES.map((p) => `<li>${esc(p)}</li>`).join('')}</ol></details>
 </div>`;
+}
+
+function pantallaEleccion() {
+  const propios = bloqueDe('bunuelo').length;
+  const total = propios + EJ_TRANSVERSAL.length;
+  return `
+<div class="card">
+  <p class="eyebrow">Práctica</p>
+  <h1>Elige el texto con el que quieres practicar</h1>
+  <p>Cada texto propone un recorrido distinto. Al elegir uno entras en un flujo de ${total} ejercicios: ${propios} construidos sobre ese texto y sus tres resúmenes, y ${EJ_TRANSVERSAL.length} transversales de cohesión y gramática, que no dependen de ningún texto y valen la mitad de la nota.</p>
+  <table><thead><tr><th>Bloque</th><th>Criterios</th><th>Peso</th></tr></thead><tbody>
+    <tr><th>Sobre el texto elegido</th><td>Idea principal, estructura, fidelidad y estrategias discursivas</td><td><span class="peso">50 %</span></td></tr>
+    <tr><th>Transversal</th><td>Cohesión y coherencia, gramática y ortografía</td><td><span class="peso">50 %</span></td></tr>
+  </tbody></table>
+  <div class="nota clave">El diagnóstico se calcula por flujo: cada texto te da su propio resultado. Si cambias de texto, las respuestas de ese bloque se borran; las de los ejercicios transversales se conservan.</div>
+</div>
+
+${CONJUNTOS.map((c) => {
+  const n = bloqueDe(c.id).length;
+  const hechos = respondidosEn(c.id);
+  const activo = S.textoActivo === c.id;
+  return `<div class="card" style="${activo ? 'border-color:var(--tesis)' : ''}">
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:baseline">
+      <h2 style="flex:1;margin:0">${esc(c.titulo)}</h2>
+      ${activo ? '<span class="peso">flujo activo</span>' : ''}
+    </div>
+    <p style="color:var(--ink-2);font-size:.9rem;margin:6px 0 10px">
+      ${esc(c.autor)} · ${esc(c.genero)} · ${palabrasFuente(c)} palabras · ${c.fuente.parrafos.length} párrafos${c.dilema ? ' · sin ganador obvio' : ''}
+    </p>
+    <p style="font-size:.92rem">${esc(c.fuente.ideaPrincipal)}</p>
+    <p style="font-size:.83rem;color:var(--ink-3)">${esc(ETIQUETA_ORIGEN[c.origenResumenes])}</p>
+    <div class="acciones">
+      <button class="b p" data-a="elegir-texto" data-k="${c.id}">${activo ? 'Seguir con este texto' : 'Practicar con este texto'}</button>
+      <button class="b" data-a="visor" data-k="${c.id}">Leer el texto y los resúmenes</button>
+      <span class="marcador">${hechos ? hechos + ' de ' + n + ' respondidos' : n + ' ejercicios propios'}</span>
+    </div>
+  </div>`;
+}).join('')}`;
 }
 
 function pantallaCriterio() {
   const c = criterioPorId(S.criterio);
   const k = conceptoPorId(S.criterio);
-  const propios = EJERCICIOS.filter((e) => e.criterio === c.id);
+  const propios = EJ().filter((e) => e.criterio === c.id);
   const p = puntuarCriterio(c.id);
   const idx = RUBRICA.findIndex((r) => r.id === c.id);
   const sig = RUBRICA[idx + 1];
+  const kTexto = conjuntoPorId(S.textoActivo);
+  const transversal = propios.length > 0 && propios.every((e) => !esDeTexto(e));
   return `
+<div class="card plano" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:11px 14px">
+  <span class="eyebrow" style="margin:0">Practicando con</span>
+  <strong style="font-family:var(--serif);font-size:1.02rem">${esc(kTexto.titulo)}</strong>
+  <span style="font-size:.83rem;color:var(--ink-3)">${esc(kTexto.autor)}</span>
+  <span style="flex:1"></span>
+  <button class="b peq" data-a="visor" data-k="${kTexto.id}">Ver el texto</button>
+  <button class="b peq" data-a="cambiar-texto">Cambiar de texto</button>
+</div>
+
 <div class="card">
   <p class="eyebrow">Criterio ${c.n} de 6 · <span class="peso">${c.peso} %</span></p>
   <h1>${esc(c.nombre)}</h1>
@@ -2293,6 +3201,9 @@ function pantallaCriterio() {
 
 <div class="card plano" style="background:none;border:none;padding:0">
   <h2>Ejercicios <span style="font-family:var(--mono);font-size:.8rem;color:var(--ink-3)">${p ? pct(p.frac) + ' %' : propios.length + ' pendientes'}</span></h2>
+  <p style="font-size:.86rem;color:var(--ink-2)">${transversal
+    ? 'Este criterio evalúa tu propia escritura, así que sus ejercicios son los mismos en los cuatro textos. Sus respuestas no se borran al cambiar de texto.'
+    : 'Todos los fragmentos de estos ejercicios proceden de «' + esc(kTexto.titulo) + '» y de sus tres resúmenes.'}</p>
 </div>
 ${propios.map((e, i) => pintarEjercicio(e, i + 1)).join('')}
 
@@ -2509,14 +3420,16 @@ function pintarSimulacro() {
   <div class="acciones">
     <label style="font-size:.85rem;color:var(--ink-2)">Conjunto:
       <select class="sel" data-a="cambiar-conjunto">
-        ${CONJUNTOS_SIMULACRO.map((id) => {
+        ${ordenSimulacro().map((id) => {
           const k = conjuntoPorId(id);
-          return `<option value="${id}" ${id === S.sim.conjunto ? 'selected' : ''}>${esc(k.titulo)}${k.uso === 'demo' ? ' (ya trabajado en la práctica)' : ''}</option>`;
+          const visto = respondidosEn(id) > 0;
+          return `<option value="${id}" ${id === S.sim.conjunto ? 'selected' : ''}>${esc(k.titulo)}${visto ? ' · ya practicado' : ' · sin practicar'}</option>`;
         }).join('')}
         <option value="__azar">Asignar uno al azar</option>
       </select></label>
     <button class="b" data-a="visor-sim">Abrir el comparador</button>
   </div>
+  <p style="font-size:.83rem;color:var(--ink-2);margin:10px 0 0">Los cuatro textos están disponibles. Aparecen primero los que todavía no has trabajado en la práctica: enfrentarte a un texto nuevo se parece más a la prueba real.</p>
 </div>
 
 <div class="sim-cols ${S.visor.abierto && S.visor.desdeSim ? 'conVisor' : ''}">
@@ -2586,15 +3499,26 @@ function pintarSenales(a) {
     <div class="nota aviso" style="margin-top:10px">${esc(SIMULACRO.advertenciaHeuristica)}</div></div>`;
 }
 
+/* Los conjuntos que el estudiante no ha practicado se ofrecen primero. */
+function ordenSimulacro() {
+  return CONJUNTOS_SIMULACRO.slice().sort((a, b) => respondidosEn(a) - respondidosEn(b));
+}
+
 function tiempoSim() {
   return S.sim.acumulado + (S.sim.t0 ? Date.now() - S.sim.t0 : 0);
 }
 
 /* ================= diagnóstico ================= */
 function pantallaDiagnostico() {
+  if (!S.textoActivo) {
+    return `<div class="card"><h1>Diagnóstico</h1>
+      <p>El diagnóstico se calcula por flujo de práctica. Elige primero un texto.</p>
+      <div class="acciones"><button class="b p" data-a="ir" data-p="practica">Elegir un texto</button></div></div>`;
+  }
+  const kAct = conjuntoPorId(S.textoActivo);
   const pond = ponderado();
   const a = analizarTexto(S.sim.texto, S.sim.conjunto, S.sim.elegido);
-  const hechos = EJERCICIOS.filter((e) => puntuar(e)).length;
+  const hechos = EJ().filter((e) => puntuar(e)).length;
   let cuerpo = '';
   if (!pond) {
     cuerpo = `<div class="card"><h2>Todavía no hay práctica que medir</h2>
@@ -2607,7 +3531,7 @@ function pantallaDiagnostico() {
     cuerpo = `
     <div class="card">
       <p class="eyebrow">Ponderado sobre lo practicado</p>
-      <div class="res-num">${pct(pond.frac)} %<small> de ${pond.pesoCubierto} % de la rúbrica cubierto · ${hechos} de ${EJERCICIOS.length} ejercicios</small></div>
+      <div class="res-num">${pct(pond.frac)} %<small> de ${pond.pesoCubierto} % de la rúbrica cubierto · ${hechos} de ${EJ().length} ejercicios del flujo</small></div>
       <p style="margin-top:10px;color:${pond.frac >= UMBRAL_APROBACION ? 'var(--ok)' : 'var(--warn)'}">
         ${pond.frac >= UMBRAL_APROBACION ? 'Por encima del umbral asumido de aprobación (70 %).' : 'Por debajo del umbral asumido de aprobación (70 %).'}
         El umbral está pendiente de confirmación institucional.</p>
@@ -2649,11 +3573,15 @@ function pantallaDiagnostico() {
       <p>El bloque del simulacro aparece aquí cuando hay texto escrito.</p>
       <button class="b p" data-a="ir" data-p="simulacro">Ir al simulacro</button></div>`;
 
-  return `<div class="card plano" style="background:none;border:none;padding:0"><h1>Diagnóstico</h1></div>
+  return `<div class="card plano" style="background:none;border:none;padding:0">
+      <h1>Diagnóstico</h1>
+      <p style="color:var(--ink-2)">Flujo de práctica sobre «${esc(kAct.titulo)}», de ${esc(kAct.autor)}. Los criterios de cohesión y gramática son transversales y se conservan al cambiar de texto.</p>
+    </div>
     ${cuerpo}${simBloque}
     <div class="acciones" style="margin-bottom:30px">
       <button class="b p" data-a="descargar-informe">Descargar el informe</button>
       <button class="b" data-a="imprimir">Imprimir o guardar en PDF</button>
+      <button class="b" data-a="cambiar-texto">Cambiar de texto</button>
       <button class="b riesgo" data-a="reset-practica">Borrar la práctica</button>
     </div>`;
 }
@@ -2730,12 +3658,13 @@ function pintarOvl() {
     panel = `<h3>Índice</h3>
       <div class="lista">
         <button data-a="ir" data-p="inicio">Inicio</button>
-        <div class="g">Criterios</div>
-        ${RUBRICA.map((c) => {
+        <div class="g">Práctica${S.textoActivo ? ' · ' + esc(conjuntoPorId(S.textoActivo).titulo) : ''}</div>
+        <button data-a="ir" data-p="practica">Elegir texto de práctica</button>
+        ${S.textoActivo ? RUBRICA.map((c) => {
           const p = puntuarCriterio(c.id);
           return `<button data-a="ir" data-p="criterio" data-c="${c.id}">${c.n}. ${esc(c.nombre)} · ${c.peso} %${p ? ' · ' + pct(p.frac) + ' %' : ''}</button>`;
-        }).join('')}
-        <div class="g">Textos</div>
+        }).join('') : ''}
+        <div class="g">Leer los textos</div>
         ${CONJUNTOS.map((c) => `<button data-a="visor" data-k="${c.id}">${esc(c.titulo)} · ${esc(c.autor)}</button>`).join('')}
         <div class="g">Prueba</div>
         <button data-a="ir" data-p="simulacro">Simulacro</button>
@@ -2762,7 +3691,7 @@ function render() {
       <div class="sep"></div>
       <nav class="tabs">
         <button class="b peq${S.pantalla === 'inicio' ? ' act' : ''}" data-a="ir" data-p="inicio">Inicio</button>
-        <button class="b peq${S.pantalla === 'criterio' ? ' act' : ''}" data-a="ir" data-p="criterio" data-c="${S.criterio}">Práctica</button>
+        <button class="b peq${S.pantalla === 'criterio' || S.pantalla === 'eleccion' ? ' act' : ''}" data-a="ir" data-p="practica">Práctica</button>
         <button class="b peq${S.pantalla === 'simulacro' ? ' act' : ''}" data-a="ir" data-p="simulacro">Simulacro</button>
         <button class="b peq${S.pantalla === 'diagnostico' ? ' act' : ''}" data-a="ir" data-p="diagnostico">Diagnóstico</button>
         <button class="b peq" data-a="indice">Índice</button>
@@ -2774,6 +3703,7 @@ function render() {
 
   let cuerpo = '';
   if (S.pantalla === 'inicio') cuerpo = pantallaInicio();
+  else if (S.pantalla === 'eleccion') cuerpo = pantallaEleccion();
   else if (S.pantalla === 'criterio') cuerpo = pantallaCriterio();
   else if (S.pantalla === 'simulacro') cuerpo = pintarSimulacro();
   else if (S.pantalla === 'diagnostico') cuerpo = pantallaDiagnostico();
@@ -2839,7 +3769,8 @@ document.addEventListener('click', (ev) => {
 
   if (a === 'ir') {
     S.ovl = null;
-    S.pantalla = b.dataset.p;
+    // «Práctica» resuelve a la elección de texto mientras no haya uno activo.
+    S.pantalla = b.dataset.p === 'practica' ? (S.textoActivo ? 'criterio' : 'eleccion') : b.dataset.p;
     if (b.dataset.c) S.criterio = b.dataset.c;
     if (S.pantalla !== 'simulacro') { S.visor.desdeSim = false; }
     render();
@@ -2850,6 +3781,39 @@ document.addEventListener('click', (ev) => {
   if (a === 'visor-sim') { S.visor = { abierto: true, conjunto: S.sim.conjunto, pestana: 'fuente', desdeSim: true }; render(); return; }
   if (a === 'cerrar-visor') { S.visor.abierto = false; render(); return; }
   if (a === 'pestana') { S.visor.pestana = b.dataset.t; render(); return; }
+
+  if (a === 'elegir-texto') {
+    const destino = b.dataset.k;
+    if (S.textoActivo && S.textoActivo !== destino && respondidosEn(S.textoActivo) > 0) {
+      const anterior = conjuntoPorId(S.textoActivo);
+      abrirConfirmacion({
+        titulo: 'Cambiar de texto',
+        verbo: 'cambiar',
+        cuerpo: `Tienes ${respondidosEn(S.textoActivo)} ejercicio${respondidosEn(S.textoActivo) === 1 ? '' : 's'} respondido${respondidosEn(S.textoActivo) === 1 ? '' : 's'} sobre «${anterior.titulo}». Al cambiar a «${conjuntoPorId(destino).titulo}» esas respuestas se borran. Los ejercicios transversales de cohesión y gramática se conservan, y el simulacro no se toca.`,
+        conDescarga: false,
+        alConfirmar: () => {
+          limpiarBloque(S.textoActivo);
+          S.textoActivo = destino;
+          S.criterio = 'c1';
+          S.pantalla = 'criterio';
+        }
+      });
+      return;
+    }
+    S.textoActivo = destino;
+    S.criterio = 'c1';
+    S.pantalla = 'criterio';
+    render();
+    window.scrollTo(0, 0);
+    return;
+  }
+  if (a === 'cambiar-texto') {
+    S.pantalla = 'eleccion';
+    S.ovl = null;
+    render();
+    window.scrollTo(0, 0);
+    return;
+  }
 
   if (a === 'op') {
     const e = EJERCICIOS.find((x) => x.id === b.dataset.e);
@@ -2910,12 +3874,12 @@ document.addEventListener('click', (ev) => {
     return;
   }
   if (a === 'reset-practica') {
-    const n = EJERCICIOS.filter((e) => tieneRespuestas(e)).length;
+    const n = EJ().filter((e) => tieneRespuestas(e)).length;
     abrirConfirmacion({
-      titulo: 'Borrar la práctica', verbo: 'borrar',
-      cuerpo: `Se borrarán las respuestas de ${n} ejercicio${n === 1 ? '' : 's'}. El simulacro no se toca: tu texto, el cronómetro y la autoevaluación quedan intactos.`,
+      titulo: 'Borrar este flujo de práctica', verbo: 'borrar',
+      cuerpo: `Se borrarán las respuestas de ${n} ejercicio${n === 1 ? '' : 's'} de este flujo, incluidos los transversales. Los bloques de los otros textos y el simulacro no se tocan.`,
       conDescarga: false,
-      alConfirmar: () => { S.ej = {}; }
+      alConfirmar: () => { EJ().forEach((e) => { delete S.ej[e.id]; }); }
     });
     return;
   }
@@ -2946,8 +3910,9 @@ document.addEventListener('change', (ev) => {
   if (t.dataset.a === 'autoev') { S.sim.autoev[t.dataset.v] = t.checked; return; }
   if (t.dataset.a === 'funcion') { S.sim.funciones[t.dataset.v] = t.value; return; }
   if (t.dataset.a === 'cambiar-conjunto') {
+    const candidatos = CONJUNTOS_SIMULACRO.filter((x) => x !== S.sim.conjunto);
     const destino = t.value === '__azar'
-      ? CONJUNTOS_SIMULACRO.filter((x) => x !== S.sim.conjunto)[Math.floor(Math.random() * Math.max(1, CONJUNTOS_SIMULACRO.length - 1))]
+      ? candidatos[Math.floor(Math.random() * candidatos.length)]
       : t.value;
     if (!S.sim.texto.trim()) { S.sim.conjunto = destino; S.sim.elegido = null; render(); return; }
     abrirConfirmacion({
