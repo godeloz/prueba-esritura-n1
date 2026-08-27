@@ -77,6 +77,25 @@ header{
 .leyenda{display:flex;gap:2px;margin:-4px 0 14px}
 .leyenda span{font-family:var(--mono);font-size:.6rem;color:var(--ink-3);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
+/* dos zonas separadas por un hueco: análisis y escritura */
+.barra .hueco{flex:0 0 14px;background:none}
+.zonas{display:flex;gap:18px;margin:0 0 14px}
+@media (max-width:640px){.zonas{flex-direction:column;gap:14px}}
+.zona{min-width:0}
+.zona .zt{display:flex;align-items:baseline;gap:8px;margin:0 0 6px}
+.zona .zt span{font-family:var(--mono);font-size:.66rem;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zona .zt b{font-family:var(--mono);font-size:.72rem;color:var(--tesis)}
+.zona:last-child .zt b{color:var(--contra)}
+.hueco-zona{flex:0 0 1px;background:var(--line)}
+@media (max-width:640px){.hueco-zona{display:none}}
+
+/* fichas de familia en la portada */
+.fam{border:1px solid var(--line);border-left:3px solid var(--tesis);border-radius:0 var(--r-s) var(--r-s) 0;padding:12px 14px;margin:0 0 10px;background:var(--surface)}
+.fam-escritura{border-left-color:var(--contra)}
+.fam .ft{display:flex;align-items:baseline;gap:10px}
+.fam .ft strong{flex:1;font-family:var(--serif);font-size:1.05rem}
+.fam-escritura .peso{color:var(--contra);background:var(--contra-wash);border-color:var(--contra-line)}
+
 /* ============ botones ============ */
 button{font:inherit;color:inherit}
 .b{
@@ -252,7 +271,214 @@ textarea.compositor{
 </head>
 <body>
 <div id="app"></div>
-<script>/* ===== data-fuentes.js ===== */
+<script>/* ===== data-modelo.js ===== */
+/* data-modelo.js — modelo de entrenamiento de la app.
+ *
+ * La app NO califica con la rúbrica institucional. Entrena ocho componentes y
+ * mide el grado de preparación en cada uno. El mapeo a la rúbrica vigente vive
+ * en RUBRICA_INSTITUCIONAL y es solo una capa de correspondencia: cuando CELEE
+ * publique otra rúbrica, se reemplaza ese objeto y nada más.
+ *
+ *   ejercicio → componente → criterio institucional → descriptor
+ */
+
+/* ------------------------------------------------------------------ */
+/* Familias                                                            */
+/* ------------------------------------------------------------------ */
+const FAMILIAS = [
+  {
+    id: 'analisis',
+    nombre: 'Lo que analizas del resumen',
+    corto: 'Análisis',
+    peso: 40,
+    que: 'Las cuatro características que la prueba pide evaluar en el resumen producido por IA. Son propiedades del resumen, no de tu texto.',
+    color: 'tesis'
+  },
+  {
+    id: 'escritura',
+    nombre: 'Cómo escribes tú',
+    corto: 'Escritura',
+    peso: 60,
+    que: 'Las cualidades de tu propio texto crítico. La rúbrica vigente dedica a esto nueve de sus doce criterios: se evalúa mucho más cómo escribes que cuánto sabes del resumen.',
+    color: 'contra'
+  }
+];
+
+/* ------------------------------------------------------------------ */
+/* Componentes de entrenamiento                                        */
+/* ------------------------------------------------------------------ */
+const COMPONENTES = [
+  {
+    id: 'k1', n: 1, familia: 'analisis', peso: 10,
+    nombre: 'Idea principal', corto: 'Idea',
+    definicion: 'El resumen presenta la afirmación central que el texto fuente busca transmitir.',
+    gesto: 'Mostrar que la idea principal declarada por el resumen es la misma que sostiene el texto fuente.'
+  },
+  {
+    id: 'k2', n: 2, familia: 'analisis', peso: 10,
+    nombre: 'Estructura', corto: 'Estructura',
+    definicion: 'El resumen describe cómo está organizado el texto fuente.',
+    gesto: 'Mostrar que el resumen describe la organización del texto, no que la reproduce.'
+  },
+  {
+    id: 'k3', n: 3, familia: 'analisis', peso: 10,
+    nombre: 'Fidelidad', corto: 'Fidelidad',
+    definicion: 'El resumen presenta de manera fiel la información del texto fuente.',
+    gesto: 'Probar, con las dos fuentes a la vista, que lo que el resumen afirma está efectivamente en el texto.'
+  },
+  {
+    id: 'k4', n: 4, familia: 'analisis', peso: 10,
+    nombre: 'Estrategias discursivas', corto: 'Estrategias',
+    definicion: 'El resumen describe recursos que el autor emplea para persuadir, informar o involucrar al lector.',
+    gesto: 'Mostrar que la estrategia que el resumen nombra es la que el texto fuente emplea, señalando dónde.'
+  },
+  {
+    id: 'k5', n: 5, familia: 'escritura', peso: 15,
+    nombre: 'Postura y adecuación', corto: 'Postura',
+    definicion: 'Tu texto formula una postura explícita sobre la calidad del resumen desde el párrafo introductorio, mantiene un registro formal y se ajusta a la extensión pedida.',
+    gesto: 'Que el lector sepa qué opinas del resumen antes de terminar el primer párrafo.'
+  },
+  {
+    id: 'k6', n: 6, familia: 'escritura', peso: 15,
+    nombre: 'Cohesión', corto: 'Cohesión',
+    definicion: 'Tu texto enlaza ideas, oraciones y párrafos: conectores pertinentes, referencias sin ambigüedad y puntuación que segmenta bien.',
+    gesto: 'Escribir de modo que el lector nunca dude de si hablas del texto fuente o del resumen.'
+  },
+  {
+    id: 'k7', n: 7, familia: 'escritura', peso: 15,
+    nombre: 'Coherencia', corto: 'Coherencia',
+    definicion: 'Tu texto avanza sin saltos ni repeticiones, y se organiza en párrafos diferenciados según su función: apertura, desarrollo y cierre.',
+    gesto: 'Que cada párrafo retome lo anterior y aporte algo nuevo, y que se note para qué está.'
+  },
+  {
+    id: 'k8', n: 8, familia: 'escritura', peso: 15,
+    nombre: 'Corrección', corto: 'Corrección',
+    definicion: 'Tu texto aplica las normas de acentuación y ortografía y construye oraciones gramaticalmente correctas.',
+    gesto: 'Que ningún error obligue al lector a releer una frase para entenderla.'
+  }
+];
+
+/* Verificación de suma: cada familia debe cuadrar con su peso declarado. */
+const PESO_TOTAL = COMPONENTES.reduce((a, c) => a + c.peso, 0);
+
+const NOTA_PONDERACION = 'Esta ponderación es propia de la app y sirve para orientar el entrenamiento. La rúbrica institucional no asigna pesos a sus criterios. El reparto 40/60 refleja que nueve de los doce criterios de la rúbrica vigente evalúan cómo escribe el estudiante.';
+
+/* ------------------------------------------------------------------ */
+/* Niveles de entrenamiento                                            */
+/* ------------------------------------------------------------------ */
+/* El vocabulario coincide con el de la rúbrica para que resulte familiar,
+   pero mide preparación, no desempeño evaluado. La app lo declara. */
+const NIVELES = [
+  {
+    id: 'experto', nombre: 'Experto', min: 0.85, color: 'ok',
+    que: 'Dominas el componente. Conviene mantenerlo con repasos breves y dedicar el tiempo a los demás.'
+  },
+  {
+    id: 'avanzado', nombre: 'Avanzado', min: 0.70, color: 'tesis',
+    que: 'Casi está. Suelen quedar uno o dos gestos sin automatizar; identificarlos cuesta poco y rinde mucho.'
+  },
+  {
+    id: 'intermedio', nombre: 'Intermedio', min: 0.50, color: 'warn',
+    que: 'Reconoces el componente pero fallas al aplicarlo. Es donde más nota se recupera por hora de trabajo.'
+  },
+  {
+    id: 'inicial', nombre: 'Inicial', min: 0, color: 'no',
+    que: 'Conviene volver al material expositivo del componente antes de seguir practicando.'
+  }
+];
+
+const AVISO_NIVELES = 'Estos niveles miden tu preparación, no la nota que obtendrías. El nivel de la rúbrica lo asigna un lector humano leyendo tu texto completo; esta app solo comprueba si tienes entrenados los gestos que ese lector va a buscar.';
+
+function nivelDe(frac) {
+  return NIVELES.find((n) => frac >= n.min) || NIVELES[NIVELES.length - 1];
+}
+
+/* ------------------------------------------------------------------ */
+/* Rúbrica institucional vigente · capa de correspondencia             */
+/* ------------------------------------------------------------------ */
+/* Fuente: «N1 Rúbrica PLEE escritura 2026-2».
+   Cuatro descriptores, doce criterios, cinco niveles de desempeño.
+   Este objeto solo declara a qué criterio institucional responde cada
+   componente de entrenamiento. Sustituirlo no altera la lógica de la app. */
+const RUBRICA_INSTITUCIONAL = {
+  version: '2026-2',
+  competencia: 'Escribe textos expositivos y argumentativos con corrección, claridad y persuasión.',
+  nota: 'La rúbrica no asigna pesos a sus criterios ni convierte los niveles en nota numérica. Esa conversión es un asunto institucional del que la app no depende.',
+  descriptores: [
+    {
+      id: 'd1',
+      nombre: 'Adapta el texto a la situación comunicativa',
+      criterios: [
+        { id: 'r1', nombre: 'Formula una postura clara frente al tema propuesto de acuerdo con el propósito comunicativo.', componentes: ['k5'] },
+        { id: 'r2', nombre: 'Justifica su postura mediante razones de acuerdo con los criterios del género.', componentes: ['k1', 'k2', 'k3', 'k4'] },
+        { id: 'r3', nombre: 'Usa un léxico adecuado al nivel de formalidad del texto.', componentes: ['k5'] },
+        { id: 'r4', nombre: 'Adecúa la extensión del texto a la situación comunicativa.', componentes: ['k5'] }
+      ]
+    },
+    {
+      id: 'd2',
+      nombre: 'Mantiene la continuidad entre las ideas mediante mecanismos de cohesión textual',
+      criterios: [
+        { id: 'r5', nombre: 'Organiza las ideas mediante el uso de los signos de puntuación de acuerdo con la norma.', componentes: ['k6'] },
+        { id: 'r6', nombre: 'Enlaza ideas, oraciones y párrafos mediante marcadores discursivos.', componentes: ['k6'] },
+        { id: 'r7', nombre: 'Enlaza ideas, oraciones y párrafos mediante relaciones léxicas y sintácticas.', componentes: ['k6'] }
+      ]
+    },
+    {
+      id: 'd3',
+      nombre: 'Organiza las partes del texto de manera que sean coherentes entre sí',
+      criterios: [
+        { id: 'r8', nombre: 'Organiza la información siguiendo una progresión temática.', componentes: ['k7'] },
+        { id: 'r9', nombre: 'Desarrolla el texto mediante párrafos diferenciados según su función.', componentes: ['k7'] }
+      ]
+    },
+    {
+      id: 'd4',
+      nombre: 'Redacta textos con corrección gramatical',
+      criterios: [
+        { id: 'r10', nombre: 'Aplica las normas de acentuación en la escritura de palabras.', componentes: ['k8'] },
+        { id: 'r11', nombre: 'Aplica correctamente las normas ortográficas.', componentes: ['k8'] },
+        { id: 'r12', nombre: 'Emplea oraciones gramaticalmente correctas según la norma.', componentes: ['k8'] }
+      ]
+    }
+  ]
+};
+
+/* Bandas de extensión, tomadas literalmente de la rúbrica vigente. */
+const BANDAS_EXTENSION = [
+  { nivel: 'Experto', min: 350, max: 400, texto: 'Dentro del rango pedido.' },
+  { nivel: 'Avanzado', min: 320, max: 430, texto: 'Fuera del rango, pero cerca: entre 320 y 349 o entre 401 y 430 palabras.' },
+  { nivel: 'Intermedio', min: 290, max: 460, texto: 'Lejos del rango: entre 290 y 319 o entre 431 y 460 palabras.' },
+  { nivel: 'Inicial', min: 0, max: Infinity, texto: 'Menos de 290 o más de 460 palabras.' }
+];
+
+function bandaExtension(n) {
+  if (n >= 350 && n <= 400) return BANDAS_EXTENSION[0];
+  if (n >= 320 && n <= 430) return BANDAS_EXTENSION[1];
+  if (n >= 290 && n <= 460) return BANDAS_EXTENSION[2];
+  return BANDAS_EXTENSION[3];
+}
+
+/* ------------------------------------------------------------------ */
+/* Utilidades de consulta                                              */
+/* ------------------------------------------------------------------ */
+function componentePorId(id) { return COMPONENTES.find((c) => c.id === id); }
+function familiaPorId(id) { return FAMILIAS.find((f) => f.id === id); }
+function componentesDe(familiaId) { return COMPONENTES.filter((c) => c.familia === familiaId); }
+
+/* Criterios institucionales a los que responde un componente. */
+function criteriosDe(componenteId) {
+  const salida = [];
+  RUBRICA_INSTITUCIONAL.descriptores.forEach((d) => {
+    d.criterios.forEach((r) => {
+      if (r.componentes.includes(componenteId)) salida.push({ descriptor: d, criterio: r });
+    });
+  });
+  return salida;
+}
+
+
+/* ===== data-fuentes.js ===== */
 /* data-fuentes.js — GENERADO por gen-fuentes.js. No editar a mano. */
 /* Textos fuente verbatim. El del buñuelo procede del PDF del simulacro oficial
    PLEE 2026.1; los otros tres, del archivo de textos base entregado por CELEE. */
@@ -303,94 +529,9 @@ const FUENTES = {
    Fuente de la consigna y del conjunto oficial: PDF «Escritura N1 simulacro ejemplo» 2026.1.
    Depende de data-fuentes.js (constante FUENTES). */
 
-const UMBRAL_APROBACION = 0.70; // pendiente de confirmación institucional
-
-const RUBRICA = [
-  {
-    id: 'c1',
-    n: 1,
-    nombre: 'Identificación de la idea principal',
-    corto: 'Idea principal',
-    peso: 10,
-    definicion: 'Idea principal: presenta la afirmación central que el texto busca transmitir.',
-    gesto: 'Mostrar que la idea principal declarada por el resumen es la misma que sostiene el texto fuente.',
-    descriptores: {
-      excelente: 'Identifica en el resumen elegido la idea principal del texto fuente; y justifica con evidencias textuales la correspondencia entre a) la idea principal del texto base y b) la idea principal declarada por el resumen elegido.',
-      basico: 'Identifica en el resumen elegido la idea principal del texto fuente, pero no justifica con evidencias textuales esa correspondencia.',
-      insuficiente: 'No identifica en el resumen elegido la idea principal del texto fuente.'
-    }
-  },
-  {
-    id: 'c2',
-    n: 2,
-    nombre: 'Análisis de la estructura',
-    corto: 'Estructura',
-    peso: 10,
-    definicion: 'Análisis de la estructura: describe cómo está organizado el texto.',
-    gesto: 'Mostrar que el resumen describe la organización del texto fuente, no que la reproduce.',
-    descriptores: {
-      excelente: 'Identifica en el resumen elegido la descripción de la estructura del texto fuente; y justifica con evidencias textuales la correspondencia entre a) la estructura del texto fuente y b) la estructura descrita por el resumen.',
-      basico: 'Identifica en el resumen elegido la descripción de la estructura del texto fuente, pero no justifica la correspondencia con evidencias textuales.',
-      insuficiente: 'No identifica en el resumen elegido la descripción de la estructura del texto fuente.'
-    }
-  },
-  {
-    id: 'c3',
-    n: 3,
-    nombre: 'Análisis de la fidelidad al texto original',
-    corto: 'Fidelidad',
-    peso: 15,
-    definicion: 'Fidelidad del texto original: presenta de manera fiel la información del texto resumido (texto base).',
-    gesto: 'Probar, con las dos fuentes a la vista, que lo que el resumen afirma está efectivamente en el texto.',
-    descriptores: {
-      excelente: 'Identifica que el contenido del resumen elegido es fiel a la información del texto fuente; y justifica con evidencias textuales la correspondencia entre a) la información del texto fuente y b) la expresada en el resumen.',
-      basico: 'Identifica que el contenido del resumen elegido es fiel a la información del texto fuente, pero no lo justifica con evidencias textuales.',
-      insuficiente: 'No identifica en el resumen elegido la fidelidad de la información del texto fuente.'
-    }
-  },
-  {
-    id: 'c4',
-    n: 4,
-    nombre: 'Análisis de estrategias discursivas',
-    corto: 'Estrategias',
-    peso: 15,
-    definicion: 'Estrategias discursivas: describe algunas técnicas o recursos que utiliza el autor para persuadir, informar o involucrar al lector (figuras retóricas, citas, datos, ejemplos).',
-    gesto: 'Mostrar que la estrategia que el resumen nombra es la que el texto fuente efectivamente emplea, señalando dónde.',
-    descriptores: {
-      excelente: 'Identifica que el resumen elegido da cuenta de estrategias discursivas utilizadas en el texto fuente; y justifica con evidencias textuales la correspondencia entre a) las estrategias usadas en el texto fuente y b) las nombradas por el resumen.',
-      basico: 'Identifica que el resumen elegido da cuenta de estrategias discursivas utilizadas en el texto fuente, pero no lo justifica con evidencias textuales.',
-      insuficiente: 'No identifica en el resumen elegido las estrategias discursivas utilizadas en el texto fuente.'
-    }
-  },
-  {
-    id: 'c5',
-    n: 5,
-    nombre: 'Corrección textual (cohesión y coherencia)',
-    corto: 'Cohesión',
-    peso: 25,
-    definicion: 'El texto del estudiante se lee sin tropiezos: los enlaces, los pronombres, los párrafos y la puntuación conducen la lectura.',
-    gesto: 'Escribir de modo que el lector nunca dude de si se está hablando del texto fuente o del resumen.',
-    descriptores: {
-      excelente: 'El texto posee un uso apropiado de mecanismos de cohesión (sinónimos, repeticiones, deícticos, pronombres, conectores espaciales, temporales, estructurales, argumentativos y contraargumentativos). La distribución en párrafos y la puntuación son correctas y facilitan la lectura.',
-      basico: 'El texto presenta una estructura organizada, aunque en ocasiones poco clara. Muestra un uso limitado o poco adecuado de mecanismos de cohesión y algunas inconsistencias en la distribución en párrafos y en la puntuación.',
-      insuficiente: 'El texto presenta una estructura poco clara que obliga a la relectura, o encadena oraciones breves con mecanismos poco adecuados; hay bastantes inconsistencias en párrafos y puntuación.'
-    }
-  },
-  {
-    id: 'c6',
-    n: 6,
-    nombre: 'Corrección textual (gramática)',
-    corto: 'Gramática',
-    peso: 25,
-    definicion: 'Gramática, acentuación y ortotipografía, incluida la puntuación de las citas, que en esta prueba se usan todo el tiempo.',
-    gesto: 'Que ningún error obligue al lector a releer una frase para entenderla.',
-    descriptores: {
-      excelente: 'El texto no presenta ningún error: hay uso adecuado de la gramática (oraciones simples y subordinadas), la acentuación y la ortotipografía.',
-      basico: 'El texto presenta algunos errores no sistemáticos en la gramática, la acentuación o la ortotipografía, que solo dificultan ocasionalmente la comprensión.',
-      insuficiente: 'El texto presenta errores sistemáticos en la gramática, la acentuación o la ortotipografía que dificultan la comprensión.'
-    }
-  }
-];
+/* La rúbrica de seis criterios con pesos fue sustituida por el modelo de
+   componentes de data-modelo.js. La correspondencia con la rúbrica
+   institucional vigente vive en RUBRICA_INSTITUCIONAL. */
 
 /* ------------------------------------------------------------------ */
 /* CONJUNTOS                                                           */
@@ -413,6 +554,7 @@ const CONJUNTOS = [
     autor: 'Luis Miguel Rivas',
     genero: 'Crónica satírica',
     uso: 'demo',
+    modalidad: 'eleccion',
     origenResumenes: 'oficial',
     nota: 'Conjunto del simulacro oficial PLEE 2026.1. Texto y resúmenes reproducidos tal como aparecen en el documento institucional.',
     fuente: {
@@ -479,6 +621,7 @@ const CONJUNTOS = [
     autor: 'Marcelo Cohen',
     genero: 'Ensayo literario especulativo',
     uso: 'practica',
+    modalidad: 'eleccion',
     origenResumenes: 'didactico',
     nota: 'La segmentación en párrafos es editorial: el texto se recibió como un bloque único y se dividió por frontera de frase, sin alterar una sola palabra, para poder citarlo por número de párrafo.',
     fuente: {
@@ -544,6 +687,7 @@ const CONJUNTOS = [
     autor: 'Juan Forn',
     genero: 'Reseña-semblanza periodística',
     uso: 'practica',
+    modalidad: 'eleccion',
     origenResumenes: 'didactico',
     nota: 'Conjunto de dilema: aquí no hay un resumen que cumpla las cinco características. La elección es defendible en más de una dirección y lo que se evalúa es la justificación.',
     fuente: {
@@ -612,6 +756,7 @@ const CONJUNTOS = [
     autor: 'Patricio Pron',
     genero: 'Ensayo cultural documentado',
     uso: 'practica',
+    modalidad: 'eleccion',
     origenResumenes: 'didactico',
     nota: 'Es el texto más extenso y exigente del banco. Su bloque de práctica trabaja el aplazamiento de la tesis y la omisión del giro final, que es el fallo más frecuente al resumirlo.',
     fuente: {
@@ -672,12 +817,20 @@ const CONJUNTOS = [
   }
 ];
 
-/* Todos los conjuntos se ofrecen en el simulacro. La app los ordena poniendo
+/* Modalidad de la tarea:
+     'evaluacion' — un solo resumen; se toma postura sobre su calidad.
+                    Es la consigna vigente y la única que usa el simulacro.
+     'eleccion'   — tres resúmenes; se elige el mejor y se justifica.
+                    Formato de 2026.1. Se conserva como método de estudio:
+                    comparar versiones es la forma más rápida de ver un defecto.
+
+   Todos los conjuntos se ofrecen en el simulacro. La app los ordena poniendo
    delante los que el estudiante no ha trabajado en la práctica, para conservar
    la posibilidad de enfrentarse a un texto nuevo. */
-const CONJUNTOS_SIMULACRO = ['salvaje', 'stoner', 'insipido', 'bunuelo'];
+const CONJUNTOS_SIMULACRO = ['verdad', 'salvaje', 'stoner', 'insipido', 'bunuelo'];
 
 const ETIQUETA_ORIGEN = {
+  mixto: 'El resumen del Agente 1 es el que publicó CELEE en el modelo de asesoría, con su análisis oficial. Los otros dos son material didáctico redactado para esta app y no aparecen en el simulacro.',
   oficial: 'Resúmenes reproducidos del documento institucional PLEE 2026.1.',
   didactico: 'Los tres resúmenes son material didáctico redactado para esta app, con defectos deliberados. No son salidas reales de un modelo de inteligencia artificial.'
 };
@@ -689,9 +842,9 @@ const ETIQUETA_ORIGEN = {
 /* El mensaje que organiza toda la app. Reaparece en la portada, en cada
    criterio de contenido, en el simulacro y en el diagnóstico. */
 const MENSAJE_CENTRAL = {
-  titulo: 'Identificar te da Básico. Citar las dos fuentes te da Excelente.',
-  cuerpo: 'Los cuatro primeros criterios de esta prueba tienen la misma estructura lógica. En los cuatro, la diferencia entre Excelente y Básico no está en qué reconoces, sino en si justificas con evidencia textual la correspondencia entre el texto fuente y el resumen que elegiste. Esos cuatro criterios suman el 50 % de la nota y dependen de una sola destreza: la doble cita.',
-  cuenta: 'Quien identifica bien las cuatro características pero no cita nada obtiene Básico en las cuatro y pierde la mitad de esos 50 puntos. El otro 50 % es cohesión y gramática.'
+  titulo: 'Identificar te da un nivel. Citar las dos fuentes te da el siguiente.',
+  cuerpo: 'Las cuatro características que analizas del resumen tienen la misma estructura lógica: decir que el resumen las cumple te deja a medio camino; probarlo con evidencia del texto fuente y del resumen te lleva al nivel Experto. La rúbrica vigente lo pide con esas palabras: las razones deben sustentarse «con evidencias textuales tanto del texto fuente como del resumen producido por IA».',
+  cuenta: 'Y hay una segunda cuenta que casi nadie hace: de los doce criterios con que se evalúa tu texto, nueve miran cómo escribes tú y no cuánto sabes del resumen.'
 };
 
 /* El patrón de tres piezas. Es a N1 lo que la fórmula de argumentación era a N2. */
@@ -727,7 +880,7 @@ const ADVERTENCIA_ELECCION = 'Esta prueba no premia adivinar cuál es el mejor r
 
 const CONCEPTOS = [
   {
-    id: 'c1',
+    id: 'k1',
     porque: 'Es la puerta de entrada al texto crítico. Si la idea principal que le atribuyes al resumen no es la que sostiene el texto fuente, todo lo que escribas después queda sin base, por bien redactado que esté.',
     distincion: {
       titulo: 'Tema no es idea principal',
@@ -753,7 +906,7 @@ const CONCEPTOS = [
     ]
   },
   {
-    id: 'c2',
+    id: 'k2',
     porque: 'Describir la organización de un texto es la prueba de que se leyó como un objeto construido y no solo como una fuente de información. Es el criterio que más resúmenes fallan, y por eso el más rentable de entrenar.',
     distincion: {
       titulo: 'Reproducir el orden no es describir la estructura',
@@ -779,7 +932,7 @@ const CONCEPTOS = [
     ]
   },
   {
-    id: 'c3',
+    id: 'k3',
     porque: 'La fidelidad es lo único que un resumen no puede sacrificar. Un resumen puede ser pobre en estructura y seguir siendo útil; un resumen que afirma lo que el texto no dice deja de ser un resumen. Es también el punto donde la escritura con IA falla de forma más silenciosa, porque las adiciones suelen estar bien redactadas.',
     distincion: {
       titulo: 'Los cuatro modos de dejar de ser fiel',
@@ -805,7 +958,7 @@ const CONCEPTOS = [
     ]
   },
   {
-    id: 'c4',
+    id: 'k4',
     porque: 'Reconocer estrategias discursivas es leer el texto como una construcción con intenciones. Un resumen que las nombra demuestra haber leído cómo persuade el autor, no solo qué dice. Y el género del texto fuente determina qué estrategias hay: en una crónica satírica hay ironía y anécdota; en un ensayo, citas de autoridad e interrogación retórica; en un texto de divulgación, analogías y datos.',
     distincion: {
       titulo: 'Nombrar no es etiquetar',
@@ -831,7 +984,7 @@ const CONCEPTOS = [
     ]
   },
   {
-    id: 'c5',
+    id: 'k6',
     porque: 'Vale 25 %, tanto como la gramática y más que cualquier criterio de contenido. Y en esta prueba tiene una dificultad propia: tu texto habla todo el tiempo de dos objetos —«el texto» y «el resumen»— y cada pronombre ambiguo destruye una justificación entera.',
     distincion: {
       titulo: 'El pronombre que apunta a dos sitios',
@@ -857,7 +1010,7 @@ const CONCEPTOS = [
     ]
   },
   {
-    id: 'c6',
+    id: 'k8',
     porque: 'Vale otro 25 %. Y en esta prueba concreta hay un problema que casi nadie ha entrenado: vas a citar todo el tiempo, y puntuar una cita tiene reglas propias que no se aprenden por intuición.',
     distincion: {
       titulo: 'Cómo se puntúa una cita',
@@ -882,6 +1035,60 @@ const CONCEPTOS = [
       'Abrir una cita y no cerrarla, o cambiar de tipo de comillas dentro del mismo texto.'
     ]
   }
+  ,
+  {
+    id: 'k5',
+    porque: 'Es el primer criterio de la rúbrica y el que más barato sale de arreglar. La postura no exige leer mejor ni saber más: exige decir lo que piensas del resumen en la primera oración, y decirlo con un léxico que no delate improvisación.',
+    distincion: {
+      titulo: 'Anunciar no es tomar postura',
+      cuerpo: 'Muchos textos abren diciendo qué van a hacer —«en este texto analizaré el resumen a partir de las cuatro características»— y creen que con eso han cumplido. No han dicho nada: un lector que se detuviera ahí no sabría si el resumen les parece bueno o malo. La postura es un juicio de valor, y la rúbrica exige que aparezca en el párrafo introductorio. Si llega en el tercer párrafo, el criterio baja aunque la formulación sea impecable.',
+      ejemplos: [
+        { mal: 'En este texto voy a analizar el resumen producido por la inteligencia artificial a partir de las cuatro características de un buen resumen.', bien: 'El resumen es adecuado porque conserva el planteamiento central del artículo, aunque no es completamente fiel: presenta de manera más categórica algunas afirmaciones del autor.' },
+        { mal: 'El resumen tiene aspectos positivos y otros que podrían mejorarse, como suele ocurrir con los textos generados automáticamente.', bien: 'El resumen representa bien la idea principal y la estructura, pero su fidelidad se resiente en dos puntos concretos, y por eso lo considero competente aunque impreciso.' }
+      ]
+    },
+    consejos: [
+      'Escribe la postura antes que nada, aunque después la retoques: si la dejas para el final, casi siempre acaba en el párrafo equivocado.',
+      'Una postura matizada sigue siendo una postura. «Adecuado, pero no del todo fiel» es mejor que un elogio sin reservas, porque anticipa el desarrollo.',
+      'Anuncia en la misma apertura los criterios que vas a desarrollar: la rúbrica valora que la postura oriente lo que viene después.',
+      'Vigila el registro: «la verdad es que», «súper», «un montón» y «de una» son marcas de conversación que hunden un criterio entero.',
+      'Cuenta las palabras antes de entregar. El rango es de 350 a 400; entre 320 y 349 o entre 401 y 430 el criterio ya baja un nivel.'
+    ],
+    errores: [
+      'Abrir con un resumen del texto fuente y dejar la valoración para el segundo o el tercer párrafo.',
+      'Confundir el anuncio de intenciones con el juicio de valor: decir qué se va a hacer en lugar de qué se opina.',
+      'Formular una postura tan general que serviría para cualquier resumen de cualquier texto.',
+      'Usar expresiones vagas —«aspectos positivos», «algunas cosas», «bastante»— que parecen formales y no afirman nada comprobable.',
+      'Alargar la conclusión repitiendo lo ya dicho solo para llegar a las 350 palabras: arregla la extensión y estropea la coherencia.'
+    ]
+  },
+  {
+    id: 'k7',
+    porque: 'La cohesión enlaza; la coherencia hace avanzar. Un texto puede tener conectores impecables y aun así dar vueltas sobre lo mismo, o saltar de un asunto a otro sin que el lector sepa por qué. La rúbrica lo evalúa en dos criterios propios: la progresión temática y el reparto de los párrafos según su función.',
+    distincion: {
+      titulo: 'Progresar no es acumular',
+      cuerpo: 'Un párrafo progresa cuando cada oración retoma algo de la anterior y añade información nueva. Las expresiones de enganche —«esa fidelidad», «esa reducción», «por ejemplo»— son las que impiden que el párrafo se lea como una lista de observaciones sueltas. En cuanto a los párrafos, la rúbrica pide al menos tres diferenciados por función: apertura, desarrollo y cierre. El desarrollo puede ocupar uno, dos o tres párrafos; lo que no puede es mezclarse con la apertura o con el cierre.',
+      ejemplos: [
+        { mal: 'El resumen conserva la idea principal. Los pasajes sobre los datos quedan reducidos. La educación aparece simplificada. El resumen es claro.', bien: 'El resumen conserva la idea principal. Esa fidelidad al núcleo, sin embargo, no se extiende a todos los tramos: los pasajes sobre los límites de los datos quedan reducidos a una sola frase.' },
+        { mal: 'Un texto de tres párrafos en el que el primero presenta el artículo y además analiza la idea principal, y el último evalúa las estrategias y concluye.', bien: 'Un texto de cinco párrafos: apertura con la postura, tres de desarrollo con una característica cada uno y un cierre que solo retoma lo probado.' }
+      ]
+    },
+    consejos: [
+      'Al empezar cada oración, pregúntate con qué palabra engancha con la anterior. Si no engancha con ninguna, hay un salto.',
+      'Un párrafo, una función. Si uno cubre dos características, pártelo: casi siempre descubrirás que a una de las dos le faltaba la correspondencia.',
+      'El cierre retoma y sintetiza; no introduce evidencia nueva ni abre un asunto que ya no puedes desarrollar.',
+      'Cuidado con la desviación temática: comentar lo que opinas del asunto del artículo, en lugar de evaluar el resumen, es salirse de la tarea.',
+      'Si repites una idea con otras palabras porque te faltan palabras, estás cambiando un criterio bueno por uno malo.'
+    ],
+    errores: [
+      'Encadenar observaciones verdaderas sin ninguna expresión que las relacione entre sí.',
+      'Juntar la introducción con el análisis del primer criterio en un mismo párrafo.',
+      'Terminar con una reflexión personal sobre el tema del texto fuente en lugar de sobre la calidad del resumen.',
+      'Repetir en la conclusión, casi con las mismas palabras, lo que ya se dijo en el desarrollo.',
+      'Cambiar de foco a mitad de párrafo sin avisar, de modo que el lector tenga que releer para saber de qué se está hablando.'
+    ]
+  }
+
 ];
 
 /* ---------------------------------------------------------------- */
@@ -895,6 +1102,16 @@ const SIMULACRO = {
     'Analiza críticamente un resumen generado por inteligencia artificial, a partir de criterios de fidelidad, coherencia, claridad y profundidad, con el propósito de valorar su pertinencia frente al texto fuente.',
     'Escribe justificaciones críticas para la selección y evaluación de un resumen producido por IA.'
   ],
+  consignaEvaluacion: [
+    'Lee el texto fuente.',
+    'Lee el resumen del texto fuente producido por un agente de inteligencia artificial.',
+    'Redacta un texto crítico de entre 350 y 400 palabras en el que evalúes si es un buen resumen.',
+    'Presenta las razones por las cuales, a tu juicio, el resumen satisface o no las características que debe tener un buen resumen.',
+    'Incluye fragmentos específicos del texto fuente y del resumen para mostrar cómo el resumen satisface o no estas características.',
+    'Organiza tu texto en párrafos claramente diferenciados: uno introductorio con tu postura, párrafos de desarrollo con los criterios, y uno de conclusión.'
+  ],
+  notaEvaluacion: 'Esta es la consigna vigente: un solo resumen y una postura sobre su calidad. Tu texto no elige entre versiones, valora la que te dieron.',
+  notaEleccion: 'Este conjunto usa el formato de 2026.1: tres resúmenes y una elección. Se conserva como método de estudio, porque comparar versiones es la forma más rápida de aprender a ver un defecto, pero la consigna vigente pide evaluar un solo resumen.',
   consigna: [
     'Lee el texto fuente (original).',
     'Lee los tres resúmenes del texto fuente que fueron producidos por diferentes agentes de inteligencia artificial.',
@@ -902,12 +1119,12 @@ const SIMULACRO = {
     'Redacta un texto crítico, entre 350 y 400 palabras, en el que justifiques la elección. En este texto: presenta las razones por las cuales, a tu juicio, el resumen satisface todas o la mayoría de las condiciones que debe tener un buen resumen; incluye fragmentos específicos del texto fuente y de los resúmenes para respaldar tu análisis.'
   ],
   caracteristicas: [
-    { nombre: 'Idea principal', def: 'Presenta la afirmación central que el texto busca transmitir.' },
-    { nombre: 'Análisis de la estructura', def: 'Describe cómo está organizado el texto.' },
-    { nombre: 'Fidelidad del texto original', def: 'Presenta de manera fiel la información del texto resumido (texto base).' },
-    { nombre: 'Estrategias discursivas', def: 'Describe algunas técnicas o recursos que utiliza el autor para persuadir, informar o involucrar al lector (figuras retóricas, citas, datos, ejemplos).' },
-    { nombre: 'Corrección textual', def: 'Presenta la información con corrección gramatical, cohesión y coherencia.' }
+    { nombre: 'Idea principal', def: 'Presenta la afirmación central que el texto fuente busca transmitir.' },
+    { nombre: 'Análisis de la estructura', def: 'Describe cómo está organizado el texto fuente.' },
+    { nombre: 'Fidelidad', def: 'Presenta de manera fiel la información del texto fuente.' },
+    { nombre: 'Estrategias discursivas', def: 'Describe recursos que utiliza el autor para persuadir, informar o involucrar al lector.' }
   ],
+  notaCaracteristicas: 'Son cuatro, no cinco. La corrección textual dejó de figurar entre las características del resumen: ahora se evalúa en tu propio texto, repartida en los criterios de cohesión, coherencia y corrección gramatical.',
   extension: { min: 350, max: 400 },
   funcionesParrafo: [
     'Elección y idea principal',
@@ -932,9 +1149,15 @@ const SIMULACRO = {
   senales: [
     {
       id: 's1',
-      nombre: 'Extensión entre 350 y 400 palabras',
-      comprueba: 'Que el texto entre en el rango que pide la consigna.',
-      siFalla: 'Por debajo de 350 no alcanza a cubrir las cuatro características con evidencia; por encima de 400 casi siempre hay paráfrasis del texto fuente que se puede recortar.'
+      nombre: 'Extensión dentro del rango de 350 a 400 palabras',
+      comprueba: 'Que el texto entre en el rango que pide la consigna. La rúbrica gradúa este criterio en bandas y la app te dice en cuál estás.',
+      siFalla: 'Entre 320 y 349 o entre 401 y 430 el criterio ya baja un nivel. Si te faltan palabras, añade una evidencia que falte en algún componente; si te sobran, recorta paráfrasis del texto fuente antes que citas.'
+    },
+    {
+      id: 's8',
+      nombre: 'La postura aparece en el primer párrafo',
+      comprueba: 'Que el párrafo introductorio contenga un juicio de valor sobre la calidad del resumen, y no solo un anuncio de lo que vas a hacer.',
+      siFalla: 'La rúbrica exige la postura explícita desde la apertura. Si llega más tarde, el criterio baja un nivel aunque la formulación sea impecable.'
     },
     {
       id: 's2',
@@ -977,6 +1200,7 @@ const SIMULACRO = {
   /* Vocabulario que la heurística busca. check.js verifica que las palabras
      ancla de cada conjunto reservado existan de verdad en su material. */
   lexico: {
+    marcasPostura: ['es un buen resumen', 'es adecuado', 'no es un buen resumen', 'cumple', 'no cumple', 'considero que', 'a mi juicio', 'resulta', 'logra', 'no logra', 'satisface', 'no satisface', 'es competente', 'es preciso', 'es impreciso', 'es fiel', 'no es fiel'],
     marcasCita: ['«', '»', '"', '“', '”', 'afirma que', 'señala que', 'sostiene que', 'dice que', 'en palabras de', 'cita', 'escribe que', 'according'],
     marcasCorrespondencia: ['se corresponde', 'corresponde con', 'recoge', 'coincide', 'mientras que el texto', 'lo cual conserva', 'conserva', 'refleja', 'equivale', 'al igual que el texto', 'tal como el texto'],
     referenciaFuente: ['texto fuente', 'texto base', 'texto original', 'el original', 'el autor', 'la autora'],
@@ -1010,7 +1234,7 @@ const EJ_BUNUELO = [
   {
     id: 'bu-c1-1',
     conjunto: 'bunuelo',
-    criterio: 'c1',
+    comp: 'k1',
     motor: 'mc',
     titulo: 'Qué idea principal declara cada resumen',
     enunciado: 'Lee la idea principal del texto fuente y decide cuál de las formulaciones de los resúmenes se corresponde con ella.',
@@ -1068,7 +1292,7 @@ const EJ_BUNUELO = [
   {
     id: 'bu-c1-2',
     conjunto: 'bunuelo',
-    criterio: 'c1',
+    comp: 'k1',
     motor: 'clasificar',
     titulo: 'Qué nivel de rúbrica alcanza cada justificación',
     enunciado: 'Estas justificaciones fueron escritas por estudiantes sobre el conjunto del buñuelo. Clasifica cada una según el nivel que le daría la rúbrica en el criterio de idea principal.',
@@ -1132,7 +1356,7 @@ const EJ_BUNUELO = [
   {
     id: 'bu-c2-1',
     conjunto: 'bunuelo',
-    criterio: 'c2',
+    comp: 'k2',
     motor: 'ordenar',
     titulo: 'Los movimientos del texto fuente',
     enunciado: 'Reconstruye el orden de los cinco movimientos de «Preeminencia del buñuelo». Usa los botones para subir y bajar cada pieza.',
@@ -1149,7 +1373,7 @@ const EJ_BUNUELO = [
   {
     id: 'bu-c2-2',
     conjunto: 'bunuelo',
-    criterio: 'c2',
+    comp: 'k2',
     motor: 'mc',
     titulo: 'Quién describe la organización y quién no',
     enunciado: 'Los tres resúmenes oficiales tratan la estructura del texto de maneras muy distintas. Distínguelas.',
@@ -1203,7 +1427,7 @@ const EJ_BUNUELO = [
   {
     id: 'bu-c3-1',
     conjunto: 'bunuelo',
-    criterio: 'c3',
+    comp: 'k3',
     motor: 'cotejar',
     titulo: 'Cotejo fragmento a fragmento',
     enunciado: 'Compara cada fragmento del texto fuente con lo que el resumen dice de él y decide qué le ocurre a la información.',
@@ -1263,7 +1487,7 @@ const EJ_BUNUELO = [
   {
     id: 'bu-c3-2',
     conjunto: 'bunuelo',
-    criterio: 'c3',
+    comp: 'k3',
     motor: 'reescritura',
     titulo: 'De la declaración a la comprobación',
     enunciado: 'Convierte una declaración de fidelidad en una justificación con doble evidencia.',
@@ -1303,7 +1527,7 @@ const EJ_BUNUELO = [
   {
     id: 'bu-c4-1',
     conjunto: 'bunuelo',
-    criterio: 'c4',
+    comp: 'k4',
     motor: 'clasificar',
     titulo: 'Qué recurso opera en cada fragmento',
     enunciado: 'Todos estos fragmentos son de «Preeminencia del buñuelo». Identifica el recurso que opera en cada uno.',
@@ -1359,7 +1583,7 @@ const EJ_BUNUELO = [
   {
     id: 'bu-c4-2',
     conjunto: 'bunuelo',
-    criterio: 'c4',
+    comp: 'k4',
     motor: 'cloze',
     titulo: 'La frase que enlaza la estrategia con el texto',
     enunciado: 'Completa la justificación con la formulación que conecta la estrategia del texto fuente con lo que el resumen dice de ella.',
@@ -1430,7 +1654,7 @@ const EJ_INSIPIDO = [
   {
     id: 'in-c1-1',
     conjunto: 'insipido',
-    criterio: 'c1',
+    comp: 'k1',
     motor: 'mc',
     titulo: 'La pregunta y la respuesta',
     enunciado: 'En un ensayo que avanza por indagación, la idea principal reúne la pregunta de apertura y la respuesta que el texto le da.',
@@ -1488,7 +1712,7 @@ const EJ_INSIPIDO = [
   {
     id: 'in-c1-2',
     conjunto: 'insipido',
-    criterio: 'c1',
+    comp: 'k1',
     motor: 'reescritura',
     titulo: 'De Básico a Excelente',
     enunciado: 'Un estudiante escribió esta justificación sobre el conjunto de Cohen. Está en nivel Básico. Elige la reescritura que la lleva a Excelente.',
@@ -1528,7 +1752,7 @@ const EJ_INSIPIDO = [
   {
     id: 'in-c2-1',
     conjunto: 'insipido',
-    criterio: 'c2',
+    comp: 'k2',
     motor: 'ordenar',
     titulo: 'Los cuatro movimientos del ensayo',
     enunciado: 'Reconstruye el orden de los movimientos de «Lo insípido y lo sabroso».',
@@ -1545,7 +1769,7 @@ const EJ_INSIPIDO = [
   {
     id: 'in-c2-2',
     conjunto: 'insipido',
-    criterio: 'c2',
+    comp: 'k2',
     motor: 'mc',
     titulo: 'Describir la estructura o reproducir el orden',
     enunciado: 'Resumir siguiendo el orden del texto no es describir su organización. Distingue una cosa de la otra.',
@@ -1605,7 +1829,7 @@ const EJ_INSIPIDO = [
   {
     id: 'in-c3-1',
     conjunto: 'insipido',
-    criterio: 'c3',
+    comp: 'k3',
     motor: 'cotejar',
     titulo: 'Cotejo fragmento a fragmento',
     enunciado: 'Compara cada fragmento del ensayo de Cohen con lo que el resumen dice de él.',
@@ -1665,7 +1889,7 @@ const EJ_INSIPIDO = [
   {
     id: 'in-c3-2',
     conjunto: 'insipido',
-    criterio: 'c3',
+    comp: 'k3',
     motor: 'marcar',
     modo: 'oracion',
     titulo: 'Afirmaciones sin respaldo',
@@ -1686,7 +1910,7 @@ const EJ_INSIPIDO = [
   {
     id: 'in-c4-1',
     conjunto: 'insipido',
-    criterio: 'c4',
+    comp: 'k4',
     motor: 'clasificar',
     titulo: 'Qué recurso opera en cada fragmento',
     enunciado: 'Todos estos fragmentos son de «Lo insípido y lo sabroso». Identifica el recurso que opera en cada uno.',
@@ -1742,7 +1966,7 @@ const EJ_INSIPIDO = [
   {
     id: 'in-c4-2',
     conjunto: 'insipido',
-    criterio: 'c4',
+    comp: 'k4',
     motor: 'mc',
     titulo: 'Nombrar una estrategia o describir el estilo',
     enunciado: 'Elogiar la prosa de un autor no identifica ninguna técnica. Distingue una cosa de la otra.',
@@ -1810,7 +2034,7 @@ const EJ_STONER = [
   {
     id: 'st-c1-1',
     conjunto: 'stoner',
-    criterio: 'c1',
+    comp: 'k1',
     motor: 'mc',
     titulo: 'Una tesis que tiene dos mitades',
     enunciado: 'La idea principal de este texto no es solo un juicio sobre la novela: incluye una observación sobre su destino editorial.',
@@ -1868,7 +2092,7 @@ const EJ_STONER = [
   {
     id: 'st-c1-2',
     conjunto: 'stoner',
-    criterio: 'c1',
+    comp: 'k1',
     motor: 'clasificar',
     titulo: 'Tema, idea principal o dato suelto',
     enunciado: 'Clasifica cada formulación según lo que es respecto del texto de Forn.',
@@ -1932,7 +2156,7 @@ const EJ_STONER = [
   {
     id: 'st-c2-1',
     conjunto: 'stoner',
-    criterio: 'c2',
+    comp: 'k2',
     motor: 'ordenar',
     titulo: 'Los movimientos del texto fuente',
     enunciado: 'Reconstruye el orden de los cinco movimientos de «Hablemos de Stoner».',
@@ -1949,7 +2173,7 @@ const EJ_STONER = [
   {
     id: 'st-c2-2',
     conjunto: 'stoner',
-    criterio: 'c2',
+    comp: 'k2',
     motor: 'mc',
     titulo: 'La decisión de composición que define el texto',
     enunciado: 'Forn arranca contando la trama en presente, como si el lector la estuviera viendo, y solo después pasa al comentario.',
@@ -2009,7 +2233,7 @@ const EJ_STONER = [
   {
     id: 'st-c3-1',
     conjunto: 'stoner',
-    criterio: 'c3',
+    comp: 'k3',
     motor: 'marcar',
     modo: 'oracion',
     titulo: 'Afirmaciones sin respaldo',
@@ -2029,7 +2253,7 @@ const EJ_STONER = [
   {
     id: 'st-c3-2',
     conjunto: 'stoner',
-    criterio: 'c3',
+    comp: 'k3',
     motor: 'cotejar',
     titulo: 'Cotejo fragmento a fragmento',
     enunciado: 'Compara cada fragmento del texto de Forn con lo que el resumen dice de él.',
@@ -2091,7 +2315,7 @@ const EJ_STONER = [
   {
     id: 'st-c4-1',
     conjunto: 'stoner',
-    criterio: 'c4',
+    comp: 'k4',
     motor: 'marcar',
     modo: 'oracion',
     titulo: 'Dónde el autor se mete en el texto',
@@ -2110,7 +2334,7 @@ const EJ_STONER = [
   {
     id: 'st-c4-2',
     conjunto: 'stoner',
-    criterio: 'c4',
+    comp: 'k4',
     motor: 'cloze',
     titulo: 'La frase que enlaza la estrategia con el texto',
     enunciado: 'Completa la justificación con la formulación que conecta la estrategia del texto fuente con lo que el resumen dice de ella.',
@@ -2183,7 +2407,7 @@ const EJ_SALVAJE = [
   {
     id: 'sa-c1-1',
     conjunto: 'salvaje',
-    criterio: 'c1',
+    comp: 'k1',
     motor: 'mc',
     titulo: 'La idea principal está en el giro, no en la anécdota',
     enunciado: 'Este ensayo abre con una historia del siglo XVIII y aplaza su tesis durante varios párrafos. Localiza la afirmación que sostiene el conjunto.',
@@ -2241,7 +2465,7 @@ const EJ_SALVAJE = [
   {
     id: 'sa-c1-2',
     conjunto: 'salvaje',
-    criterio: 'c1',
+    comp: 'k1',
     motor: 'reescritura',
     titulo: 'De Básico a Excelente',
     enunciado: 'Un estudiante escribió esta justificación sobre el conjunto de Pron. Está en nivel Básico. Elige la reescritura que la lleva a Excelente.',
@@ -2281,7 +2505,7 @@ const EJ_SALVAJE = [
   {
     id: 'sa-c2-1',
     conjunto: 'salvaje',
-    criterio: 'c2',
+    comp: 'k2',
     motor: 'ordenar',
     titulo: 'Los movimientos del ensayo',
     enunciado: 'Reconstruye el orden de los cinco movimientos de «El llamado de lo salvaje».',
@@ -2298,7 +2522,7 @@ const EJ_SALVAJE = [
   {
     id: 'sa-c2-2',
     conjunto: 'salvaje',
-    criterio: 'c2',
+    comp: 'k2',
     motor: 'clasificar',
     titulo: 'Describir, narrar o callar',
     enunciado: 'Clasifica cada fragmento de resumen según lo que hace con la estructura del ensayo de Pron.',
@@ -2362,7 +2586,7 @@ const EJ_SALVAJE = [
   {
     id: 'sa-c3-1',
     conjunto: 'salvaje',
-    criterio: 'c3',
+    comp: 'k3',
     motor: 'cotejar',
     titulo: 'Cotejo fragmento a fragmento',
     enunciado: 'Compara cada fragmento del ensayo de Pron con lo que el resumen dice de él.',
@@ -2422,7 +2646,7 @@ const EJ_SALVAJE = [
   {
     id: 'sa-c3-2',
     conjunto: 'salvaje',
-    criterio: 'c3',
+    comp: 'k3',
     motor: 'marcar',
     modo: 'oracion',
     titulo: 'Lo que este resumen deja fuera',
@@ -2443,7 +2667,7 @@ const EJ_SALVAJE = [
   {
     id: 'sa-c4-1',
     conjunto: 'salvaje',
-    criterio: 'c4',
+    comp: 'k4',
     motor: 'clasificar',
     titulo: 'Qué recurso opera en cada fragmento',
     enunciado: 'Todos estos fragmentos son de «El llamado de lo salvaje». Identifica el recurso que opera en cada uno.',
@@ -2499,7 +2723,7 @@ const EJ_SALVAJE = [
   {
     id: 'sa-c4-2',
     conjunto: 'salvaje',
-    criterio: 'c4',
+    comp: 'k4',
     motor: 'cloze',
     titulo: 'La frase que enlaza la estrategia con el texto',
     enunciado: 'Completa la justificación con la formulación que conecta la estrategia del texto fuente con lo que el resumen dice de ella.',
@@ -2561,6 +2785,521 @@ const EJ_SALVAJE = [
 ];
 
 
+/* ===== data-verdad.js ===== */
+/* data-verdad.js — conjunto «La verdad en tiempos de ruido», de Camilo Camargo.
+ *
+ * Es el conjunto alineado con la consigna vigente: un solo resumen y una postura
+ * sobre su calidad. El Agente 1 es el resumen oficial publicado por CELEE en el
+ * modelo de asesoría; los otros dos son material didáctico y se ofrecen solo en
+ * la práctica, porque comparar versiones sigue siendo la forma más rápida de
+ * aprender a ver un defecto.
+ *
+ * Depende de data-fuentes.js (FUENTES) y data-conjuntos.js (CONJUNTOS). */
+
+FUENTES.verdad = [
+  'Vivimos en un tiempo en el que todo parece cambiar a una velocidad vertiginosa. El conocimiento se transforma cada día, las certezas se erosionan, las verdades se cuestionan, y el éxito —esa palabra que tanto escuchamos— parece cada vez más frágil, más volátil, más externo. En medio de ese ruido constante, ¿cómo encontrar un camino que sea verdaderamente nuestro? ¿Cómo tomar decisiones que valgan la pena? ¿Cómo saber si lo que estoy recibiendo es cierto?',
+  'Una posible respuesta está en recuperar un compromiso con la verdad. En un mundo donde parece haber datos para defender cualquier postura, donde lo que se viraliza no siempre es lo más cierto, la verdad se ha vuelto un terreno resbaladizo. Pero precisamente por eso, es más urgente que nunca asumir que la verdad no es simplemente lo que más se repite, ni lo que genera más clics o más likes. La verdad se construye con responsabilidad, con apertura y con ética. No se trata de imponer verdades únicas, sino de aprender a buscar con honestidad intelectual lo que se sostiene con argumentos, con evidencia y con humanidad.',
+  'Hoy, vivimos rodeados de datos. Se celebran como la gran promesa de objetividad. Sin embargo, un dato por sí solo no es la verdad. Puede ser manipulado, sacado de contexto, presentado de manera interesada. En manos de quienes quieren convencer en lugar de comprender, los datos se convierten en herramientas para construir narrativas cómodas, no necesariamente ciertas. Por eso, conocer no es acumular cifras, sino comprometerse con ellas, comprender sus límites y preguntar siempre: ¿qué me están mostrando?, ¿qué están dejando por fuera?',
+  'El desafío no está solo en los datos, sino también en los canales a través de los cuales los recibimos. Las redes sociales y los medios de comunicación han transformado la manera en que accedemos a la información. Lo inmediato se impone sobre lo profundo, lo escandaloso sobre lo cierto. En ese entorno, la verdad pierde terreno frente a la emoción. Lo que nos hace reaccionar rápidamente tiene más valor que lo que nos invita a pensar lentamente. Y cuando la lógica que gobierna nuestras conversaciones es la del algoritmo, la pluralidad se empobrece, el disenso se convierte en amenaza y el pensamiento se vuelve superficial.',
+  'Frente a todo esto, encontrar la verdad es una forma de resistencia. Y también, de responsabilidad. Porque buscar la verdad es tener el coraje de hacerse preguntas difíciles, de reconocer lo que no sabemos, de cambiar de opinión cuando aprendemos algo nuevo. Es entender que pensar críticamente no es atacar al otro, sino una forma profunda de respeto. Es aceptar que la verdad no siempre es cómoda, pero que sin ella no hay justicia, ni convivencia, ni comunidad posible.',
+  'La educación tiene un rol fundamental en este proceso. Educar no puede reducirse a transmitir contenidos ni preparar para pruebas. Educar hoy, más que nunca, implica formar ciudadanos capaces de discernir, de cuestionar, de construir criterios propios. Implica crear espacios donde se valore la duda y no solo la respuesta rápida; donde equivocarse sea parte del proceso de comprender; donde el pensamiento crítico no sea una habilidad secundaria, sino un pilar esencial.',
+  'Pensar críticamente no significa desconfiar de todo, ni asumir que todas las versiones son igualmente válidas. Significa estar dispuestos a contrastar fuentes, a analizar argumentos, a poner a prueba nuestras creencias sin aferrarnos a ellas como dogmas. Significa entender que defender lo que creemos justo exige tanto firmeza como humildad.',
+  'Y también significa ir más allá de la superficie. Porque la verdad rara vez se encuentra en los extremos, en los eslóganes, en los simplismos que nos ofrecen explicaciones fáciles para problemas complejos. La verdad suele estar en el matiz, en el contexto, en la escucha. En un mundo que premia lo instantáneo y lo superficial, detenerse a pensar es un acto valiente. Pero es precisamente ese tipo de valentía el que necesitamos para construir una sociedad más justa.',
+  'No se trata de volvernos expertos en todo, sino de desarrollar una actitud frente al conocimiento y frente a la información. Una actitud que combine escepticismo sano con apertura, y curiosidad con rigor. Una actitud que nos permita no «comer entero», sino preguntarnos: ¿de dónde viene esto?, ¿qué evidencia lo respalda?, ¿quién gana con que yo crea esto?',
+  'Tenemos herramientas para hacerlo. Podemos aprender a verificar fuentes, a comparar perspectivas, a identificar sesgos, a detenernos cuando algo nos indigna o emociona demasiado rápido, porque muchas veces lo que se viraliza ha sido diseñado precisamente para eso: para manipularnos. Podemos y debemos conversar más, especialmente con quienes piensan distinto. Porque en ese intercambio puede nacer una comprensión más rica y, quizás, más cercana a la verdad.',
+  'Hoy más que nunca necesitamos una ciudadanía comprometida con la verdad. No una verdad única e inamovible, sino una verdad construida en diálogo, con respeto, con argumentos y con voluntad de comprender. Una verdad que no divida, sino que nos permita encontrarnos desde nuestras diferencias. Una verdad que no se use como arma, sino como puente.',
+  'Esa es la tarea. Esa es la responsabilidad. Y también, el privilegio. Porque buscar la verdad es una forma de dignidad. Es una forma de libertad. Es una forma de cuidar lo que somos y lo que podemos llegar a ser.'
+];
+
+CONJUNTOS.push({
+  id: 'verdad',
+  titulo: 'La verdad en tiempos de ruido',
+  autor: 'Camilo Camargo',
+  genero: 'Columna de opinión pública',
+  uso: 'demo',
+  modalidad: 'evaluacion',
+  recomendado: true,
+  origenResumenes: 'mixto',
+  nota: 'Conjunto del modelo de asesoría PLEE 2026-2. El resumen del Agente 1 es el que publicó CELEE, con su análisis oficial; los otros dos son material didáctico y solo aparecen en la práctica. En el simulacro este conjunto funciona como en la prueba real: un solo resumen y una postura sobre su calidad.',
+  fuente: {
+    parrafos: FUENTES.verdad,
+    ideaPrincipal: 'La verdad no es lo que más se repite ni lo que más circula, sino lo que se sostiene con argumentos y evidencia; y encontrarla en un entorno saturado de datos y de algoritmos exige pensamiento crítico y una educación que lo forme.',
+    estructura: 'Preguntas de apertura sobre cómo saber si lo que recibimos es cierto → propuesta de recuperar el compromiso con la verdad → primera amenaza, los datos que no equivalen a la verdad → segunda amenaza, los canales y la lógica del algoritmo → la búsqueda de la verdad como resistencia y responsabilidad → la educación y el pensamiento crítico como respuesta → herramientas concretas de verificación → cierre en la ciudadanía y en la verdad como puente.',
+    estrategias: ['interrogación retórica encadenada', 'antítesis', 'anáfora', 'metáfora final', 'primera persona del plural', 'coloquialismo entrecomillado', 'enumeración acumulativa']
+  },
+  resumenes: [
+    {
+      agente: 'Agente 1',
+      oficial: true,
+      texto: 'Camilo Camargo reflexiona sobre la dificultad de encontrar la verdad en una sociedad caracterizada por la abundancia de información, los datos y las redes sociales. El autor sostiene que la verdad no depende de aquello que se repite o se vuelve popular, sino de la capacidad de analizar la información con responsabilidad, argumentos y evidencia. Para desarrollar esta idea, explica que los datos pueden ser manipulados y que las redes sociales son una de las principales causas de que las personas acepten información falsa o superficial. Frente a este problema, Camargo propone el pensamiento crítico como una herramienta que permite contrastar fuentes, reconocer los propios errores y cuestionar las creencias. También destaca el papel de la educación, que debe formar ciudadanos capaces de discernir y construir criterios propios, convirtiéndose así en la principal respuesta frente a la desinformación. A lo largo del texto, el autor utiliza preguntas dirigidas al lector y algunos contrastes para reforzar sus ideas. Finalmente, defiende una ciudadanía comprometida con una verdad construida mediante el diálogo, el respeto y la voluntad de comprender las diferentes perspectivas.',
+      perfil: { idea: 'bien', estructura: 'parcial', fidelidad: 'parcial', estrategias: 'bien', correccion: 'bien' },
+      aciertos: [
+        'Formula la idea principal con exactitud: la verdad no depende de lo que se repite sino de la capacidad de analizar con responsabilidad, argumentos y evidencia.',
+        'Nombra dos estrategias verificables, las preguntas dirigidas al lector y los contrastes, que en efecto recorren el artículo.',
+        'Recorre casi todo el desarrollo: los datos, los canales, el pensamiento crítico, la educación y el cierre sobre la ciudadanía.',
+        'Está escrito con corrección y se lee sin tropiezos.'
+      ],
+      defectos: [
+        'Afirma que las redes sociales son «una de las principales causas» de que las personas acepten información falsa. Camargo dice algo más matizado: que los canales favorecen lo inmediato sobre lo profundo y que la verdad pierde terreno frente a la emoción. El resumen establece una relación causal más fuerte que la del texto.',
+        'Presenta la educación como «la principal respuesta frente a la desinformación», cuando el artículo propone además verificar fuentes, comparar perspectivas, identificar sesgos y conversar con quienes piensan distinto. La simplificación reduce una propuesta más amplia.',
+        'Deja reducidos dos momentos del desarrollo: la reflexión sobre los límites de los datos y la importancia de dialogar con quienes piensan distinto.',
+        'Usa marcadores de sucesión —«para desarrollar esta idea», «también», «finalmente»— que reproducen el orden del texto sin describir su organización.'
+      ]
+    },
+    {
+      agente: 'Agente 2',
+      texto: 'En «La verdad en tiempos de ruido», Camilo Camargo analiza cómo la abundancia de información ha vuelto difícil distinguir lo cierto de lo falso. El autor explica que los datos se celebran como una promesa de objetividad, pero que un dato por sí solo no es la verdad, porque puede ser manipulado o sacado de contexto.\n\nCamargo dedica buena parte del texto a las redes sociales y a los medios de comunicación, que han transformado la manera en que accedemos a la información. En ese entorno, según el autor, lo inmediato se impone sobre lo profundo y la verdad pierde terreno frente a la emoción, de modo que el pensamiento se vuelve superficial.\n\nEl artículo describe así un panorama preocupante sobre el estado de la información en la sociedad contemporánea y sobre los efectos que la lógica del algoritmo tiene en la conversación pública y en la calidad del debate.',
+      perfil: { idea: 'parcial', estructura: 'mal', fidelidad: 'bien', estrategias: 'mal', correccion: 'bien' },
+      aciertos: [
+        'Todo lo que afirma está en el texto: los datos como falsa promesa de objetividad, la manipulación, la primacía de lo inmediato y el empobrecimiento del pensamiento.',
+        'Conserva el matiz del original sobre los canales: dice que favorecen lo inmediato, sin convertirlo en una relación causal más fuerte.',
+        'Está escrito con corrección y distribuido en párrafos legibles.'
+      ],
+      defectos: [
+        'Omite la mitad del artículo: el pensamiento crítico, la educación, las herramientas de verificación y el cierre sobre la ciudadanía. Sin esa mitad, un texto que propone una salida queda convertido en un diagnóstico pesimista.',
+        'Como consecuencia de esa omisión, la idea principal que declara no es la del texto: presenta como tesis la dificultad de distinguir lo cierto, cuando Camargo afirma además cómo se construye la verdad y qué hacer al respecto.',
+        'No describe la organización del texto en ningún momento.',
+        'No nombra ninguna estrategia discursiva, pese a que el artículo abre con tres preguntas seguidas.'
+      ]
+    },
+    {
+      agente: 'Agente 3',
+      texto: 'En «La verdad en tiempos de ruido», Camilo Camargo sostiene que la verdad no es lo que más se repite ni lo que más circula, sino aquello que se sostiene con argumentos y evidencia; y que encontrarla hoy exige pensamiento crítico y una educación que lo forme.\n\nEl artículo avanza de un problema a una respuesta. Abre con tres preguntas sobre cómo saber si lo que recibimos es cierto, propone después recuperar el compromiso con la verdad y examina a continuación dos amenazas: los datos, que no equivalen por sí solos a la verdad, y los canales, donde lo inmediato se impone sobre lo profundo. A partir de ahí desplaza el texto hacia la salida: el pensamiento crítico como forma de resistencia, la educación como espacio donde se forma y un conjunto de herramientas concretas de verificación. Cierra con una ciudadanía comprometida con una verdad que funcione como puente y no como arma.\n\nPara sostener ese recorrido, Camargo recurre a la interrogación retórica encadenada, que abre el texto y reaparece en los momentos de giro, y a la antítesis: lo inmediato frente a lo profundo, lo escandaloso frente a lo cierto. El cierre acumula tres oraciones de idéntica construcción —«Es una forma de dignidad. Es una forma de libertad»— con las que eleva el tono final.',
+      perfil: { idea: 'bien', estructura: 'bien', fidelidad: 'bien', estrategias: 'bien', correccion: 'bien' },
+      aciertos: [
+        'Formula la idea principal reuniendo sus dos mitades: qué es la verdad para Camargo y qué exige encontrarla.',
+        'Describe la organización con verbos de función —abre, propone, examina, desplaza, cierra— y nombra el principio que la ordena: el paso de un problema a una respuesta.',
+        'Conserva los matices del original: dice que los datos no equivalen por sí solos a la verdad y que lo inmediato se impone sobre lo profundo, sin endurecer ninguna relación causal.',
+        'Nombra tres recursos y los ancla: la interrogación retórica del arranque, la antítesis y la anáfora del cierre, esta última con la cita literal.'
+      ],
+      defectos: [
+        'Deja fuera el coloquialismo entrecomillado «comer entero», que es el único momento en que el texto baja de registro deliberadamente.'
+      ]
+    }
+  ],
+  mejor: 2,
+  dilema: false,
+  porqueMejor: 'El Agente 3 cumple las cuatro características y ancla cada afirmación en el texto. El Agente 1, que es el resumen oficial, acierta en la idea principal y en las estrategias, pero endurece dos afirmaciones del artículo y describe el orden en lugar de la organización: es un buen resumen con imprecisiones, que es exactamente lo que sostiene el modelo de respuesta publicado por CELEE. El Agente 2 no inventa nada y aun así falla, porque omite la mitad que convierte el diagnóstico en propuesta.'
+});
+
+/* ------------------------------------------------------------------ */
+/* Bloque de ejercicios propios                                        */
+/* ------------------------------------------------------------------ */
+const EJ_VERDAD = [
+  /* ---------------- k1 · idea principal ---------------- */
+  {
+    id: 've-k1-1',
+    conjunto: 'verdad',
+    comp: 'k1',
+    motor: 'mc',
+    titulo: 'Una tesis que tiene dos mitades',
+    enunciado: 'En una columna de opinión la idea principal suele reunir un diagnóstico y una propuesta. Localiza la afirmación que sostiene todo el artículo.',
+    items: [
+      {
+        id: 've-k1-1-i1',
+        contexto: 'Idea principal del texto fuente: la verdad no es lo que más se repite ni lo que más circula, sino lo que se sostiene con argumentos y evidencia; y encontrarla hoy exige pensamiento crítico y una educación que lo forme.',
+        pregunta: '¿Cuál de estas formulaciones recoge la idea principal completa?',
+        opciones: [
+          {
+            t: 'La verdad no depende de aquello que se repite o se vuelve popular, sino de la capacidad de analizar la información con responsabilidad, argumentos y evidencia.',
+            ok: true,
+            fb: 'Correcta, y es la formulación del resumen oficial. Recoge la negación —no es lo que se repite— y la afirmación positiva —se sostiene con argumentos y evidencia—, que son las dos mitades de la tesis.'
+          },
+          {
+            t: 'La abundancia de información y las redes sociales han vuelto muy difícil distinguir lo cierto de lo falso en la sociedad actual.',
+            ok: false,
+            fb: 'Es el diagnóstico del que parte el artículo, no lo que afirma sobre él. Un texto que solo dijera esto sería una queja; Camargo escribe una propuesta.'
+          },
+          {
+            t: 'El texto trata sobre la verdad, los datos, las redes sociales y el papel de la educación en el mundo contemporáneo.',
+            ok: false,
+            fb: 'Es una lista de temas, no una afirmación. No se puede estar de acuerdo ni en desacuerdo con ella, que es la prueba más rápida para descartar una idea principal.'
+          },
+          {
+            t: 'Camargo sostiene que las redes sociales deberían regularse para evitar la circulación de información falsa.',
+            ok: false,
+            fb: 'El artículo no propone ninguna regulación. Atribuir al autor una propuesta que no formula es el tipo de error que la prueba evalúa en el criterio de fidelidad.'
+          }
+        ]
+      },
+      {
+        id: 've-k1-1-i2',
+        pregunta: 'El artículo cierra: «Una verdad que no se use como arma, sino como puente». ¿Qué relación tiene con la idea principal?',
+        opciones: [
+          {
+            t: 'La condensa en una imagen: si la verdad se construye en diálogo y con voluntad de comprender, sirve para encontrarse con quien piensa distinto en lugar de para vencerlo.',
+            ok: true,
+            fb: 'Correcta. El cierre no añade una idea nueva: traduce a metáfora lo que el texto viene sosteniendo. Reconocerlo demuestra que se leyó el artículo como una construcción y no como una suma de párrafos.'
+          },
+          {
+            t: 'Es una frase de estilo, colocada al final para dar un remate memorable, sin relación con el argumento.',
+            ok: false,
+            fb: 'Es una frase de estilo, sí, pero con función argumentativa. Tratarla como adorno hace perder la conclusión a la que el texto llevaba desde el segundo párrafo.'
+          },
+          {
+            t: 'Introduce una idea nueva sobre los conflictos sociales que el resto del artículo no había desarrollado.',
+            ok: false,
+            fb: 'No es nueva: el artículo ya había dicho que sin verdad no hay convivencia ni comunidad posible, y que conviene conversar con quienes piensan distinto.'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 've-k1-2',
+    conjunto: 'verdad',
+    comp: 'k1',
+    motor: 'clasificar',
+    titulo: 'Tesis, diagnóstico o ejemplo',
+    enunciado: 'Clasifica cada afirmación según la función que cumple dentro del artículo de Camargo.',
+    etiquetas: ['Idea principal', 'Diagnóstico de partida', 'Apoyo o ejemplo'],
+    ayuda: 'Idea principal: lo que el texto sostiene. Diagnóstico: la situación que describe y que motiva el texto. Apoyo: información verdadera que sirve a la tesis sin sostenerla.',
+    fragmentos: [
+      {
+        id: 've-k1-2-f1',
+        t: 'La verdad se construye con responsabilidad, con apertura y con ética.',
+        ok: 'Idea principal',
+        fb: {
+          'Idea principal': 'Correcto. Es la afirmación positiva de la tesis, enunciada casi como definición. Todo lo que viene después —las amenazas, el pensamiento crítico, la educación— depende de que se acepte esta frase.',
+          'Diagnóstico de partida': 'No describe ninguna situación: prescribe cómo se construye algo, que es una afirmación de otro orden.',
+          'Apoyo o ejemplo': 'No apoya nada: es lo apoyado. El resto del artículo trabaja para sostener esta frase.'
+        }
+      },
+      {
+        id: 've-k1-2-f2',
+        t: 'Lo inmediato se impone sobre lo profundo, lo escandaloso sobre lo cierto.',
+        ok: 'Diagnóstico de partida',
+        fb: {
+          'Idea principal': 'Es una de las afirmaciones más citables del texto y por eso engaña. Pero describe el entorno contra el que Camargo escribe, no lo que propone frente a él.',
+          'Diagnóstico de partida': 'Correcto. Describe cómo funcionan hoy los canales de información. Es la situación que hace necesaria la tesis, no la tesis.',
+          'Apoyo o ejemplo': 'Es más que un ejemplo: es la caracterización de una de las dos amenazas centrales que el artículo identifica.'
+        }
+      },
+      {
+        id: 've-k1-2-f3',
+        t: 'Un dato puede ser manipulado, sacado de contexto, presentado de manera interesada.',
+        ok: 'Apoyo o ejemplo',
+        fb: {
+          'Idea principal': 'Es cierto y está en el texto, pero ningún artículo se organiza alrededor de esta frase: sirve para probar que un dato no equivale a la verdad.',
+          'Diagnóstico de partida': 'Roza el diagnóstico, pero su función es más concreta: enumera las formas en que un dato puede fallar, como apoyo de la afirmación anterior.',
+          'Apoyo o ejemplo': 'Correcto. Es la enumeración que sostiene la frase «un dato por sí solo no es la verdad». Apoya, no afirma.'
+        }
+      },
+      {
+        id: 've-k1-2-f4',
+        t: 'Educar hoy implica formar ciudadanos capaces de discernir, de cuestionar, de construir criterios propios.',
+        ok: 'Idea principal',
+        fb: {
+          'Idea principal': 'Correcto, y es la segunda mitad de la tesis. La idea principal de este artículo no se agota en definir la verdad: dice también qué hace falta para buscarla, y la educación es su respuesta.',
+          'Diagnóstico de partida': 'No describe cómo es la educación hoy: dice cómo debería ser. Es propuesta, no diagnóstico.',
+          'Apoyo o ejemplo': 'Es más que apoyo: un resumen que la omita deja el artículo convertido en un lamento sobre la desinformación.'
+        }
+      },
+      {
+        id: 've-k1-2-f5',
+        t: 'Vivimos en un tiempo en el que todo parece cambiar a una velocidad vertiginosa.',
+        ok: 'Diagnóstico de partida',
+        fb: {
+          'Idea principal': 'Es la primera frase del artículo, y la primera frase casi nunca es la tesis en una columna de opinión: sirve para situar al lector.',
+          'Diagnóstico de partida': 'Correcto. Abre describiendo el estado de cosas del que el texto va a ocuparse. La tesis llega en el párrafo siguiente.',
+          'Apoyo o ejemplo': 'No apoya ninguna afirmación previa, porque no hay ninguna todavía: es el punto de partida.'
+        }
+      }
+    ]
+  },
+
+  /* ---------------- k2 · estructura ---------------- */
+  {
+    id: 've-k2-1',
+    conjunto: 'verdad',
+    comp: 'k2',
+    motor: 'ordenar',
+    titulo: 'Los movimientos del artículo',
+    enunciado: 'Reconstruye el orden de los cinco movimientos de «La verdad en tiempos de ruido».',
+    ayuda: 'El artículo va de un problema a una respuesta. Localiza dónde deja de describir la dificultad y empieza a proponer una salida.',
+    piezas: [
+      { t: 'Apertura con tres preguntas seguidas sobre cómo encontrar un camino propio, cómo decidir y cómo saber si lo que recibimos es cierto.', fb: 'La apertura. El texto no empieza afirmando: empieza preguntando, y esas preguntas son las que el resto del artículo se compromete a responder.' },
+      { t: 'Propuesta inicial: recuperar el compromiso con la verdad, que no es lo que más se repite sino lo que se sostiene con argumentos y evidencia.', fb: 'Segundo movimiento, y aquí está la tesis. Llega pronto, en el párrafo dos, que es lo habitual en una columna de opinión.' },
+      { t: 'Primera amenaza: los datos, que se celebran como promesa de objetividad pero pueden ser manipulados o sacados de contexto.', fb: 'Tercer movimiento. El artículo empieza a examinar los obstáculos, y el primero es el que parecía la solución.' },
+      { t: 'Segunda amenaza: los canales, donde lo inmediato se impone sobre lo profundo y la lógica del algoritmo empobrece la pluralidad.', fb: 'Cuarto movimiento. La amenaza se desplaza del contenido al medio, que es el paso que hace del texto algo más que una queja sobre las cifras.' },
+      { t: 'Salida y cierre: el pensamiento crítico y la educación como respuesta, las herramientas concretas de verificación y una verdad que sirva de puente.', fb: 'El cierre, que ocupa la segunda mitad del artículo. Un resumen que se detenga en las amenazas deja fuera precisamente lo que el texto propone.' }
+    ],
+    explicacion: 'La arquitectura de este texto es un paso de problema a respuesta, y ese paso ocurre en el quinto párrafo, cuando encontrar la verdad se define como una forma de resistencia. Un resumen que enumere los temas en orden puede parecer completo y no haber visto ese giro.'
+  },
+  {
+    id: 've-k2-2',
+    conjunto: 'verdad',
+    comp: 'k2',
+    motor: 'mc',
+    titulo: 'Qué hace el resumen oficial con la estructura',
+    enunciado: 'El resumen del Agente 1 recorre casi todo el artículo. La pregunta es si lo describe o si solo lo sigue.',
+    items: [
+      {
+        id: 've-k2-2-i1',
+        contexto: 'El Agente 1 escribe: «Para desarrollar esta idea, explica que los datos pueden ser manipulados y que las redes sociales son una de las principales causas… Frente a este problema, Camargo propone el pensamiento crítico… También destaca el papel de la educación… Finalmente, defiende una ciudadanía comprometida».',
+        pregunta: '¿Qué hace ese resumen con la organización del texto?',
+        opciones: [
+          {
+            t: 'Reproduce el orden con marcadores de sucesión —«para desarrollar esta idea», «también», «finalmente»— sin nombrar la función de ningún tramo ni el principio que ordena el artículo.',
+            ok: true,
+            fb: 'Correcta. Es un cumplimiento parcial y conviene decirlo así: el recorrido es fiel, pero «también» y «finalmente» marcan sucesión, no función. Falta decir que el texto va de un problema a una respuesta.'
+          },
+          {
+            t: 'Describe la estructura con precisión, porque menciona todos los tramos del artículo en el orden correcto.',
+            ok: false,
+            fb: 'Mencionar todos los tramos en orden es seguir el texto, no describirlo. Si eso bastara, cualquier paráfrasis lineal cumpliría el criterio.'
+          },
+          {
+            t: 'No dice absolutamente nada sobre la organización del texto.',
+            ok: false,
+            fb: 'Es demasiado severo. La expresión «frente a este problema» sí señala un giro argumentativo, y reconocerlo hace más creíble el resto de tu análisis.'
+          },
+          {
+            t: 'Describe la estructura del resumen y no la del texto fuente, que es lo que pedía el criterio.',
+            ok: false,
+            fb: 'No es el caso: todo lo que enumera pertenece al artículo de Camargo. El error de objeto existe y es frecuente, pero aquí no se produce.'
+          }
+        ]
+      },
+      {
+        id: 've-k2-2-i2',
+        pregunta: '¿Qué evidencia del texto fuente prueba mejor que el artículo pasa de un problema a una respuesta?',
+        opciones: [
+          {
+            t: 'La frase que abre el quinto párrafo, «Frente a todo esto, encontrar la verdad es una forma de resistencia», que cierra el tramo de las amenazas y abre el de la salida.',
+            ok: true,
+            fb: 'Correcta. Es el punto exacto donde el texto gira, y el «frente a todo esto» lo señala. Una evidencia estructural convincente es la frase donde ocurre el movimiento.'
+          },
+          {
+            t: 'La enumeración de herramientas del décimo párrafo: verificar fuentes, comparar perspectivas, identificar sesgos.',
+            ok: false,
+            fb: 'Pertenece al tramo de la respuesta, así que confirma que existe, pero no muestra dónde empieza. Para probar un giro hay que señalar la bisagra, no lo que viene después.'
+          },
+          {
+            t: 'Las tres preguntas del primer párrafo sobre cómo saber si lo que recibimos es cierto.',
+            ok: false,
+            fb: 'Prueban que el texto abre planteando un problema, que es la mitad de la afirmación. Falta mostrar dónde deja de plantearlo.'
+          }
+        ]
+      }
+    ]
+  },
+
+  /* ---------------- k3 · fidelidad ---------------- */
+  {
+    id: 've-k3-1',
+    conjunto: 'verdad',
+    comp: 'k3',
+    motor: 'cotejar',
+    titulo: 'Cotejo con el resumen oficial',
+    enunciado: 'Compara cada fragmento del artículo con lo que dice de él un resumen. Los cuatro primeros ítems reproducen los cotejos del modelo de respuesta publicado por CELEE sobre el resumen oficial.',
+    etiquetas: ['Fiel', 'Distorsiona', 'Omite', 'Añade'],
+    ayuda: 'Vigila sobre todo el alcance de las afirmaciones: en este resumen los fallos no son inventos, son endurecimientos.',
+    items: [
+      {
+        id: 've-k3-1-i1',
+        fuente: '¶4 · Las redes sociales y los medios de comunicación han transformado la manera en que accedemos a la información. Lo inmediato se impone sobre lo profundo, lo escandaloso sobre lo cierto. En ese entorno, la verdad pierde terreno frente a la emoción.',
+        resumen: '…las redes sociales son una de las principales causas de que las personas acepten información falsa o superficial.',
+        ok: 'Distorsiona',
+        fb: {
+          'Fiel': 'Los dos hablan de lo mismo, pero no con la misma fuerza. Camargo describe una tendencia —lo inmediato se impone— y el resumen establece una causa. No es la misma afirmación.',
+          'Distorsiona': 'Correcto. Es el fallo que el modelo oficial identifica como principal: el resumen establece una relación causal más fuerte que la presentada por el autor. Endurecer una afirmación es un fallo de fidelidad aunque el tema coincida.',
+          'Omite': 'No falta información: sobra contundencia. Todos los elementos del fragmento están representados.',
+          'Añade': 'La expresión «información falsa» no aparece en ese párrafo, pero el problema de fondo no es un dato nuevo: es el cambio de grado en la relación que se afirma.'
+        }
+      },
+      {
+        id: 've-k3-1-i2',
+        fuente: '¶6 · La educación tiene un rol fundamental en este proceso. […] ¶10 · Podemos aprender a verificar fuentes, a comparar perspectivas, a identificar sesgos […]. Podemos y debemos conversar más, especialmente con quienes piensan distinto.',
+        resumen: '…destaca el papel de la educación, que debe formar ciudadanos capaces de discernir y construir criterios propios, convirtiéndose así en la principal respuesta frente a la desinformación.',
+        ok: 'Distorsiona',
+        fb: {
+          'Fiel': 'La primera mitad lo es. El problema está en «la principal respuesta»: el artículo le da a la educación un rol fundamental, no el primer lugar de una lista que además incluye verificar, comparar, identificar sesgos y conversar.',
+          'Distorsiona': 'Correcto. Convertir «un rol fundamental» en «la principal respuesta» jerarquiza donde el texto no jerarquiza. El modelo oficial lo señala con estas palabras: simplifica una propuesta que en el artículo es más amplia.',
+          'Omite': 'Hay omisión —las herramientas del párrafo diez—, pero el fallo que hay que nombrar es la jerarquía que el resumen introduce.',
+          'Añade': 'No aparece ningún elemento ajeno al texto: lo que cambia es la posición relativa que se les asigna.'
+        }
+      },
+      {
+        id: 've-k3-1-i3',
+        fuente: '¶2 · La verdad no es simplemente lo que más se repite, ni lo que genera más clics o más likes. […] aprender a buscar con honestidad intelectual lo que se sostiene con argumentos, con evidencia y con humanidad.',
+        resumen: 'El autor sostiene que la verdad no depende de aquello que se repite o se vuelve popular, sino de la capacidad de analizar la información con responsabilidad, argumentos y evidencia.',
+        ok: 'Fiel',
+        fb: {
+          'Fiel': 'Correcto. Reformula con otras palabras y conserva las dos mitades: la negación y la afirmación positiva. Que el resumen diga «se vuelve popular» donde el texto dice «clics o likes» es una paráfrasis legítima, no una infidelidad.',
+          'Distorsiona': 'No hay cambio de alcance ni de grado: ni endurece ni suaviza lo que el original afirma.',
+          'Omite': 'Deja fuera «con humanidad», que es el tercer término de la serie, pero conserva el sentido de la afirmación.',
+          'Añade': 'No hay nada en el resumen que el párrafo no respalde.'
+        }
+      },
+      {
+        id: 've-k3-1-i4',
+        fuente: '¶3 · Por eso, conocer no es acumular cifras, sino comprometerse con ellas, comprender sus límites y preguntar siempre: ¿qué me están mostrando?, ¿qué están dejando por fuera?',
+        resumen: '…explica que los datos pueden ser manipulados.',
+        ok: 'Omite',
+        fb: {
+          'Fiel': 'Lo que dice es cierto, pero se queda con la mitad más simple del párrafo. La manipulación de los datos es el punto de partida; lo que el texto propone es comprender sus límites y preguntar qué dejan fuera.',
+          'Distorsiona': 'No hay distorsión: nada de lo afirmado contradice el original ni cambia su alcance.',
+          'Omite': 'Correcto. Es la reducción que el modelo oficial señala entre los aspectos revisables: la reflexión sobre los límites de los datos queda comprimida en una sola frase.',
+          'Añade': 'No hay ninguna afirmación nueva: el fallo es por defecto.'
+        }
+      },
+      {
+        id: 've-k3-1-i5',
+        fuente: '¶6 · La educación tiene un rol fundamental en este proceso. Educar no puede reducirse a transmitir contenidos ni preparar para pruebas. Educar hoy implica formar ciudadanos capaces de discernir, de cuestionar, de construir criterios propios.',
+        resumen: 'De un resumen descartado: Camargo propone que las instituciones educativas incorporen una asignatura obligatoria de pensamiento crítico en todos los niveles de formación.',
+        ok: 'Añade',
+        fb: {
+          'Fiel': 'No lo es: el artículo habla de crear espacios donde se valore la duda, no de crear una asignatura. La diferencia entre una orientación y una medida concreta es enorme.',
+          'Distorsiona': 'Va más allá de la distorsión. No exagera algo que el texto diga: introduce una propuesta institucional que el artículo no formula en ningún punto.',
+          'Omite': 'No es una omisión: el resumen no calla información, la inventa a partir de un tema que sí está.',
+          'Añade': 'Correcto. Es la adición más difícil de detectar, porque se apoya en un asunto real del texto —la educación— y suena a algo que el autor podría haber dicho. Que sea verosímil no la hace fiel.'
+        }
+      }
+    ]
+  },
+  {
+    id: 've-k3-2',
+    conjunto: 'verdad',
+    comp: 'k3',
+    motor: 'marcar',
+    modo: 'oracion',
+    titulo: 'Lo que este resumen deja fuera',
+    enunciado: 'Este es el resumen del Agente 2. Marca las oraciones que revelan que ha dejado fuera la mitad del artículo.',
+    ayuda: 'Dos de las seis oraciones muestran que el resumen convierte una propuesta en un diagnóstico. Las otras cuatro son fieles y no deben marcarse.',
+    unidades: [
+      { t: 'En «La verdad en tiempos de ruido», Camilo Camargo analiza cómo la abundancia de información ha vuelto difícil distinguir lo cierto de lo falso.', marcar: false, fb: 'Es fiel al punto de partida del artículo: la dificultad de saber si lo que recibimos es cierto está en las preguntas del primer párrafo.' },
+      { t: 'El autor explica que los datos se celebran como una promesa de objetividad, pero que un dato por sí solo no es la verdad.', marcar: false, fb: 'Fiel, y casi literal: el texto dice que se celebran como la gran promesa de objetividad y que un dato por sí solo no es la verdad.' },
+      { t: 'Camargo dedica buena parte del texto a las redes sociales y a los medios de comunicación, que han transformado la manera en que accedemos a la información.', marcar: false, fb: 'Fiel, y con el matiz conservado: dice «han transformado la manera en que accedemos», sin convertirlo en una relación causal más fuerte.' },
+      { t: 'En ese entorno, según el autor, lo inmediato se impone sobre lo profundo y la verdad pierde terreno frente a la emoción.', marcar: false, fb: 'Fiel: reproduce con exactitud las dos formulaciones del cuarto párrafo, incluida la antítesis.' },
+      { t: 'El artículo describe así un panorama preocupante sobre el estado de la información en la sociedad contemporánea.', marcar: true, fb: 'Aquí aparece la omisión. Reducir el artículo a un panorama preocupante deja fuera la segunda mitad entera: el pensamiento crítico, la educación y las herramientas de verificación.' },
+      { t: 'El texto se ocupa sobre todo de los efectos que la lógica del algoritmo tiene en la conversación pública y en la calidad del debate.', marcar: true, fb: 'Segunda marca de la misma omisión. Decir que el texto se ocupa «sobre todo» de eso es falso por proporción: siete de los doce párrafos están dedicados a la salida, no al problema.' }
+    ],
+    explicacion: 'Este resumen no inventa nada y aun así falla. Todos sus datos son exactos, pero al detenerse en el diagnóstico convierte una columna que propone algo en una constatación pesimista. Cuando evalúes fidelidad, comprueba no solo si lo dicho es cierto, sino si lo omitido era necesario.'
+  },
+
+  /* ---------------- k4 · estrategias discursivas ---------------- */
+  {
+    id: 've-k4-1',
+    conjunto: 'verdad',
+    comp: 'k4',
+    motor: 'clasificar',
+    titulo: 'Qué recurso opera en cada fragmento',
+    enunciado: 'Todos estos fragmentos son de «La verdad en tiempos de ruido». Identifica el recurso que opera en cada uno.',
+    etiquetas: ['Interrogación retórica', 'Antítesis', 'Anáfora', 'Coloquialismo entrecomillado'],
+    ayuda: 'Son los cuatro recursos que sostienen esta columna. Fíjate en la operación que realiza cada fragmento, no en lo que dice.',
+    fragmentos: [
+      {
+        id: 've-k4-1-f1',
+        t: '«¿Cómo encontrar un camino que sea verdaderamente nuestro? ¿Cómo tomar decisiones que valgan la pena? ¿Cómo saber si lo que estoy recibiendo es cierto?»',
+        ok: 'Interrogación retórica',
+        fb: {
+          'Interrogación retórica': 'Correcto. Tres preguntas seguidas que no esperan respuesta del lector: la respuesta la dará el propio artículo. Además marcan el programa del texto, porque la tercera es la que se acaba respondiendo.',
+          'Antítesis': 'No se oponen dos términos: las tres preguntas van en la misma dirección.',
+          'Anáfora': 'Hay repetición del «cómo» al principio de cada una, así que el rasgo existe; pero lo dominante es que son preguntas que estructuran el texto.',
+          'Coloquialismo entrecomillado': 'No hay ninguna palabra entrecomillada ni ningún descenso de registro.'
+        }
+      },
+      {
+        id: 've-k4-1-f2',
+        t: '«Lo inmediato se impone sobre lo profundo, lo escandaloso sobre lo cierto.»',
+        ok: 'Antítesis',
+        fb: {
+          'Antítesis': 'Correcto. Dos pares opuestos en una sola frase, con el verbo elidido en el segundo. La oposición hace el argumento: no hace falta explicar por qué es un problema.',
+          'Interrogación retórica': 'La frase es afirmativa y no plantea ninguna pregunta.',
+          'Anáfora': 'Se repite la estructura, pero lo que define el fragmento es el choque de contrarios, no la repetición inicial.',
+          'Coloquialismo entrecomillado': 'El registro se mantiene formal en todo el fragmento.'
+        }
+      },
+      {
+        id: 've-k4-1-f3',
+        t: '«Porque buscar la verdad es una forma de dignidad. Es una forma de libertad. Es una forma de cuidar lo que somos y lo que podemos llegar a ser.»',
+        ok: 'Anáfora',
+        fb: {
+          'Anáfora': 'Correcto. Tres oraciones que empiezan igual y crecen en alcance: de la dignidad a la libertad y de ahí a lo que podemos llegar a ser. La repetición eleva el tono justo en el cierre.',
+          'Interrogación retórica': 'No hay preguntas: son afirmaciones encadenadas.',
+          'Antítesis': 'No se oponen términos: se acumulan en la misma dirección.',
+          'Coloquialismo entrecomillado': 'El registro es el más elevado de todo el artículo, no el más bajo.'
+        }
+      },
+      {
+        id: 've-k4-1-f4',
+        t: '«Una actitud que nos permita no “comer entero”, sino preguntarnos: ¿de dónde viene esto?, ¿qué evidencia lo respalda?»',
+        ok: 'Coloquialismo entrecomillado',
+        fb: {
+          'Coloquialismo entrecomillado': 'Correcto. Es el único momento en que el texto baja de registro a propósito, y las comillas lo señalan. La expresión coloquial acerca el argumento a la experiencia cotidiana del lector.',
+          'Interrogación retórica': 'Las dos preguntas del final también son un recurso, pero lo que distingue a este fragmento de los demás es el descenso de registro marcado con comillas.',
+          'Antítesis': 'Hay un «no… sino» que opone dos actitudes, aunque el rasgo llamativo es la expresión entrecomillada.',
+          'Anáfora': 'No hay repetición de la misma estructura al comienzo de varias oraciones.'
+        }
+      }
+    ]
+  },
+  {
+    id: 've-k4-2',
+    conjunto: 'verdad',
+    comp: 'k4',
+    motor: 'cloze',
+    titulo: 'La frase que enlaza la estrategia con el texto',
+    enunciado: 'Completa la justificación con la formulación que conecta la estrategia del texto fuente con lo que el resumen dice de ella.',
+    items: [
+      {
+        id: 've-k4-2-i1',
+        frase: 'El Agente 1 señala que el autor «utiliza preguntas dirigidas al lector y algunos contrastes para reforzar sus ideas». En el texto, las preguntas abren el artículo y reaparecen en el noveno párrafo: «¿de dónde viene esto?, ¿qué evidencia lo respalda?». ___',
+        opciones: [
+          {
+            t: 'El resumen acierta y además identifica la función: las preguntas no piden respuesta, involucran al lector en el cuestionamiento que el artículo propone, de modo que el recurso ejecuta lo que el texto defiende.',
+            ok: true,
+            fb: 'Correcta. Nombra el recurso, lo localiza y explica qué consigue. La observación final —que la forma hace lo que el contenido pide— es el tipo de análisis que distingue un texto experto.'
+          },
+          {
+            t: 'Por eso el resumen del Agente 1 cumple con el criterio de estrategias discursivas.',
+            ok: false,
+            fb: 'Declara la conclusión sin explicar la correspondencia. Es exactamente el paso que la rúbrica evalúa y el que este tipo de frase se salta.'
+          },
+          {
+            t: 'Sin embargo, el resumen no menciona la anáfora del cierre ni el coloquialismo entrecomillado del párrafo nueve.',
+            ok: false,
+            fb: 'Es una observación válida y vale la pena hacerla, pero deja sin cerrar el enlace que estaba en marcha. Primero se completa la correspondencia y después se señala lo que falta.'
+          },
+          {
+            t: 'Las preguntas retóricas son un recurso muy habitual en las columnas de opinión de la prensa colombiana.',
+            ok: false,
+            fb: 'Generaliza sobre un género en lugar de analizar este caso. Además la afirmación no se puede verificar en el texto fuente, que es la única evidencia que cuenta aquí.'
+          }
+        ]
+      },
+      {
+        id: 've-k4-2-i2',
+        frase: 'El resumen habla de «algunos contrastes». En el artículo, el contraste aparece condensado en una sola frase: «Lo inmediato se impone sobre lo profundo, lo escandaloso sobre lo cierto». ___',
+        opciones: [
+          {
+            t: 'La correspondencia existe, aunque el resumen se queda corto: lo que llama contraste es una antítesis construida con dos pares opuestos y el verbo elidido, y esa economía es lo que le da fuerza al diagnóstico.',
+            ok: true,
+            fb: 'Correcta. Reconoce el acierto parcial y lo precisa. Nombrar la figura y describir cómo está construida demuestra que se leyó el texto, no que se reconoció una etiqueta.'
+          },
+          {
+            t: 'Como se ve, el resumen identifica correctamente todas las estrategias del artículo.',
+            ok: false,
+            fb: 'Exagera lo que el resumen hace. Decir «algunos contrastes» sin localizarlos no es identificar correctamente nada, y afirmarlo debilita la credibilidad del resto del análisis.'
+          },
+          {
+            t: 'El contraste es la estrategia más importante del texto y por eso el resumen hace bien en mencionarla.',
+            ok: false,
+            fb: 'Jerarquiza sin argumento y no explica la correspondencia entre las dos citas, que era lo que había que hacer.'
+          },
+          {
+            t: 'Este tipo de frases demuestran la calidad literaria de la prosa de Camargo.',
+            ok: false,
+            fb: 'Es una valoración estética. La rúbrica no evalúa el gusto del estudiante, sino su capacidad de mostrar que el resumen da cuenta de los recursos del texto fuente.'
+          }
+        ]
+      }
+    ]
+  }
+];
+
+
 /* ===== data-ej-transversal.js ===== */
 /* data-ej-transversal.js — bloque transversal: c5 (cohesión y coherencia) y
    c6 (gramática). Estos dos criterios evalúan la prosa del estudiante, no el
@@ -2572,7 +3311,7 @@ const EJ_TRANSVERSAL = [
   /* ---------------- c5 · cohesión y coherencia ---------------- */
   {
     id: 'tr-c5-1',
-    criterio: 'c5',
+    comp: 'k6',
     motor: 'cloze',
     titulo: 'El conector que corresponde a la relación real',
     enunciado: 'Elige el conector que expresa la relación que efectivamente hay entre las dos ideas.',
@@ -2611,7 +3350,7 @@ const EJ_TRANSVERSAL = [
   },
   {
     id: 'tr-c5-2',
-    criterio: 'c5',
+    comp: 'k7',
     motor: 'ordenar',
     titulo: 'La progresión de un párrafo de justificación',
     enunciado: 'Ordena las cuatro piezas de este párrafo para que la justificación avance como debe.',
@@ -2626,7 +3365,7 @@ const EJ_TRANSVERSAL = [
   },
   {
     id: 'tr-c5-3',
-    criterio: 'c5',
+    comp: 'k6',
     motor: 'marcar',
     modo: 'oracion',
     titulo: 'El pronombre que apunta a dos sitios',
@@ -2644,7 +3383,7 @@ const EJ_TRANSVERSAL = [
   },
   {
     id: 'tr-c5-4',
-    criterio: 'c5',
+    comp: 'k7',
     motor: 'mc',
     titulo: 'Cómo repartir 375 palabras en párrafos',
     enunciado: 'La distribución en párrafos es parte del criterio de cohesión, y en un texto de 350 a 400 palabras se decide en pocos movimientos.',
@@ -2707,7 +3446,7 @@ const EJ_TRANSVERSAL = [
   /* ---------------- c6 · gramática ---------------- */
   {
     id: 'tr-c6-1',
-    criterio: 'c6',
+    comp: 'k8',
     motor: 'marcar',
     modo: 'palabra',
     titulo: 'Acentuación, con las diacríticas incluidas',
@@ -2730,7 +3469,7 @@ const EJ_TRANSVERSAL = [
   },
   {
     id: 'tr-c6-2',
-    criterio: 'c6',
+    comp: 'k8',
     motor: 'marcar',
     modo: 'palabra',
     titulo: 'Concordancia, «haber» impersonal y «a» frente a «ha»',
@@ -2750,7 +3489,7 @@ const EJ_TRANSVERSAL = [
   },
   {
     id: 'tr-c6-3',
-    criterio: 'c6',
+    comp: 'k8',
     motor: 'mc',
     titulo: 'Cómo se puntúa una cita',
     enunciado: 'En esta prueba vas a citar todo el tiempo. Estas son las decisiones de puntuación que aparecerán en tu texto.',
@@ -2789,7 +3528,7 @@ const EJ_TRANSVERSAL = [
   },
   {
     id: 'tr-c6-4',
-    criterio: 'c6',
+    comp: 'k8',
     motor: 'reescritura',
     titulo: 'Corregir sin cambiar el contenido',
     enunciado: 'Este párrafo dice lo que debe decir, pero está mal escrito. Elige la corrección que arregla los errores sin alterar el contenido.',
@@ -2824,10 +3563,242 @@ const EJ_TRANSVERSAL = [
       }
     ]
   }
+  ,
+  /* ---------------- k5 · postura y adecuación ---------------- */
+  {
+    id: 'tr-k5-1',
+    comp: 'k5',
+    motor: 'mc',
+    titulo: 'La postura va en el primer párrafo',
+    enunciado: 'La rúbrica pide una postura explícita sobre la calidad del resumen, formulada desde el párrafo introductorio. Distingue una postura de lo que no lo es.',
+    items: [
+      {
+        id: 'tr-k5-1-i1',
+        pregunta: 'De estos cuatro arranques, ¿cuál formula una postura explícita?',
+        opciones: [
+          {
+            t: 'El resumen es adecuado porque conserva el planteamiento central del artículo, aunque no es completamente fiel: presenta de manera más categórica algunas afirmaciones del autor.',
+            ok: true,
+            fb: 'Correcta. Hay un juicio de valor —adecuado, pero no del todo fiel— formulado en la primera oración. Una postura matizada sigue siendo una postura: lo que la rúbrica pide es que sea explícita, no que sea entusiasta.'
+          },
+          {
+            t: 'En este texto voy a analizar el resumen producido por la inteligencia artificial a partir de las cuatro características de un buen resumen.',
+            ok: false,
+            fb: 'Anuncia lo que va a hacer, que no es lo mismo que decir qué opina. Un lector que se detuviera aquí no sabría si el resumen le parece bueno o malo.'
+          },
+          {
+            t: 'El texto fuente trata sobre la dificultad de distinguir la información fiable en una sociedad saturada de datos.',
+            ok: false,
+            fb: 'Presenta el texto fuente, que es necesario, pero no valora el resumen. La presentación acompaña a la postura; no la sustituye.'
+          },
+          {
+            t: 'El resumen tiene aspectos positivos y otros que podrían mejorarse, como suele ocurrir con los textos generados automáticamente.',
+            ok: false,
+            fb: 'Es un juicio tan general que serviría para cualquier resumen de cualquier texto. La rúbrica llama a esto una postura que solo se infiere: baja a nivel Intermedio.'
+          }
+        ]
+      },
+      {
+        id: 'tr-k5-1-i2',
+        pregunta: 'Un estudiante formula su postura con claridad, pero en el cuarto párrafo. ¿Qué ocurre según la rúbrica?',
+        opciones: [
+          {
+            t: 'Baja un nivel: la postura es explícita y comprensible, pero aparece fuera del párrafo introductorio, que es donde el criterio la exige.',
+            ok: true,
+            fb: 'Correcta. Es un requisito de posición, no solo de contenido. La rúbrica distingue expresamente entre formular la postura en la apertura y formularla en otra parte del texto.'
+          },
+          {
+            t: 'No ocurre nada: lo importante es que la postura esté en algún lugar del texto.',
+            ok: false,
+            fb: 'Sería razonable en otro género, pero no aquí. El criterio pide que la postura oriente el desarrollo posterior, y para eso tiene que llegar antes que el desarrollo.'
+          },
+          {
+            t: 'Queda en el nivel más bajo, porque una postura tardía equivale a no tener postura.',
+            ok: false,
+            fb: 'Es más severo de lo que la rúbrica establece. Solo se considera ausente cuando el texto no permite reconocer ningún juicio de valor a lo largo de la lectura.'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'tr-k5-2',
+    comp: 'k5',
+    motor: 'clasificar',
+    titulo: 'El registro de un texto académico',
+    enunciado: 'Clasifica cada formulación según el registro que emplea. La rúbrica evalúa la formalidad y la precisión del léxico como un criterio propio.',
+    etiquetas: ['Formal y preciso', 'Coloquial', 'Vago o impreciso'],
+    ayuda: 'Formal y preciso: vocabulario académico que nombra con exactitud. Coloquial: expresiones de la conversación. Vago: formal en apariencia, pero no dice nada comprobable.',
+    fragmentos: [
+      {
+        id: 'tr-k5-2-f1',
+        t: 'El resumen amplía el alcance de la afirmación original al presentar las redes sociales como una de las principales causas del problema.',
+        ok: 'Formal y preciso',
+        fb: {
+          'Formal y preciso': 'Correcto. «Ampliar el alcance» nombra con exactitud la operación, y la frase se puede verificar contra los dos textos. Ese es el vocabulario que el criterio premia.',
+          'Coloquial': 'No hay ninguna expresión conversacional: el registro se mantiene en todo el enunciado.',
+          'Vago o impreciso': 'Es lo contrario de vago: dice qué cambió, en qué dirección y sobre qué asunto.'
+        }
+      },
+      {
+        id: 'tr-k5-2-f2',
+        t: 'La verdad es que el resumen está súper bien hecho y se entiende todo de una.',
+        ok: 'Coloquial',
+        fb: {
+          'Formal y preciso': 'El registro se rompe en tres puntos: «la verdad es que», «súper» y «de una». Ninguno cabe en un texto académico.',
+          'Coloquial': 'Correcto. Muletillas e intensificadores de la conversación. La rúbrica los menciona expresamente al describir el nivel más bajo de este criterio.',
+          'Vago o impreciso': 'También es impreciso, pero el rasgo dominante es el registro: son marcas de oralidad, no solo falta de concreción.'
+        }
+      },
+      {
+        id: 'tr-k5-2-f3',
+        t: 'El resumen tiene varios aspectos positivos, aunque también algunas cosas que se podrían mejorar bastante.',
+        ok: 'Vago o impreciso',
+        fb: {
+          'Formal y preciso': 'Suena formal, y ahí está la trampa: no hay ni una palabra coloquial y aun así no se afirma nada comprobable.',
+          'Coloquial': 'El registro es correcto: no hay muletillas ni expresiones conversacionales.',
+          'Vago o impreciso': 'Correcto. «Aspectos positivos», «algunas cosas» y «bastante» podrían aplicarse a cualquier resumen de cualquier texto. La rúbrica llama a esto elecciones léxicas vagas.'
+        }
+      },
+      {
+        id: 'tr-k5-2-f4',
+        t: 'Al agente se le fue la mano con lo de las redes sociales y terminó diciendo algo que el autor nunca dijo.',
+        ok: 'Coloquial',
+        fb: {
+          'Formal y preciso': 'La observación de fondo es acertada, pero «se le fue la mano» y «lo de» pertenecen a la conversación, no al texto académico.',
+          'Coloquial': 'Correcto. Es un buen ejemplo de contenido válido con registro inadecuado: la idea se salva reformulándola, no eliminándola.',
+          'Vago o impreciso': 'No es vago: identifica el asunto concreto y el tipo de fallo. El problema es cómo lo dice.'
+        }
+      },
+      {
+        id: 'tr-k5-2-f5',
+        t: 'La formulación del resumen establece una relación causal más fuerte que la presentada por el autor en el párrafo cuarto.',
+        ok: 'Formal y preciso',
+        fb: {
+          'Formal y preciso': 'Correcto. Nombra el tipo de operación —una relación causal reforzada— y la localiza en un párrafo concreto. Precisión léxica y evidencia en la misma frase.',
+          'Coloquial': 'No hay marcas de oralidad en ningún punto del enunciado.',
+          'Vago o impreciso': 'Es verificable palabra por palabra: se puede ir al párrafo cuarto y comprobarlo.'
+        }
+      }
+    ]
+  },
+  {
+    id: 'tr-k5-3',
+    comp: 'k5',
+    motor: 'mc',
+    titulo: 'La extensión también se califica',
+    enunciado: 'La rúbrica gradúa la extensión en bandas. Conocerlas cambia lo que conviene hacer cuando falta tiempo.',
+    items: [
+      {
+        id: 'tr-k5-3-i1',
+        pregunta: 'Faltan cinco minutos y llevas 342 palabras. ¿Qué conviene hacer?',
+        opciones: [
+          {
+            t: 'Añadir una evidencia que falte en algún criterio, con lo que se sube al rango pedido y se refuerza además la justificación.',
+            ok: true,
+            fb: 'Correcta. Con 342 palabras estás en la banda de 320 a 349, un nivel por debajo. Y como lo que suele faltar a esa altura es una cita, el mismo movimiento arregla dos criterios a la vez.'
+          },
+          {
+            t: 'Dejarlo así: 342 palabras están razonablemente cerca de 350 y la diferencia no se nota.',
+            ok: false,
+            fb: 'Sí se nota, porque la rúbrica cuenta. El rango de Experto es de 350 a 400; entre 320 y 349 el criterio baja a Avanzado aunque el texto sea excelente en todo lo demás.'
+          },
+          {
+            t: 'Alargar la conclusión repitiendo con otras palabras lo ya dicho hasta pasar de 350.',
+            ok: false,
+            fb: 'Resuelve la extensión y estropea la coherencia: la repetición innecesaria es justamente lo que penaliza el criterio de progresión temática.'
+          }
+        ]
+      },
+      {
+        id: 'tr-k5-3-i2',
+        pregunta: 'Terminaste con 445 palabras. ¿Qué se recorta primero?',
+        opciones: [
+          {
+            t: 'La paráfrasis del texto fuente que no sirva de evidencia, y cualquier comentario sobre los aspectos del artículo que no evalúen el resumen.',
+            ok: true,
+            fb: 'Correcta. Son las dos fuentes de exceso más comunes y las únicas que no cuestan nada al eliminarlas: no aportan a ningún criterio y ocupan el presupuesto de palabras.'
+          },
+          {
+            t: 'Una de las cuatro características analizadas, que es la forma más rápida de perder ochenta palabras.',
+            ok: false,
+            fb: 'Arregla la extensión y hunde la justificación. La rúbrica exige que las razones se relacionen con las cuatro características: dejar una fuera baja ese criterio dos niveles.'
+          },
+          {
+            t: 'Las citas del texto fuente, que suelen ser lo más largo del texto.',
+            ok: false,
+            fb: 'Es exactamente lo que no hay que quitar. Sin evidencia textual de las dos fuentes, el criterio de justificación cae al nivel más bajo por mucho que la extensión quede perfecta.'
+          }
+        ]
+      }
+    ]
+  },
+
+  /* ---------------- k6 · cohesión: puntuación ---------------- */
+  {
+    id: 'tr-k6-3',
+    comp: 'k6',
+    motor: 'marcar',
+    modo: 'oracion',
+    titulo: 'La puntuación que desorganiza las ideas',
+    enunciado: 'La rúbrica evalúa si los signos de puntuación segmentan bien las oraciones y establecen las relaciones entre las ideas. Marca las oraciones mal puntuadas.',
+    ayuda: 'Tres de las seis oraciones tienen un problema de puntuación que obliga a releer. Marcar una oración correcta resta.',
+    unidades: [
+      { t: 'El resumen, conserva la idea principal del texto fuente.', marcar: true, fb: 'Una coma separa el sujeto del verbo. Es un error frecuente porque el sujeto es largo y al leerlo en voz alta se hace una pausa, pero la coma no puede escribirse ahí.' },
+      { t: 'Aunque el resumen es fiel en lo esencial, deja fuera un matiz importante del cuarto párrafo.', marcar: false, fb: 'Correcta: la coma cierra la subordinada concesiva antepuesta, que es exactamente donde debe ir.' },
+      { t: 'El autor afirma que los datos pueden manipularse el resumen recoge esa idea sin cambiarla.', marcar: true, fb: 'Dos oraciones independientes pegadas sin ningún signo entre ellas. El lector tiene que releer para saber dónde termina una y empieza la otra.' },
+      { t: 'En el párrafo cuarto, el autor contrapone dos formas de acceder a la información.', marcar: false, fb: 'Correcta: la coma marca el complemento circunstancial antepuesto y no interrumpe la relación entre sujeto y verbo.' },
+      { t: 'El resumen es claro; sin embargo, simplifica la relación causal que el texto establece.', marcar: false, fb: 'Correcta: el punto y coma separa dos oraciones con sentido pleno y el conector contraargumentativo va entre comas, como corresponde.' },
+      { t: 'La educación aparece en el resumen, como la principal respuesta, esto no es lo que dice el artículo.', marcar: true, fb: 'Dos problemas encadenados: las comas aíslan un complemento que no debería ir aislado, y después una coma sostiene el paso a una oración nueva, que necesitaría punto.' }
+    ],
+    explicacion: 'Los tres fallos son de segmentación: la puntuación no separa lo que debe separarse o separa lo que debe ir junto. La rúbrica lo evalúa como parte de la cohesión, no de la ortografía, porque lo que está en juego no es la norma sino la relación entre las ideas.'
+  },
+
+  /* ---------------- k7 · coherencia: progresión temática ---------------- */
+  {
+    id: 'tr-k7-3',
+    comp: 'k7',
+    motor: 'ordenar',
+    titulo: 'Cada oración retoma la anterior',
+    enunciado: 'Ordena las cuatro oraciones para que el párrafo avance sin saltos: cada una debe retomar algo de la anterior y añadir información nueva.',
+    ayuda: 'Busca la palabra o la idea con la que cada oración engancha con la que la precede. Si una oración no engancha con ninguna, va primera.',
+    piezas: [
+      { t: 'El resumen conserva la idea principal del artículo.', fb: 'Abre el párrafo porque no retoma nada: introduce el tema del que van a hablar las tres oraciones siguientes.' },
+      { t: 'Esa fidelidad al núcleo, sin embargo, no se extiende a todos los tramos del texto.', fb: 'Retoma «conserva la idea principal» con el sintagma «esa fidelidad al núcleo» y aporta lo nuevo: que no ocurre en todo el texto.' },
+      { t: 'Los pasajes sobre los límites de los datos, por ejemplo, quedan reducidos a una sola frase.', fb: 'Retoma «no se extiende a todos los tramos» concretándolo en un caso. El «por ejemplo» marca que estamos bajando del enunciado general a la evidencia.' },
+      { t: 'Esa reducción no cambia el sentido general del resumen, pero empobrece uno de los argumentos centrales del autor.', fb: 'Retoma «quedan reducidos» con «esa reducción» y cierra valorando el efecto. El párrafo termina donde empezó, pero un paso más adelante.' }
+    ],
+    explicacion: 'Esto es lo que la rúbrica llama progresión temática: una secuencia en la que cada parte retoma la anterior y aporta información nueva. Fíjate en las expresiones de enganche —«esa fidelidad», «por ejemplo», «esa reducción»—: son las que impiden que el párrafo se lea como cuatro observaciones sueltas.'
+  },
+
+  /* ---------------- k8 · corrección: ortografía ---------------- */
+  {
+    id: 'tr-k8-5',
+    comp: 'k8',
+    motor: 'marcar',
+    modo: 'palabra',
+    titulo: 'Ortografía, más allá de las tildes',
+    enunciado: 'Marca las cuatro palabras mal escritas. Son errores de ortografía, no de acentuación.',
+    ayuda: 'Fíjate en los homófonos y en la unión o separación de palabras. Alguna forma que parece incorrecta está bien empleada: marcarla resta.',
+    unidades: [
+      'El', 'resumen',
+      { t: 'echo', fb: 'Del verbo hacer, el participio es «hecho», con hache. «Echo» viene de echar, que aquí no tiene sentido. Es uno de los homófonos más frecuentes en textos universitarios.' },
+      'por', 'el', 'agente', 'no', 'cita', 'el', 'texto', 'fuente.', 'Puede', 'que', 'el', 'estudiante', 'no',
+      { t: 'aya', fb: 'La forma del verbo haber es «haya». «Aya» existe, pero significa niñera, y «halla» viene de hallar: son tres palabras distintas que suenan igual.' },
+      'notado', 'la', 'diferencia,', 'pero', 'conviene',
+      { t: 'haber', fb: 'Aquí se necesita la perífrasis «a ver», de ver: conviene mirar si el dato aparece. «Haber» es el verbo auxiliar y no encaja en esta construcción.' },
+      'si', 'el', 'dato', 'aparece', 'en', 'otro', 'párrafo.',
+      { t: 'Sino', fb: 'En una oración condicional van separados: «Si no lo encuentra». Unido, «sino» es la conjunción adversativa, que necesita una negación previa a la que oponerse.' },
+      'lo', 'encuentra,', 'tendrá', 'que', 'reformular', 'su', 'justificación.', 'El', 'resultado', 'no', 'es', 'un', 'resumen', 'fiel,', 'sino', 'una', 'paráfrasis', 'extensa.'
+    ],
+    explicacion: 'Los cuatro errores son homófonos: palabras que suenan igual y se escriben distinto según su función. El último «sino» del texto está bien empleado, porque va precedido de una negación —«no es un resumen fiel»— y opone dos términos. Ese es el criterio para distinguirlo del «si no» condicional.'
+  }
+
 ];
 
 /* Índice de flujos: cada texto propone su bloque propio más el transversal. */
 const BLOQUES_POR_TEXTO = {
+  verdad: EJ_VERDAD,
   bunuelo: EJ_BUNUELO,
   insipido: EJ_INSIPIDO,
   stoner: EJ_STONER,
@@ -2875,8 +3846,8 @@ function palabras(t) { return (t || '').trim() ? t.trim().split(/\s+/).length : 
 function parrafosDe(t) { return (t || '').split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean); }
 function pct(x) { return Math.round(x * 100); }
 function conjuntoPorId(id) { return CONJUNTOS.find((c) => c.id === id); }
-function criterioPorId(id) { return RUBRICA.find((c) => c.id === id); }
 function conceptoPorId(id) { return CONCEPTOS.find((c) => c.id === id); }
+/* componentePorId, familiaPorId y componentesDe viven en data-modelo.js */
 function fmtTiempo(ms) {
   const s = Math.floor(ms / 1000);
   return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
@@ -2886,7 +3857,7 @@ function fmtTiempo(ms) {
 const S = {
   pantalla: 'inicio',
   textoActivo: null,   // null hasta que el estudiante elige un texto
-  criterio: 'c1',
+  comp: 'k1',
   ej: {},
   visor: { abierto: false, conjunto: 'bunuelo', pestana: 'fuente', desdeSim: false },
   ovl: null,
@@ -2988,14 +3959,14 @@ function puntuar(e) {
   }
   return null;
 }
-function puntuarCriterio(cid) {
-  const propios = EJ().filter((e) => e.criterio === cid);
+function puntuarComponente(cid) {
+  const propios = EJ().filter((e) => e.comp === cid);
   const con = propios.map((e) => puntuar(e)).filter(Boolean);
   if (!con.length) return null;
   return { frac: con.reduce((a, p) => a + p.frac, 0) / con.length, ejercicios: con.length, total: propios.length };
 }
 function ponderado() {
-  const filas = RUBRICA.map((c) => ({ c, p: puntuarCriterio(c.id) })).filter((f) => f.p);
+  const filas = COMPONENTES.map((c) => ({ c, p: puntuarComponente(c.id) })).filter((f) => f.p);
   if (!filas.length) return null;
   const pesoTotal = filas.reduce((a, f) => a + f.c.peso, 0);
   const suma = filas.reduce((a, f) => a + f.c.peso * f.p.frac, 0);
@@ -3012,17 +3983,23 @@ function analizarTexto(texto, conjuntoId, elegido) {
   const pars = parrafosDe(t);
   const hay = (arr) => arr.some((k) => bajo.includes(k.toLowerCase()));
 
-  const nombraElegido = elegido !== null && elegido !== undefined
-    ? new RegExp('agente\\s*' + (elegido + 1), 'i').test(t)
-    : /agente\s*[123]/i.test(t);
+  const nombraElegido = c && c.modalidad === 'evaluacion'
+    ? /resumen/i.test(t)
+    : (elegido !== null && elegido !== undefined
+      ? new RegExp('agente\\s*' + (elegido + 1), 'i').test(t)
+      : /agente\s*[123]/i.test(t));
 
   const refFuente = hay(lx.referenciaFuente) || (c && bajo.includes(c.autor.split(' ').pop().toLowerCase()));
   const refResumen = hay(lx.referenciaResumen);
 
   const cubre = Object.entries(lx.caracteristicas).filter(([, ks]) => hay(ks)).map(([k]) => k);
 
+  const primerPar = (pars[0] || '').toLowerCase();
+  const hayPostura = lx.marcasPostura.some((k) => primerPar.includes(k.toLowerCase()));
+
   const s = {
     s1: nPal >= SIMULACRO.extension.min && nPal <= SIMULACRO.extension.max,
+    s8: hayPostura,
     s2: pars.length >= 4,
     s3: nombraElegido,
     s4: hay(lx.marcasCita),
@@ -3030,25 +4007,38 @@ function analizarTexto(texto, conjuntoId, elegido) {
     s6: hay(lx.marcasCorrespondencia),
     s7: cubre.length === 4
   };
-  return { senales: s, nPal, nPar: pars.length, cubre, total: Object.values(s).filter(Boolean).length };
+  return { senales: s, nPal, nPar: pars.length, cubre, banda: bandaExtension(nPal), total: Object.values(s).filter(Boolean).length };
 }
 
 /* ================= pantallas ================= */
 function barraHeader() {
-  const acti = S.pantalla === 'criterio' ? S.criterio : null;
-  return '<div class="barra">' + RUBRICA.map((c) => {
-    const p = puntuarCriterio(c.id);
-    const alto = p ? Math.round(p.frac * 100) : 0;
-    return `<div class="seg${c.id === acti ? ' act' : ''}" style="flex:${c.peso}" title="${esc(c.corto)} · ${c.peso} %"><i style="height:${alto}%"></i></div>`;
+  const act = S.pantalla === 'componente' ? S.comp : null;
+  return '<div class="barra">' + FAMILIAS.map((f, fi) => {
+    const cs = componentesDe(f.id);
+    return (fi ? '<div class="hueco"></div>' : '') + cs.map((c) => {
+      const p = puntuarComponente(c.id);
+      const alto = p ? Math.round(p.frac * 100) : 0;
+      const niv = p ? nivelDe(p.frac) : null;
+      return `<div class="seg${c.id === act ? ' act' : ''}" style="flex:1" title="${esc(c.nombre)} · ${esc(f.corto)}${p ? ' · ' + niv.nombre : ''}"><i style="height:${alto}%;background:var(--${niv ? niv.color : 'tesis'})"></i></div>`;
+    }).join('');
   }).join('') + '</div>';
 }
+
 function barraGrande() {
-  return '<div class="barra grande">' + RUBRICA.map((c) => {
-    const p = puntuarCriterio(c.id);
-    const alto = p ? Math.round(p.frac * 100) : 0;
-    return `<div class="seg" style="flex:${c.peso}"><i style="height:${alto}%;opacity:.35"></i><b>${p ? pct(p.frac) + '%' : '—'}</b></div>`;
-  }).join('') + '</div><div class="leyenda">' +
-    RUBRICA.map((c) => `<span style="flex:${c.peso}">${esc(c.corto)} ${c.peso}%</span>`).join('') + '</div>';
+  const zonas = FAMILIAS.map((f) => {
+    const cs = componentesDe(f.id);
+    return `<div class="zona" style="flex:${f.peso}">
+      <div class="zt"><span>${esc(f.nombre)}</span><b>${f.peso} %</b></div>
+      <div class="barra grande">${cs.map((c) => {
+        const p = puntuarComponente(c.id);
+        const alto = p ? Math.round(p.frac * 100) : 0;
+        const niv = p ? nivelDe(p.frac) : null;
+        return `<div class="seg" style="flex:1" title="${esc(c.nombre)}"><i style="height:${alto}%;background:var(--${niv ? niv.color : 'line-2'});opacity:.5"></i><b>${p ? pct(p.frac) + '%' : '—'}</b></div>`;
+      }).join('')}</div>
+      <div class="leyenda">${cs.map((c) => `<span style="flex:1">${esc(c.corto)}</span>`).join('')}</div>
+    </div>`;
+  }).join('<div class="hueco-zona"></div>');
+  return `<div class="zonas">${zonas}</div>`;
 }
 
 function pantallaInicio() {
@@ -3057,7 +4047,7 @@ function pantallaInicio() {
 <div class="card">
   <p class="eyebrow">Universidad EAFIT · Política de Lectura y Escritura en Español</p>
   <h1>Prueba de escritura, nivel 1</h1>
-  <p>Elegir el mejor de tres resúmenes hechos por inteligencia artificial y escribir entre 350 y 400 palabras que justifiquen la elección. Esta app entrena los seis criterios con que se evalúa ese texto y termina en un simulacro completo.</p>
+  <p>Leer un texto, leer el resumen que una inteligencia artificial hizo de él y escribir entre 350 y 400 palabras que valoren su calidad. Esta app entrena los ocho componentes de esa tarea y termina en un simulacro completo.</p>
   ${barraGrande()}
   <div class="acciones">
     <button class="b p" data-a="ir" data-p="practica">Empezar la práctica</button>
@@ -3069,6 +4059,17 @@ function pantallaInicio() {
   <h3>${esc(MENSAJE_CENTRAL.titulo)}</h3>
   <p>${esc(MENSAJE_CENTRAL.cuerpo)}</p>
   <p style="margin:0"><strong>${esc(MENSAJE_CENTRAL.cuenta)}</strong></p>
+</div>
+
+<div class="card">
+  <p class="eyebrow">Cómo está organizado el entrenamiento</p>
+  <h2>Dos familias, ocho componentes</h2>
+  ${FAMILIAS.map((f) => `<div class="fam fam-${f.id}">
+    <div class="ft"><strong>${esc(f.nombre)}</strong><span class="peso">${f.peso} %</span></div>
+    <p style="font-size:.89rem;color:var(--ink-2);margin:6px 0 8px">${esc(f.que)}</p>
+    <div class="etqs">${componentesDe(f.id).map((c) => `<span class="etq" style="cursor:default">${esc(c.nombre)}</span>`).join('')}</div>
+  </div>`).join('')}
+  <div class="nota aviso" style="margin-top:12px">${esc(AVISO_NIVELES)}</div>
 </div>
 
 <div class="card">
@@ -3092,17 +4093,19 @@ function pantallaInicio() {
 
 <div class="card">
   <p class="eyebrow">Cómo está hecha</p>
-  <h2>Los seis criterios</h2>
-  <table><thead><tr><th>Criterio</th><th style="width:70px">Peso</th><th style="width:90px">Ejercicios</th></tr></thead><tbody>
-  ${RUBRICA.map((c) => {
-    const n = EJ().filter((e) => e.criterio === c.id).length;
-    const p = puntuarCriterio(c.id);
+  <h2>Los ocho componentes</h2>
+  <table><thead><tr><th>Componente</th><th style="width:88px">Familia</th><th style="width:66px">Peso</th><th style="width:96px">Ejercicios</th></tr></thead><tbody>
+  ${COMPONENTES.map((c) => {
+    const n = EJ().filter((e) => e.comp === c.id).length;
+    const p = puntuarComponente(c.id);
     return `<tr><td>${esc(c.nombre)}</td>
+      <td style="font-size:.78rem;color:var(--ink-3)">${esc(familiaPorId(c.familia).corto)}</td>
       <td><span class="peso">${c.peso} %</span></td>
       <td>${p ? pct(p.frac) + ' % · ' + p.ejercicios + '/' + n : n + ' en cada flujo'}</td></tr>`;
   }).join('')}
   </tbody></table>
   <p style="font-size:.85rem;color:var(--ink-2);margin:0">Cada texto propone su propio recorrido de ${bloqueDe('bunuelo').length + EJ_TRANSVERSAL.length} ejercicios. En total hay ${nEj} en el banco, con ${new Set(EJERCICIOS.map((e) => e.motor)).size} dinámicas distintas.</p>
+  <div class="nota">${esc(NOTA_PONDERACION)}</div>
 </div>
 
 <div class="card">
@@ -3130,17 +4133,18 @@ function pantallaEleccion() {
   <div class="nota clave">El diagnóstico se calcula por flujo: cada texto te da su propio resultado. Si cambias de texto, las respuestas de ese bloque se borran; las de los ejercicios transversales se conservan.</div>
 </div>
 
-${CONJUNTOS.map((c) => {
+${CONJUNTOS.slice().sort((a, b) => (b.recomendado ? 1 : 0) - (a.recomendado ? 1 : 0)).map((c) => {
   const n = bloqueDe(c.id).length;
   const hechos = respondidosEn(c.id);
   const activo = S.textoActivo === c.id;
   return `<div class="card" style="${activo ? 'border-color:var(--tesis)' : ''}">
     <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:baseline">
       <h2 style="flex:1;margin:0">${esc(c.titulo)}</h2>
+      ${c.recomendado ? '<span class="peso" style="background:var(--ok-wash);border-color:var(--ok);color:var(--ok)">alineado con la consigna vigente</span>' : ''}
       ${activo ? '<span class="peso">flujo activo</span>' : ''}
     </div>
     <p style="color:var(--ink-2);font-size:.9rem;margin:6px 0 10px">
-      ${esc(c.autor)} · ${esc(c.genero)} · ${palabrasFuente(c)} palabras · ${c.fuente.parrafos.length} párrafos${c.dilema ? ' · sin ganador obvio' : ''}
+      ${esc(c.autor)} · ${esc(c.genero)} · ${palabrasFuente(c)} palabras · ${c.fuente.parrafos.length} párrafos · ${c.modalidad === 'evaluacion' ? 'un resumen que evaluar' : 'tres resúmenes entre los que elegir'}${c.dilema ? ' · sin ganador obvio' : ''}
     </p>
     <p style="font-size:.92rem">${esc(c.fuente.ideaPrincipal)}</p>
     <p style="font-size:.83rem;color:var(--ink-3)">${esc(ETIQUETA_ORIGEN[c.origenResumenes])}</p>
@@ -3153,13 +4157,13 @@ ${CONJUNTOS.map((c) => {
 }).join('')}`;
 }
 
-function pantallaCriterio() {
-  const c = criterioPorId(S.criterio);
-  const k = conceptoPorId(S.criterio);
-  const propios = EJ().filter((e) => e.criterio === c.id);
-  const p = puntuarCriterio(c.id);
-  const idx = RUBRICA.findIndex((r) => r.id === c.id);
-  const sig = RUBRICA[idx + 1];
+function pantallaComponente() {
+  const c = componentePorId(S.comp);
+  const k = conceptoPorId(S.comp);
+  const propios = EJ().filter((e) => e.comp === c.id);
+  const p = puntuarComponente(c.id);
+  const idx = COMPONENTES.findIndex((r) => r.id === c.id);
+  const sig = COMPONENTES[idx + 1];
   const kTexto = conjuntoPorId(S.textoActivo);
   const transversal = propios.length > 0 && propios.every((e) => !esDeTexto(e));
   return `
@@ -3173,19 +4177,21 @@ function pantallaCriterio() {
 </div>
 
 <div class="card">
-  <p class="eyebrow">Criterio ${c.n} de 6 · <span class="peso">${c.peso} %</span></p>
+  <p class="eyebrow">Componente ${c.n} de 8 · ${esc(familiaPorId(c.familia).nombre)} · <span class="peso">${c.peso} %</span></p>
   <h1>${esc(c.nombre)}</h1>
+  <p>${esc(c.definicion)}</p>
   <p><strong>El gesto:</strong> ${esc(c.gesto)}</p>
   <p style="color:var(--ink-2)">${esc(k.porque)}</p>
-  <table><thead><tr><th style="width:96px">Nivel</th><th>Qué dice la rúbrica</th></tr></thead><tbody>
-    <tr><th>Excelente</th><td>${esc(c.descriptores.excelente)}</td></tr>
-    <tr><th>Básico</th><td>${esc(c.descriptores.basico)}</td></tr>
-    <tr><th>Insuficiente</th><td>${esc(c.descriptores.insuficiente)}</td></tr>
-  </tbody></table>
+  <details><summary style="cursor:pointer;font-size:.85rem;color:var(--ink-2)">A qué criterios de la rúbrica institucional responde</summary>
+    <table style="margin-top:8px"><tbody>
+    ${criteriosDe(c.id).map((x) => `<tr><th style="width:34%;font-size:.72rem">${esc(x.descriptor.nombre)}</th><td>${esc(x.criterio.nombre)}</td></tr>`).join('')}
+    </tbody></table>
+    <p style="font-size:.8rem;color:var(--ink-3);margin:6px 0 0">Rúbrica ${esc(RUBRICA_INSTITUCIONAL.version)}. ${esc(RUBRICA_INSTITUCIONAL.nota)}</p>
+  </details>
 </div>
 
 <div class="card">
-  <p class="eyebrow">La distinción que decide el criterio</p>
+  <p class="eyebrow">La distinción que decide el componente</p>
   <h2>${esc(k.distincion.titulo)}</h2>
   <p>${esc(k.distincion.cuerpo)}</p>
   ${k.distincion.ejemplos.map((e) => `
@@ -3202,13 +4208,13 @@ function pantallaCriterio() {
 <div class="card plano" style="background:none;border:none;padding:0">
   <h2>Ejercicios <span style="font-family:var(--mono);font-size:.8rem;color:var(--ink-3)">${p ? pct(p.frac) + ' %' : propios.length + ' pendientes'}</span></h2>
   <p style="font-size:.86rem;color:var(--ink-2)">${transversal
-    ? 'Este criterio evalúa tu propia escritura, así que sus ejercicios son los mismos en los cuatro textos. Sus respuestas no se borran al cambiar de texto.'
+    ? 'Este componente evalúa tu propia escritura, así que sus ejercicios son los mismos en todos los textos. Sus respuestas no se borran al cambiar de texto.'
     : 'Todos los fragmentos de estos ejercicios proceden de «' + esc(kTexto.titulo) + '» y de sus tres resúmenes.'}</p>
 </div>
 ${propios.map((e, i) => pintarEjercicio(e, i + 1)).join('')}
 
 <div class="acciones" style="margin-bottom:30px">
-  ${sig ? `<button class="b p" data-a="ir" data-p="criterio" data-c="${sig.id}">Siguiente: ${esc(sig.corto)}</button>` : '<button class="b p" data-a="ir" data-p="simulacro">Ir al simulacro</button>'}
+  ${sig ? `<button class="b p" data-a="ir" data-p="componente" data-c="${sig.id}">Siguiente: ${esc(sig.corto)}</button>` : '<button class="b p" data-a="ir" data-p="simulacro">Ir al simulacro</button>'}
   <button class="b" data-a="ir" data-p="diagnostico">Ver diagnóstico</button>
 </div>`;
 }
@@ -3415,7 +4421,8 @@ function pintarSimulacro() {
 <div class="card">
   <p class="eyebrow">Simulacro</p>
   <h1>Texto crítico, de 350 a 400 palabras</h1>
-  <ol style="font-size:.92rem">${SIMULACRO.consigna.map((x) => `<li>${esc(x)}</li>`).join('')}</ol>
+  <ol style="font-size:.92rem">${(c.modalidad === 'evaluacion' ? SIMULACRO.consignaEvaluacion : SIMULACRO.consigna).map((x) => `<li>${esc(x)}</li>`).join('')}</ol>
+  <div class="nota ${c.modalidad === 'evaluacion' ? 'clave' : 'aviso'}">${esc(c.modalidad === 'evaluacion' ? SIMULACRO.notaEvaluacion : SIMULACRO.notaEleccion)}</div>
   <div class="nota aviso">${esc(SIMULACRO.sinPersistencia)}</div>
   <div class="acciones">
     <label style="font-size:.85rem;color:var(--ink-2)">Conjunto:
@@ -3423,23 +4430,28 @@ function pintarSimulacro() {
         ${ordenSimulacro().map((id) => {
           const k = conjuntoPorId(id);
           const visto = respondidosEn(id) > 0;
-          return `<option value="${id}" ${id === S.sim.conjunto ? 'selected' : ''}>${esc(k.titulo)}${visto ? ' · ya practicado' : ' · sin practicar'}</option>`;
+          const modo = k.modalidad === 'evaluacion' ? 'un resumen' : 'tres resúmenes';
+          return `<option value="${id}" ${id === S.sim.conjunto ? 'selected' : ''}>${esc(k.titulo)} · ${modo}${k.recomendado ? ' · recomendado' : ''}${visto ? ' · ya practicado' : ''}</option>`;
         }).join('')}
         <option value="__azar">Asignar uno al azar</option>
       </select></label>
     <button class="b" data-a="visor-sim">Abrir el comparador</button>
   </div>
-  <p style="font-size:.83rem;color:var(--ink-2);margin:10px 0 0">Los cuatro textos están disponibles. Aparecen primero los que todavía no has trabajado en la práctica: enfrentarte a un texto nuevo se parece más a la prueba real.</p>
+  <p style="font-size:.83rem;color:var(--ink-2);margin:10px 0 0">Los cinco textos están disponibles. Aparecen primero los que todavía no has trabajado en la práctica: enfrentarte a un texto nuevo se parece más a la prueba real. El conjunto recomendado es el único que replica la consigna vigente.</p>
 </div>
 
 <div class="sim-cols ${S.visor.abierto && S.visor.desdeSim ? 'conVisor' : ''}">
 <div>
   <div class="card">
-    <h3>1 · Declara qué resumen eliges</h3>
-    <div class="etqs">
-      ${c.resumenes.map((r, i) => `<button class="etq${S.sim.elegido === i ? ' sel' : ''}" data-a="elegir" data-v="${i}">${esc(r.agente)}</button>`).join('')}
-    </div>
-    <p style="font-size:.82rem;color:var(--ink-2);margin:9px 0 0">Nómbralo también dentro de tu texto: el lector de la prueba no ve este selector.</p>
+    ${c.modalidad === 'evaluacion'
+      ? `<h3>1 · El resumen que vas a evaluar</h3>
+         <p style="font-size:.9rem">En la prueba real recibes un solo resumen y tomas postura sobre su calidad. Aquí es el de ${esc(c.resumenes[0].agente)}.</p>
+         <div class="acciones"><button class="b" data-a="visor-sim">Leerlo en el comparador</button></div>`
+      : `<h3>1 · Declara qué resumen eliges</h3>
+         <div class="etqs">
+           ${c.resumenes.map((r, i) => `<button class="etq${S.sim.elegido === i ? ' sel' : ''}" data-a="elegir" data-v="${i}">${esc(r.agente)}</button>`).join('')}
+         </div>
+         <p style="font-size:.82rem;color:var(--ink-2);margin:9px 0 0">Nómbralo también dentro de tu texto: el lector de la prueba no ve este selector.</p>`}
   </div>
 
   <div class="card">
@@ -3468,7 +4480,7 @@ function pintarPanelSim(a) {
   const pars = parrafosDe(S.sim.texto);
   return `
   <div class="contadores">
-    <span class="${okExt ? 'bien' : a.nPal ? 'mal' : ''}">${a.nPal} palabras · rango ${ext.min}–${ext.max}</span>
+    <span class="${okExt ? 'bien' : a.nPal ? 'mal' : ''}">${a.nPal} palabras · rango ${ext.min}–${ext.max}${a.nPal ? ' · ' + esc(a.banda.nivel) : ''}</span>
     <span>${a.nPar} párrafo${a.nPar === 1 ? '' : 's'}</span>
     <span id="crono">${fmtTiempo(tiempoSim())}</span>
     <span>${S.sim.guardado ? 'descargado' : 'sin descargar'}</span>
@@ -3501,7 +4513,8 @@ function pintarSenales(a) {
 
 /* Los conjuntos que el estudiante no ha practicado se ofrecen primero. */
 function ordenSimulacro() {
-  return CONJUNTOS_SIMULACRO.slice().sort((a, b) => respondidosEn(a) - respondidosEn(b));
+  const rec = (id) => (conjuntoPorId(id).recomendado ? 0 : 1);
+  return CONJUNTOS_SIMULACRO.slice().sort((a, b) => rec(a) - rec(b) || respondidosEn(a) - respondidosEn(b));
 }
 
 function tiempoSim() {
@@ -3522,34 +4535,55 @@ function pantallaDiagnostico() {
   let cuerpo = '';
   if (!pond) {
     cuerpo = `<div class="card"><h2>Todavía no hay práctica que medir</h2>
-      <p>Responde ejercicios de cualquier criterio y aquí aparecerá el ponderado, calculado solo sobre lo practicado.</p>
-      <button class="b p" data-a="ir" data-p="criterio" data-c="c1">Empezar</button></div>`;
+      <p>Responde ejercicios de cualquier componente y aquí aparecerá tu nivel de entrenamiento, calculado solo sobre lo practicado.</p>
+      <button class="b p" data-a="ir" data-p="componente" data-c="k1">Empezar</button></div>`;
   } else {
+    const conNivel = pond.filas.map((f) => ({ c: f.c, frac: f.p.frac }));
+    const nExperto = conNivel.filter((x) => nivelDe(x.frac).id === 'experto').length;
+    const flojos = conNivel.filter((x) => x.frac < 0.70).sort((a, b) => a.frac - b.frac);
     const prioridades = pond.filas
       .map((f) => ({ c: f.c, perdidos: f.c.peso * (1 - f.p.frac), frac: f.p.frac }))
       .filter((x) => x.perdidos > 0.01).sort((x, y) => y.perdidos - x.perdidos);
     cuerpo = `
     <div class="card">
-      <p class="eyebrow">Ponderado sobre lo practicado</p>
-      <div class="res-num">${pct(pond.frac)} %<small> de ${pond.pesoCubierto} % de la rúbrica cubierto · ${hechos} de ${EJ().length} ejercicios del flujo</small></div>
-      <p style="margin-top:10px;color:${pond.frac >= UMBRAL_APROBACION ? 'var(--ok)' : 'var(--warn)'}">
-        ${pond.frac >= UMBRAL_APROBACION ? 'Por encima del umbral asumido de aprobación (70 %).' : 'Por debajo del umbral asumido de aprobación (70 %).'}
-        El umbral está pendiente de confirmación institucional.</p>
+      <p class="eyebrow">Nivel de entrenamiento</p>
+      <div class="res-num">${nExperto} de ${COMPONENTES.length}<small> componentes en nivel Experto · ${pct(pond.frac)} % ponderado sobre el ${pond.pesoCubierto} % practicado · ${hechos} de ${EJ().length} ejercicios</small></div>
+      ${flojos.length
+        ? `<p style="margin-top:10px">Lo que conviene fortalecer: <strong>${flojos.map((x) => esc(x.c.nombre) + ' (' + esc(nivelDe(x.frac).nombre.toLowerCase()) + ')').join(', ')}</strong>. Un promedio alto puede ocultar un componente flojo, y en la prueba cada criterio se evalúa por separado.</p>`
+        : '<p style="margin-top:10px;color:var(--ok)">Ningún componente por debajo de Avanzado en lo practicado. Conviene mantenerlo con repasos breves y pasar al simulacro.</p>'}
       ${barraGrande()}
+      <div class="nota aviso">${esc(AVISO_NIVELES)}</div>
+    </div>
+
+    <div class="card">
+      <p class="eyebrow">Componente por componente</p>
+      <h2>Dónde estás y qué significa</h2>
+      ${FAMILIAS.map((f) => `
+        <h4 style="margin-top:14px">${esc(f.nombre)} <span class="peso">${f.peso} %</span></h4>
+        ${componentesDe(f.id).map((c) => {
+          const p = puntuarComponente(c.id);
+          if (!p) return `<div class="prio"><span class="pts" style="color:var(--ink-3);font-size:.8rem">sin practicar</span>
+            <span class="nb">${esc(c.nombre)} <small>${esc(c.definicion)}</small></span>
+            <button class="b peq" data-a="ir" data-p="componente" data-c="${c.id}">Empezar</button></div>`;
+          const niv = nivelDe(p.frac);
+          return `<div class="prio"><span class="pts" style="color:var(--${niv.color});font-size:.85rem">${esc(niv.nombre)}</span>
+            <span class="nb">${esc(c.nombre)} <small>${pct(p.frac)} % · ${esc(niv.que)}</small></span>
+            <button class="b peq" data-a="ir" data-p="componente" data-c="${c.id}">Entrenar</button></div>`;
+        }).join('')}`).join('')}
     </div>
     <div class="card">
-      <p class="eyebrow">Prioridades, por puntos perdidos</p>
-      <h2>Dónde recuperas más nota</h2>
-      <p style="font-size:.87rem;color:var(--ink-2)">La cuenta es <span style="font-family:var(--mono)">peso × brecha</span>, no el porcentaje. Un 40 % en idea principal cuesta 6 puntos; un 70 % en cohesión cuesta 7,5. Por eso el orden no coincide con el de tus peores porcentajes.</p>
+      <p class="eyebrow">Prioridades</p>
+      <h2>Por dónde empezar</h2>
+      <p style="font-size:.87rem;color:var(--ink-2)">El orden es <span style="font-family:var(--mono)">peso × brecha</span>, no el porcentaje. Un 40 % en idea principal, que pesa 10, deja menos margen que un 70 % en cohesión, que pesa 15. Por eso este orden no coincide con el de tus peores porcentajes.</p>
       ${prioridades.length ? prioridades.map((x) => `<div class="prio">
         <span class="pts">−${x.perdidos.toFixed(1)}</span>
-        <span class="nb">${esc(x.c.nombre)} <small>${pct(x.frac)} % sobre un peso de ${x.c.peso} %. ${esc(conceptoPorId(x.c.id).distincion.titulo)}.</small></span>
-        <button class="b peq" data-a="ir" data-p="criterio" data-c="${x.c.id}">Entrenar</button></div>`).join('')
+        <span class="nb">${esc(x.c.nombre)} <small>${esc(nivelDe(x.frac).nombre)} · ${pct(x.frac)} % sobre un peso de ${x.c.peso} %. ${esc(conceptoPorId(x.c.id).distincion.titulo)}.</small></span>
+        <button class="b peq" data-a="ir" data-p="componente" data-c="${x.c.id}">Entrenar</button></div>`).join('')
         : '<p>No hay puntos perdidos en lo practicado.</p>'}
     </div>
     <div class="card">
-      <p class="eyebrow">Recomendación por criterio</p>
-      <table><thead><tr><th>Criterio</th><th style="width:64px">Tuyo</th><th>Qué hacer</th></tr></thead><tbody>
+      <p class="eyebrow">Qué hacer en cada uno</p>
+      <table><thead><tr><th>Componente</th><th style="width:64px">Tuyo</th><th>Qué hacer</th></tr></thead><tbody>
       ${pond.filas.map((f) => `<tr><td>${esc(f.c.corto)}</td><td><span class="peso">${pct(f.p.frac)} %</span></td>
         <td style="font-size:.84rem">${esc(f.p.frac >= 0.8 ? conceptoPorId(f.c.id).consejos[3] : conceptoPorId(f.c.id).consejos[0])}</td></tr>`).join('')}
       </tbody></table>
@@ -3559,7 +4593,7 @@ function pantallaDiagnostico() {
   const simBloque = S.sim.texto.trim() ? `
     <div class="card">
       <p class="eyebrow">Simulacro · sin nota numérica</p>
-      <h2>Señales verificadas: ${a.total} de 7</h2>
+      <h2>Señales verificadas: ${a.total} de 8</h2>
       <p style="font-size:.87rem;color:var(--ink-2)">${esc(SIMULACRO.advertenciaHeuristica)}</p>
       <table><tbody>
         <tr><th>Conjunto</th><td>${esc(conjuntoPorId(S.sim.conjunto).titulo)}</td></tr>
@@ -3575,7 +4609,7 @@ function pantallaDiagnostico() {
 
   return `<div class="card plano" style="background:none;border:none;padding:0">
       <h1>Diagnóstico</h1>
-      <p style="color:var(--ink-2)">Flujo de práctica sobre «${esc(kAct.titulo)}», de ${esc(kAct.autor)}. Los criterios de cohesión y gramática son transversales y se conservan al cambiar de texto.</p>
+      <p style="color:var(--ink-2)">Flujo de práctica sobre «${esc(kAct.titulo)}», de ${esc(kAct.autor)}. Los cuatro componentes de la familia «cómo escribes tú» son transversales y se conservan al cambiar de texto.</p>
     </div>
     ${cuerpo}${simBloque}
     <div class="acciones" style="margin-bottom:30px">
@@ -3621,7 +4655,7 @@ ${pond ? `<p>Ponderado sobre lo practicado: <strong>${pct(pond.frac)} %</strong>
 <tr><th>Resumen elegido</th><td>${S.sim.elegido !== null ? esc(c.resumenes[S.sim.elegido].agente) : 'sin declarar'}</td></tr>
 <tr><th>Extensión</th><td>${a.nPal} palabras · ${a.nPar} párrafos · rango exigido 350–400</td></tr>
 <tr><th>Tiempo de escritura</th><td>${fmtTiempo(tiempoSim())}</td></tr>
-<tr><th>Señales verificadas</th><td>${a.total} de 7</td></tr>
+<tr><th>Señales verificadas</th><td>${a.total} de 8</td></tr>
 <tr><th>Autoevaluación</th><td>${Object.values(S.sim.autoev).filter(Boolean).length} de ${SIMULACRO.autoevaluacion.length} casillas marcadas</td></tr>
 </tbody></table>
 <table><thead><tr><th>Señal</th><th>Estado</th><th>Lectura</th></tr></thead><tbody>
@@ -3660,9 +4694,9 @@ function pintarOvl() {
         <button data-a="ir" data-p="inicio">Inicio</button>
         <div class="g">Práctica${S.textoActivo ? ' · ' + esc(conjuntoPorId(S.textoActivo).titulo) : ''}</div>
         <button data-a="ir" data-p="practica">Elegir texto de práctica</button>
-        ${S.textoActivo ? RUBRICA.map((c) => {
-          const p = puntuarCriterio(c.id);
-          return `<button data-a="ir" data-p="criterio" data-c="${c.id}">${c.n}. ${esc(c.nombre)} · ${c.peso} %${p ? ' · ' + pct(p.frac) + ' %' : ''}</button>`;
+        ${S.textoActivo ? COMPONENTES.map((c) => {
+          const p = puntuarComponente(c.id);
+          return `<button data-a="ir" data-p="componente" data-c="${c.id}">${c.n}. ${esc(c.nombre)} · ${c.peso} %${p ? ' · ' + pct(p.frac) + ' %' : ''}</button>`;
         }).join('') : ''}
         <div class="g">Leer los textos</div>
         ${CONJUNTOS.map((c) => `<button data-a="visor" data-k="${c.id}">${esc(c.titulo)} · ${esc(c.autor)}</button>`).join('')}
@@ -3691,20 +4725,20 @@ function render() {
       <div class="sep"></div>
       <nav class="tabs">
         <button class="b peq${S.pantalla === 'inicio' ? ' act' : ''}" data-a="ir" data-p="inicio">Inicio</button>
-        <button class="b peq${S.pantalla === 'criterio' || S.pantalla === 'eleccion' ? ' act' : ''}" data-a="ir" data-p="practica">Práctica</button>
+        <button class="b peq${S.pantalla === 'componente' || S.pantalla === 'eleccion' ? ' act' : ''}" data-a="ir" data-p="practica">Práctica</button>
         <button class="b peq${S.pantalla === 'simulacro' ? ' act' : ''}" data-a="ir" data-p="simulacro">Simulacro</button>
         <button class="b peq${S.pantalla === 'diagnostico' ? ' act' : ''}" data-a="ir" data-p="diagnostico">Diagnóstico</button>
         <button class="b peq" data-a="indice">Índice</button>
       </nav>
     </div>
-    ${S.pantalla === 'criterio' ? `<nav class="tabs">${RUBRICA.map((c) =>
-      `<button class="b peq${S.criterio === c.id ? ' act' : ''}" data-a="ir" data-p="criterio" data-c="${c.id}">${c.n}. ${esc(c.corto)} · ${c.peso}%</button>`).join('')}</nav>` : ''}
+    ${S.pantalla === 'componente' ? `<nav class="tabs">${COMPONENTES.map((c) =>
+      `<button class="b peq${S.comp === c.id ? ' act' : ''}" data-a="ir" data-p="componente" data-c="${c.id}">${c.n}. ${esc(c.corto)} · ${c.peso}%</button>`).join('')}</nav>` : ''}
   </div></header>`;
 
   let cuerpo = '';
   if (S.pantalla === 'inicio') cuerpo = pantallaInicio();
   else if (S.pantalla === 'eleccion') cuerpo = pantallaEleccion();
-  else if (S.pantalla === 'criterio') cuerpo = pantallaCriterio();
+  else if (S.pantalla === 'componente') cuerpo = pantallaComponente();
   else if (S.pantalla === 'simulacro') cuerpo = pintarSimulacro();
   else if (S.pantalla === 'diagnostico') cuerpo = pantallaDiagnostico();
 
@@ -3770,15 +4804,19 @@ document.addEventListener('click', (ev) => {
   if (a === 'ir') {
     S.ovl = null;
     // «Práctica» resuelve a la elección de texto mientras no haya uno activo.
-    S.pantalla = b.dataset.p === 'practica' ? (S.textoActivo ? 'criterio' : 'eleccion') : b.dataset.p;
-    if (b.dataset.c) S.criterio = b.dataset.c;
+    S.pantalla = b.dataset.p === 'practica' ? (S.textoActivo ? 'componente' : 'eleccion') : b.dataset.p;
+    if (b.dataset.c) S.comp = b.dataset.c;
     if (S.pantalla !== 'simulacro') { S.visor.desdeSim = false; }
     render();
     window.scrollTo(0, 0);
     return;
   }
   if (a === 'visor') { S.visor = { abierto: true, conjunto: b.dataset.k, pestana: 'fuente', desdeSim: false }; S.ovl = null; render(); return; }
-  if (a === 'visor-sim') { S.visor = { abierto: true, conjunto: S.sim.conjunto, pestana: 'fuente', desdeSim: true }; render(); return; }
+  if (a === 'visor-sim') {
+    const cs = conjuntoPorId(S.sim.conjunto);
+    S.visor = { abierto: true, conjunto: S.sim.conjunto, pestana: cs.modalidad === 'evaluacion' ? 'r0' : 'fuente', desdeSim: true };
+    render(); return;
+  }
   if (a === 'cerrar-visor') { S.visor.abierto = false; render(); return; }
   if (a === 'pestana') { S.visor.pestana = b.dataset.t; render(); return; }
 
@@ -3794,15 +4832,15 @@ document.addEventListener('click', (ev) => {
         alConfirmar: () => {
           limpiarBloque(S.textoActivo);
           S.textoActivo = destino;
-          S.criterio = 'c1';
-          S.pantalla = 'criterio';
+          S.comp = 'k1';
+          S.pantalla = 'componente';
         }
       });
       return;
     }
     S.textoActivo = destino;
-    S.criterio = 'c1';
-    S.pantalla = 'criterio';
+    S.comp = 'k1';
+    S.pantalla = 'componente';
     render();
     window.scrollTo(0, 0);
     return;
